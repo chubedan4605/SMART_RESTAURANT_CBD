@@ -1,0 +1,22 @@
+const LOGIN_WINDOW_SECONDS =
+  Number(process.env.RL_LOGIN_WINDOW_SECONDS) || 15 * 60;
+const LOGIN_IP_LIMIT = Number(process.env.RL_LOGIN_IP_LIMIT) || 20;
+const LOGIN_EMAIL_LIMIT = Number(process.env.RL_LOGIN_EMAIL_LIMIT) || 8;
+
+const FORGOT_WINDOW_SECONDS =
+  Number(process.env.RL_FORGOT_WINDOW_SECONDS) || 15 * 60;
+const FORGOT_LIMIT = Number(process.env.RL_FORGOT_LIMIT) || 3;
+
+const RESEND_WINDOW_SECONDS =
+  Number(process.env.RL_RESEND_WINDOW_SECONDS) || 15 * 60;
+const RESEND_LIMIT = Number(process.env.RL_RESEND_LIMIT) || 3;
+
+module.exports = {
+  LOGIN_WINDOW_SECONDS,
+  LOGIN_IP_LIMIT,
+  LOGIN_EMAIL_LIMIT,
+  FORGOT_WINDOW_SECONDS,
+  FORGOT_LIMIT,
+  RESEND_WINDOW_SECONDS,
+  RESEND_LIMIT,
+};

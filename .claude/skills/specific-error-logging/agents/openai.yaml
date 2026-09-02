@@ -1,0 +1,4 @@
+interface:
+  display_name: "Specific Error Logging"
+  short_description: "Make error logs concrete and actionable"
+  default_prompt: "Use $specific-error-logging to replace vague console errors with actionable diagnostic logs."

@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: smart-restaurant-db
+    restart: "no"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: smart_restaurant
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d smart_restaurant"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - smart-restaurant-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: smart-restaurant-redis
+    restart: "no"
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - smart-restaurant-net
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: smart-restaurant-redisinsight
+    restart: "no"
+    ports:
+      - "5540:5540"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - smart-restaurant-net
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  smart-restaurant-net:
+    driver: bridge

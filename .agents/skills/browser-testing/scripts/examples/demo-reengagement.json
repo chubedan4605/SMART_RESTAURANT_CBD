@@ -1,0 +1,133 @@
+[
+  {
+    "action": "navigate",
+    "url": "http://localhost:3000/stages",
+    "description": "Open Stages/Kanban page"
+  },
+  {
+    "action": "wait",
+    "ms": 3000,
+    "description": "Wait for Kanban board to render"
+  },
+  {
+    "action": "screenshot",
+    "filename": "01-kanban-board.png",
+    "description": "Kanban board with conversation stages"
+  },
+
+  {
+    "action": "click",
+    "selector": "button:has-text('Nhắc lại'), button[title*='re-engagement'], button[title*='reengagement']",
+    "description": "Click Re-engagement Settings button"
+  },
+  {
+    "action": "wait",
+    "ms": 1500,
+    "description": "Wait for settings modal to open"
+  },
+  {
+    "action": "screenshot",
+    "filename": "02-reengagement-settings-modal.png",
+    "description": "Re-engagement settings modal"
+  },
+
+  {
+    "action": "click",
+    "selector": "input[type='checkbox'], [role='switch']",
+    "description": "Enable re-engagement toggle"
+  },
+  {
+    "action": "wait",
+    "ms": 800,
+    "description": "Wait for form fields to appear"
+  },
+  {
+    "action": "screenshot",
+    "filename": "03-reengagement-enabled.png",
+    "description": "Re-engagement form with timeout inputs visible"
+  },
+
+  {
+    "action": "press",
+    "key": "Escape",
+    "description": "Close modal"
+  },
+  {
+    "action": "wait",
+    "ms": 500
+  },
+
+  {
+    "action": "navigate",
+    "url": "http://localhost:3000/chat",
+    "description": "Navigate to Conversations"
+  },
+  {
+    "action": "wait",
+    "ms": 3000,
+    "description": "Wait for conversations to load"
+  },
+  {
+    "action": "screenshot",
+    "filename": "04-conversations-list.png",
+    "description": "Conversations list view"
+  },
+
+  {
+    "action": "click",
+    "selector": "[role='listitem'], .conversation-card, [data-testid='conversation-item']",
+    "description": "Open first conversation"
+  },
+  {
+    "action": "wait",
+    "ms": 2000,
+    "description": "Wait for conversation to load"
+  },
+  {
+    "action": "screenshot",
+    "filename": "05-conversation-open.png",
+    "description": "Conversation view"
+  },
+
+  {
+    "action": "click",
+    "selector": "[class*='stage'] select, select[aria-label*='stage'], [role='combobox'][aria-label*='stage']",
+    "description": "Click stage selector dropdown"
+  },
+  {
+    "action": "wait",
+    "ms": 1000,
+    "description": "Wait for dropdown to open"
+  },
+  {
+    "action": "screenshot",
+    "filename": "06-stage-dropdown.png",
+    "description": "Stage dropdown showing available stages"
+  },
+
+  {
+    "action": "press",
+    "key": "Escape",
+    "description": "Close dropdown"
+  },
+  {
+    "action": "wait",
+    "ms": 500
+  },
+
+  {
+    "action": "navigate",
+    "url": "http://localhost:3000/stages",
+    "description": "Back to Stages page"
+  },
+  {
+    "action": "wait",
+    "ms": 2000,
+    "description": "Wait for board to load"
+  },
+  {
+    "action": "screenshot",
+    "filename": "07-kanban-final.png",
+    "description": "Final Kanban board state"
+  }
+]

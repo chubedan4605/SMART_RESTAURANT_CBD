@@ -1,0 +1,47 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<your-github-pat>"
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "<absolute-path-to-jarvis-helpdesk>"
+      ]
+    },
+    "postgres": {
+      "command": "uv",
+      "args": ["run", "postgres-mcp", "--access-mode=unrestricted"],
+      "env": {
+        "DATABASE_URI": "postgresql://postgres:postgres@localhost:5432/jarvis_helpdesk"
+      }
+    },
+    "jira": {
+      "command": "npx",
+      "args": ["-y", "@aashari/mcp-server-atlassian-jira"],
+      "env": {
+        "ATLASSIAN_SITE_NAME": "jarvisbiz",
+        "ATLASSIAN_USER_EMAIL": "<your-email>",
+        "ATLASSIAN_API_TOKEN": "<your-atlassian-api-token>"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-playwright"]
+    }
+  }
+}

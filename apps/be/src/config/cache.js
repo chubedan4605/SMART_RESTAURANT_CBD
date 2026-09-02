@@ -1,0 +1,28 @@
+const MENU_CACHE_VERSION_KEY = "menu:version";
+
+// TTL cache cho các endpoint menu công khai (giá trị có thể set qua .env)
+const MENU_PUBLIC_TTL_SECONDS =
+  Number(process.env.REDIS_MENU_PUBLIC_TTL) || 300;
+const MENU_GUEST_TTL_SECONDS = Number(process.env.REDIS_MENU_GUEST_TTL) || 300;
+const MENU_TOPCHEF_TTL_SECONDS =
+  Number(process.env.REDIS_MENU_TOPCHEF_TTL) || 300;
+
+const DASHBOARD_CACHE_TTL_SECONDS =
+  Number(process.env.REDIS_DASHBOARD_TTL) || 60;
+const DASHBOARD_LOCK_TTL_MS =
+  Number(process.env.REDIS_DASHBOARD_LOCK_TTL_MS) || 8000;
+const DASHBOARD_LOCK_WAIT_MS =
+  Number(process.env.REDIS_DASHBOARD_LOCK_WAIT_MS) || 50;
+const DASHBOARD_LOCK_RETRIES =
+  Number(process.env.REDIS_DASHBOARD_LOCK_RETRIES) || 6;
+
+module.exports = {
+  MENU_CACHE_VERSION_KEY,
+  MENU_PUBLIC_TTL_SECONDS,
+  MENU_GUEST_TTL_SECONDS,
+  MENU_TOPCHEF_TTL_SECONDS,
+  DASHBOARD_CACHE_TTL_SECONDS,
+  DASHBOARD_LOCK_TTL_MS,
+  DASHBOARD_LOCK_WAIT_MS,
+  DASHBOARD_LOCK_RETRIES,
+};

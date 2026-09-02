@@ -1,0 +1,18 @@
+[
+  { "action": "navigate", "url": "http://localhost:3000/stages" },
+  { "action": "wait", "ms": 2000 },
+  { "action": "screenshot", "filename": "01-kanban-board.png" },
+
+  { "action": "click", "selector": "button:has-text('Nhắc lại')" },
+  { "action": "wait", "ms": 1000 },
+  { "action": "screenshot", "filename": "02-reengagement-settings.png" },
+
+  { "action": "press", "key": "Escape" },
+  { "action": "wait", "ms": 500 },
+
+  { "action": "navigate", "url": "http://localhost:3000/chat" },
+  { "action": "wait", "ms": 3000 },
+  { "action": "click", "selector": "[class*='stage'] select, [class*='Stage'] select, [class*='classification'] select" },
+  { "action": "wait", "ms": 1000 },
+  { "action": "screenshot", "filename": "03-stage-dropdown.png" }
+]

@@ -1,0 +1,12 @@
+{
+  "name": "smart-restaurant-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/*\" dev",
+    "dev:fe": "pnpm --filter frontend dev",
+    "dev:be": "pnpm --filter backend dev",
+    "quality:fe": "pnpm --filter frontend lint",
+    "quality:be": "pnpm --filter backend test",
+    "build": "pnpm --recursive build"
+  }
+}

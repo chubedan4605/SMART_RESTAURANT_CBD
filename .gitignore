@@ -1,0 +1,41 @@
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Turbo
+.turbo/
+
+# pnpm
+pnpm-lock.yaml is committed but node_modules are not
+
+# Playwright MCP
+.playwright-mcp/
+.playwright-auth.json
+
+# Local environment
+.env
+.env.local
+
+# Age encryption private key
+.env.key
+
+# MCP configs with credentials
+.mcp.json
+.ai/config/mcp.json
+
+# Claude Code local settings (may contain credentials)
+.claude/settings.local.json
+
+.ruff_cache
+.serena
+.venv
+.vscode
+.mcp.json.config/
+
+node_modules
+
+# nvm
+.nvmrc

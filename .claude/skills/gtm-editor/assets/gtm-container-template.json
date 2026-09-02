@@ -1,0 +1,72 @@
+{
+    "exportFormatVersion": 2,
+    "exportTime": "2026-01-01 00:00:00",
+    "containerVersion": {
+        "path": "accounts/ACCOUNT_ID/containers/CONTAINER_ID/versions/0",
+        "accountId": "ACCOUNT_ID",
+        "containerId": "CONTAINER_ID",
+        "containerVersionId": "0",
+        "container": {
+            "path": "accounts/ACCOUNT_ID/containers/CONTAINER_ID",
+            "accountId": "ACCOUNT_ID",
+            "containerId": "CONTAINER_ID",
+            "name": "CONTAINER_NAME",
+            "publicId": "GTM-XXXXXXXX",
+            "usageContext": [
+                "WEB"
+            ],
+            "fingerprint": "1700000000000",
+            "features": {},
+            "tagIds": [
+                "GTM-XXXXXXXX"
+            ]
+        },
+        "builtInVariable": [
+            {
+                "accountId": "ACCOUNT_ID",
+                "containerId": "CONTAINER_ID",
+                "type": "PAGE_URL",
+                "name": "Page URL"
+            },
+            {
+                "accountId": "ACCOUNT_ID",
+                "containerId": "CONTAINER_ID",
+                "type": "PAGE_PATH",
+                "name": "Page Path"
+            },
+            {
+                "accountId": "ACCOUNT_ID",
+                "containerId": "CONTAINER_ID",
+                "type": "EVENT",
+                "name": "Event"
+            },
+            {
+                "accountId": "ACCOUNT_ID",
+                "containerId": "CONTAINER_ID",
+                "type": "CLICK_ELEMENT",
+                "name": "Click Element"
+            },
+            {
+                "accountId": "ACCOUNT_ID",
+                "containerId": "CONTAINER_ID",
+                "type": "CLICK_ID",
+                "name": "Click ID"
+            },
+            {
+                "accountId": "ACCOUNT_ID",
+                "containerId": "CONTAINER_ID",
+                "type": "CLICK_TEXT",
+                "name": "Click Text"
+            },
+            {
+                "accountId": "ACCOUNT_ID",
+                "containerId": "CONTAINER_ID",
+                "type": "CLICK_URL",
+                "name": "Click URL"
+            }
+        ],
+        "tag": [],
+        "trigger": [],
+        "variable": []
+    }
+}

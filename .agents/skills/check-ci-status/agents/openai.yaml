@@ -1,0 +1,4 @@
+interface:
+  display_name: "Check CI Status"
+  short_description: "Run local CI gates and fix failures"
+  default_prompt: "Use $check-ci-status to verify the current branch against local CI gates and fix any actionable failures."
