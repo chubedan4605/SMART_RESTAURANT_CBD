@@ -27,6 +27,7 @@ async function bootstrap() {
 
   server.listen(PORT, () => {
     console.log(`🚀 Server đang chạy tại cổng ${PORT}`);
+    console.log(`✅ [CI/CD] Phiên bản V2 đã được Deploy tự động thành công qua GitHub Actions!`);
   });
 }
 
