@@ -27,6 +27,14 @@ jobs:
       
     - name: Build ứng dụng (npm run build)
       working-directory: ./apps/fe
+      env:
+        VITE_GOOGLE_CLIENT_ID: "134540927147-avuem4p7a41e2iddu2jqcvq2asl7vhqv.apps.googleusercontent.com"
+        VITE_APP_BASE_URL: "https://api.smart-restaurant.id.vn"
+        VITE_FRONTEND_BASE_URL: "https://smart-restaurant.id.vn"
+        VITE_BANK_ID: "MB"
+        VITE_ACCOUNT_NO: "21230907843010"
+        VITE_ACCOUNT_NAME: "NHA HANG SMART"
+        VITE_TEMPLATE: "compact"
       run: npm run build
       
     - name: Cấu hình AWS Credentials
