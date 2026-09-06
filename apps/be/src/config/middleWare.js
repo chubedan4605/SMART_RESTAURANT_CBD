@@ -25,6 +25,7 @@ const setUpMiddleWare = (app) => {
       // allow vercel preview domains
       if (origin.endsWith(".vercel.app")) return cb(null, true);
 
+      console.error(`Blocked by CORS: ${origin}`);
       return cb(new Error("Not allowed by CORS"));
     },
     credentials: true,
