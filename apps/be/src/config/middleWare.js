@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 
 
 const allowedOrigins = [
+  "https://smart-restaurant.id.vn",
+  "https://d1qu7ng7kw13po.cloudfront.net",
   "https://final-project-smart-restaurant.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",

@@ -1,0 +1,37 @@
+name: Deploy Backend to EC2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/be/**' # Chỉ chạy khi có thay đổi trong thư mục code Backend
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Kết nối SSH và Deploy Backend
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd ~/SMART_RESTAURANT_CBD
+          
+          # Lưu lại những thay đổi tạm thời nếu có để tránh lỗi git pull
+          git stash || true
+          
+          # Kéo code mới nhất từ nhánh main
+          git fetch origin main
+          git reset --hard origin/main
+          
+          # Cài đặt thư viện mới (nếu có)
+          cd apps/be
+          npm install
+          
+          # Khởi động lại PM2
+          pm2 restart smart-restaurant-backend
