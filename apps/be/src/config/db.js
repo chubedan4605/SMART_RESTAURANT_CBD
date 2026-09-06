@@ -17,7 +17,7 @@ const isLocal = connectionString.includes("localhost") || connectionString.inclu
 
 const pool = new Pool({
   connectionString,
-  ssl: false,
+  ssl: { rejectUnauthorized: false },
 });
 // Đặt timezone mặc định cho tất cả connection
 pool.on("connect", (client) => {
