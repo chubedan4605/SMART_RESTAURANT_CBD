@@ -59,7 +59,7 @@ export default function MultiSelectCombobox({
         type="button"
         disabled={disabled}
         onClick={() => setOpen((s) => !s)}
-        className="w-full flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-neutral-950/60 px-3 py-2.5 text-sm text-white hover:bg-white/5 transition disabled:opacity-60"
+        className="w-full flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-neutral-950/60 px-3 py-2.5 text-sm text-white hover:bg-white dark:bg-neutral-950/5 transition disabled:opacity-60"
       >
         <div className="flex-1 text-left">
           {selectedLabels.length ? (
@@ -67,7 +67,7 @@ export default function MultiSelectCombobox({
               {selectedLabels.slice(0, 3).map((t) => (
                 <span
                   key={t}
-                  className="inline-flex items-center rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-gray-200"
+                  className="inline-flex items-center rounded-lg border border-white/10 bg-white dark:bg-neutral-950/5 px-2 py-1 text-xs text-gray-200"
                 >
                   {t}
                 </span>
@@ -87,7 +87,7 @@ export default function MultiSelectCombobox({
           {selectedLabels.length ? (
             <span
               onClick={clearAll}
-              className="p-1 rounded-lg hover:bg-white/10 transition"
+              className="p-1 rounded-lg hover:bg-white dark:bg-neutral-950/10 transition"
               aria-label="Clear"
               role="button"
             >
@@ -106,7 +106,7 @@ export default function MultiSelectCombobox({
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Tìm modifier group..."
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40"
+              className="w-full rounded-xl border border-white/10 bg-white dark:bg-neutral-950/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40"
             />
           </div>
 
@@ -122,7 +122,7 @@ export default function MultiSelectCombobox({
                     key={o.value}
                     type="button"
                     onClick={() => toggle(o.value)}
-                    className="w-full text-left px-3 py-2.5 hover:bg-white/5 transition flex items-start gap-3"
+                    className="w-full text-left px-3 py-2.5 hover:bg-white dark:bg-neutral-950/5 transition flex items-start gap-3"
                   >
                     <div
                       className={`mt-1 h-4 w-4 rounded border ${checked
@@ -157,7 +157,7 @@ export default function MultiSelectCombobox({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition text-xs"
+              className="px-3 py-1.5 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition text-xs"
             >
               Xong
             </button>

@@ -46,7 +46,7 @@ export default function TopListCard({
           {rows.map((r, i) => (
             <div
               key={r.key || i}
-              className="grid grid-cols-12 gap-3 items-center p-3 rounded-xl bg-black/25 border border-white/5 hover:bg-white/5 transition-colors"
+              className="grid grid-cols-12 gap-3 items-center p-3 rounded-xl bg-black/25 border border-white/5 hover:bg-white dark:bg-neutral-950/5 transition-colors"
             >
               {/* Rank */}
               <div className="col-span-1">

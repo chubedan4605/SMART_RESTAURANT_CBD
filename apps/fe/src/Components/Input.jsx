@@ -22,7 +22,7 @@ const Input = forwardRef(
         <div
           className={[
             "flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-xl",
-            error ? "border-red-500/30 bg-red-500/5" : "border-white/10 bg-white/0",
+            error ? "border-red-500/30 bg-red-500/5" : "border-white/10 bg-white dark:bg-neutral-950/0",
             className,
           ].join(" ")}
         >

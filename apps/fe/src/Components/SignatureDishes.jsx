@@ -18,7 +18,7 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
   }, []);
 
   return (
-    <section className="py-24 px-4 bg-bistro-cream font-sans">
+    <section className="py-24 px-4 bg-bistro-cream dark:bg-neutral-900 font-sans">
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
         <div className="text-center mb-16">
@@ -29,14 +29,14 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
             </span>
           </div>
 
-          <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal mb-6">
+          <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal dark:text-gray-100 mb-6">
             Món Ăn{" "}
             <span className="italic text-bistro-wine">
               Đặc Trưng
             </span>
           </h2>
 
-          <p className="text-bistro-charcoal/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-bistro-charcoal dark:text-gray-100/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
             Top món được đầu bếp đề xuất và được gọi nhiều nhất
           </p>
         </div>
@@ -44,7 +44,7 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
         {/* Slider */}
         <div className="mb-16 px-2">
           {signatureDishes.length === 0 ? (
-            <div className="text-center text-bistro-charcoal/50 py-10 font-sans">
+            <div className="text-center text-bistro-charcoal dark:text-gray-100/50 py-10 font-sans">
               Chưa có dữ liệu món ăn.
             </div>
           ) : (
@@ -69,7 +69,7 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
             >
               {signatureDishes.map((dish) => (
                 <SwiperSlide key={dish.id} className="h-auto">
-                  <div className="group h-[420px] relative bg-white overflow-hidden border border-black/5 hover:border-bistro-wine/30 transition-all duration-500 hover:shadow-xl flex flex-col rounded-sm">
+                  <div className="group h-[420px] relative bg-white dark:bg-neutral-950 overflow-hidden border border-black/5 hover:border-bistro-wine/30 transition-all duration-500 hover:shadow-xl flex flex-col rounded-sm">
                     {/* Image */}
                     <div className="relative h-64 overflow-hidden shrink-0">
                       <img
@@ -88,7 +88,7 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
                         </span>
 
                         {typeof dish.soldQty === "number" && (
-                          <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-bistro-charcoal text-[10px] font-sans uppercase tracking-widest shadow-md flex items-center gap-1">
+                          <span className="px-3 py-1 bg-white dark:bg-neutral-950/90 backdrop-blur-md text-bistro-charcoal dark:text-gray-100 text-[10px] font-sans uppercase tracking-widest shadow-md flex items-center gap-1">
                             <TrendingUp className="w-3 h-3" />
                             {dish.soldQty} sold
                           </span>
@@ -96,21 +96,21 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
                       </div>
 
                       {/* Rating fake */}
-                      <div className="absolute top-4 right-4 flex items-center gap-1 bg-white/90 backdrop-blur-md px-2 py-1 shadow-md">
+                      <div className="absolute top-4 right-4 flex items-center gap-1 bg-white dark:bg-neutral-950/90 backdrop-blur-md px-2 py-1 shadow-md">
                         <Star className="w-3 h-3 text-bistro-gold fill-bistro-gold" />
-                        <span className="text-bistro-charcoal text-xs font-bold font-sans">
+                        <span className="text-bistro-charcoal dark:text-gray-100 text-xs font-bold font-sans">
                           4.9
                         </span>
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 flex flex-col flex-grow bg-white">
-                      <h3 className="font-display text-2xl text-bistro-charcoal mb-2 group-hover:text-bistro-wine transition-colors line-clamp-1">
+                    <div className="p-6 flex flex-col flex-grow bg-white dark:bg-neutral-950">
+                      <h3 className="font-display text-2xl text-bistro-charcoal dark:text-gray-100 mb-2 group-hover:text-bistro-wine transition-colors line-clamp-1">
                         {dish.name}
                       </h3>
 
-                      <p className="text-bistro-charcoal/60 font-sans text-sm mb-4 line-clamp-2 flex-grow leading-relaxed">
+                      <p className="text-bistro-charcoal dark:text-gray-100/60 font-sans text-sm mb-4 line-clamp-2 flex-grow leading-relaxed">
                         {dish.description}
                       </p>
 
@@ -148,7 +148,7 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
 
           <Link
             to="/booking"
-            className="px-10 py-4 bg-transparent border border-bistro-charcoal hover:bg-bistro-charcoal hover:text-white text-bistro-charcoal font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 flex items-center gap-3"
+            className="px-10 py-4 bg-transparent border border-bistro-charcoal hover:bg-bistro-charcoal hover:text-white text-bistro-charcoal dark:text-gray-100 font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 flex items-center gap-3"
           >
             <QrCode size={18} />
             Quét mã QR

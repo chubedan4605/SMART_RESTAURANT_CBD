@@ -67,7 +67,7 @@ export default function OrderDetailModal({
       {/* Modal Content */}
       <div className="relative w-full max-w-2xl bg-neutral-950 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 border-b border-white/10 flex items-start justify-between gap-4 bg-white/5">
+        <div className="p-5 border-b border-white/10 flex items-start justify-between gap-4 bg-white dark:bg-neutral-950/5">
           <div>
             <div className="flex items-center gap-3">
               <div className="text-white font-black text-xl">
@@ -92,7 +92,7 @@ export default function OrderDetailModal({
 
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+            className="p-2 rounded-full hover:bg-white dark:bg-neutral-950/10 text-gray-400 hover:text-white transition-colors"
           >
             <X size={24} />
           </button>
@@ -129,12 +129,12 @@ export default function OrderDetailModal({
                       ? "bg-green-900/10 border-green-500/20" // Style cho món đã nhận
                       : item.status === "ready"
                       ? "bg-green-900/10 border-green-500/20" // Style ready
-                      : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
+                      : "bg-white dark:bg-neutral-950/5 border-white/10 hover:bg-white dark:bg-neutral-950/10 hover:border-white/20"
                 }`}
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
-                    <span className="bg-white/10 text-white px-2 py-1 rounded text-sm font-bold">
+                    <span className="bg-white dark:bg-neutral-950/10 text-white px-2 py-1 rounded text-sm font-bold">
                       {item.qty}x
                     </span>
                     <span
@@ -244,7 +244,7 @@ export default function OrderDetailModal({
             ) : (
               <button
                 onClick={onClose}
-                className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all"
+                className="w-full py-3 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-xl font-bold transition-all"
               >
                 Đóng
               </button>

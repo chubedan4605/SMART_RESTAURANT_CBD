@@ -30,13 +30,13 @@ export default function MenuHeader({
   const { t } = useTranslation();
 
   return (
-    <div className="sticky top-0 z-30 border-b border-bistro-wine/10 bg-bistro-cream/95 backdrop-blur-2xl shadow-sm py-2 md:py-4 transition-all duration-300">
+    <div className="sticky top-0 z-30 border-b border-bistro-wine/10 bg-bistro-cream dark:bg-neutral-900/95 backdrop-blur-2xl shadow-sm py-2 md:py-4 transition-all duration-300">
       <div className="px-3 md:px-4 container mx-auto max-w-5xl">
         {/* --- DÒNG 1: SEARCH --- */}
         <div className="flex gap-2 items-center max-w-lg mx-auto mb-2 md:mb-3 transition-all">
           <div className="relative flex-1 group">
             <Search
-              className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-bistro-charcoal/50 transition-all"
+              className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-bistro-charcoal dark:text-gray-100/50 transition-all"
               size={18}
             />
             <input
@@ -47,9 +47,9 @@ export default function MenuHeader({
               onKeyDown={(e) => {
                 if (e.key === "Enter") applySearch();
               }}
-              className="w-full bg-white border border-bistro-charcoal/20 rounded-sm 
+              className="w-full bg-white dark:bg-neutral-950 border border-bistro-charcoal/20 dark:border-white/20 rounded-sm 
                          pl-10 md:pl-12 pr-4 py-2 md:py-2.5 
-                         text-sm text-bistro-charcoal placeholder-bistro-charcoal/40 
+                         text-sm text-bistro-charcoal dark:text-gray-100 placeholder-bistro-charcoal/40 
                          focus:outline-none focus:border-bistro-wine 
                          transition-all duration-300 shadow-sm font-sans"
             />
@@ -80,7 +80,7 @@ export default function MenuHeader({
         <div className="flex items-center justify-between gap-3 mt-4 max-w-5xl mx-auto mb-2 md:mb-3">
           {/* Sort Dropdown */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-bistro-charcoal/60 hidden xs:inline font-sans uppercase tracking-widest">
+            <span className="text-xs text-bistro-charcoal dark:text-gray-100/60 hidden xs:inline font-sans uppercase tracking-widest">
               {t("menu.sort")}:
             </span>{" "}
             {/* Ẩn chữ 'Sort:' nếu màn hình quá bé */}
@@ -88,7 +88,7 @@ export default function MenuHeader({
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="appearance-none bg-white border border-bistro-charcoal/20 text-bistro-charcoal text-xs rounded-sm px-3 py-1.5 md:py-2 outline-none focus:border-bistro-wine cursor-pointer font-sans"
+                className="appearance-none bg-white dark:bg-neutral-950 border border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100 text-xs rounded-sm px-3 py-1.5 md:py-2 outline-none focus:border-bistro-wine cursor-pointer font-sans"
               >
                 <option value="newest">{t("menu.sortNewest")}</option>
                 <option value="popularity">{t("menu.sortPopularity")}</option>
@@ -102,7 +102,7 @@ export default function MenuHeader({
             className={`inline-flex items-center gap-1.5 md:gap-2 text-xs font-sans uppercase tracking-widest rounded-sm px-4 py-1.5 md:py-2 border transition-all duration-300 select-none ${
               onlyChef
                 ? "bg-bistro-wine border-bistro-wine text-white shadow-md"
-                : "bg-white border-bistro-charcoal/20 text-bistro-charcoal/70 hover:border-bistro-wine hover:text-bistro-wine"
+                : "bg-white dark:bg-neutral-950 border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100/70 hover:border-bistro-wine hover:text-bistro-wine"
             }`}
           >
             <Flame
@@ -134,7 +134,7 @@ export default function MenuHeader({
                     className={`whitespace-nowrap font-sans text-xs uppercase tracking-widest transition-all duration-300 border shrink-0 px-4 md:px-5 py-2 rounded-sm ${
                       activeCategoryId === c.id
                         ? "bg-bistro-charcoal border-bistro-charcoal text-white shadow-md"
-                        : "bg-white border-bistro-charcoal/20 text-bistro-charcoal hover:border-bistro-charcoal/50"
+                        : "bg-white dark:bg-neutral-950 border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100 hover:border-bistro-charcoal/50"
                     }`}
                   >
                     {c.name}
@@ -158,10 +158,10 @@ export default function MenuHeader({
               to={tableCode ? `/cart/${tableCode}` : "/cart"}
               onClick={(e) => e.stopPropagation()}
               className="pointer-events-auto
-                  h-10 w-10 md:h-12 md:w-12 rounded-sm border border-bistro-charcoal/10
-                  bg-white/95 backdrop-blur-md shadow-sm
+                  h-10 w-10 md:h-12 md:w-12 rounded-sm border border-bistro-charcoal/10 dark:border-white/10
+                  bg-white dark:bg-neutral-950/95 backdrop-blur-md shadow-sm
                   flex items-center justify-center
-                  text-bistro-charcoal hover:text-bistro-wine
+                  text-bistro-charcoal dark:text-gray-100 hover:text-bistro-wine
                   hover:border-bistro-wine/40 hover:shadow-md
                   transition-all duration-300 active:scale-95 relative"
             >

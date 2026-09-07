@@ -48,9 +48,9 @@ const OrderItemStatus = ({ item }) => {
   const Icon = config.icon;
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10">
+    <div className="flex items-center gap-4 p-4 bg-white dark:bg-neutral-950/5 rounded-xl border border-white/10">
       {/* Item Image */}
-      <div className="w-14 h-14 rounded-lg overflow-hidden bg-white/10 shrink-0">
+      <div className="w-14 h-14 rounded-lg overflow-hidden bg-white dark:bg-neutral-950/10 shrink-0">
         {item.image ? (
           <img
             src={item.image}
@@ -72,7 +72,7 @@ const OrderItemStatus = ({ item }) => {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mb-2">
+        <div className="w-full h-1.5 bg-white dark:bg-neutral-950/10 rounded-full overflow-hidden mb-2">
           <div
             className={`h-full ${config.progressColor} transition-all duration-500 ease-out`}
             style={{ width: config.progressWidth }}

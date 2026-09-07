@@ -11,7 +11,7 @@ const badge = (uiStatus) => {
     return "bg-orange-500/15 text-orange-300 border-orange-500/25";
   if (uiStatus === "Rejected")
     return "bg-red-500/15 text-red-300 border-red-500/25";
-  return "bg-white/5 text-white/70 border-white/10";
+  return "bg-white dark:bg-neutral-950/5 text-white/70 border-white/10";
 };
 
 const OrderDetail = () => {
@@ -62,7 +62,7 @@ const OrderDetail = () => {
       ) : !order ? (
         <p className="text-white/50">{t("order.detail.noData")}</p>
       ) : (
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-2xl p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-white font-black">
@@ -84,10 +84,10 @@ const OrderDetail = () => {
             {(order.items || []).map((it) => (
               <div
                 key={it.id}
-                className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-xl p-3"
+                className="flex items-start gap-3 bg-white dark:bg-neutral-950/5 border border-white/10 rounded-xl p-3"
               >
                 {/* IMAGE */}
-                <div className="w-12 h-12 rounded-lg overflow-hidden bg-white/10 flex-shrink-0">
+                <div className="w-12 h-12 rounded-lg overflow-hidden bg-white dark:bg-neutral-950/10 flex-shrink-0">
                   {it.image_url ? (
                     <img
                       src={it.image_url}

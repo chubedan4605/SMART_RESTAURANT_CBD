@@ -67,7 +67,7 @@ const BlogSection = () => {
   ];
 
   return (
-    <section className="py-24 px-4 bg-bistro-cream/50 font-sans">
+    <section className="py-24 px-4 bg-bistro-cream dark:bg-neutral-900/50 font-sans">
       <div className="container mx-auto max-w-7xl">
         {/* HEADER SECTION */}
         <div className="text-center mb-16">
@@ -77,13 +77,13 @@ const BlogSection = () => {
               {t("blog.ourStories")}
             </span>
           </div>
-          <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal mb-6">
+          <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal dark:text-gray-100 mb-6">
             {t("blog.corner")}{" "}
             <span className="italic text-bistro-wine">
               {t("blog.culinary")}
             </span>
           </h2>
-          <p className="text-bistro-charcoal/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-bistro-charcoal dark:text-gray-100/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
             {t("blog.description")}
           </p>
         </div>
@@ -115,7 +115,7 @@ const BlogSection = () => {
           >
             {blogPosts.map((post) => (
               <SwiperSlide key={post.id} className="h-auto">
-                <article className="group h-[420px] flex flex-col bg-white overflow-hidden border border-black/5 hover:border-bistro-wine/30 transition-all duration-500 hover:shadow-xl rounded-sm">
+                <article className="group h-[420px] flex flex-col bg-white dark:bg-neutral-950 overflow-hidden border border-black/5 hover:border-bistro-wine/30 transition-all duration-500 hover:shadow-xl rounded-sm">
                   {/* ẢNH THUMBNAIL */}
                   <div className="relative h-56 overflow-hidden shrink-0">
                     <img
@@ -132,9 +132,9 @@ const BlogSection = () => {
                   </div>
 
                   {/* NỘI DUNG */}
-                  <div className="p-8 flex flex-col grow bg-white">
+                  <div className="p-8 flex flex-col grow bg-white dark:bg-neutral-950">
                     {/* Metadata */}
-                    <div className="flex items-center gap-4 text-xs text-bistro-charcoal/50 mb-4 font-sans tracking-wide">
+                    <div className="flex items-center gap-4 text-xs text-bistro-charcoal dark:text-gray-100/50 mb-4 font-sans tracking-wide">
                       <div className="flex items-center gap-1.5">
                         <Calendar size={14} className="text-bistro-wine" />
                         <span>{post.date}</span>
@@ -146,12 +146,12 @@ const BlogSection = () => {
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-display text-2xl text-bistro-charcoal mb-3 line-clamp-2 group-hover:text-bistro-wine transition-colors">
+                    <h3 className="font-display text-2xl text-bistro-charcoal dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-bistro-wine transition-colors">
                       <Link to={`/blog/${post.id}`}>{t(post.titleKey)}</Link>
                     </h3>
 
                     {/* Excerpt */}
-                    <p className="text-bistro-charcoal/60 font-sans text-sm mb-6 line-clamp-3 grow leading-relaxed">
+                    <p className="text-bistro-charcoal dark:text-gray-100/60 font-sans text-sm mb-6 line-clamp-3 grow leading-relaxed">
                       {t(post.excerptKey)}
                     </p>
 
@@ -172,7 +172,7 @@ const BlogSection = () => {
 
         {/* BUTTON XEM TẤT CẢ */}
         <div className="text-center">
-          <button className="inline-flex items-center gap-3 px-10 py-4 bg-transparent border border-bistro-charcoal hover:bg-bistro-charcoal hover:text-white text-bistro-charcoal font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300">
+          <button className="inline-flex items-center gap-3 px-10 py-4 bg-transparent border border-bistro-charcoal hover:bg-bistro-charcoal hover:text-white text-bistro-charcoal dark:text-gray-100 font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300">
             {t("blog.viewAllPosts")}
             <ArrowRight size={18} />
           </button>

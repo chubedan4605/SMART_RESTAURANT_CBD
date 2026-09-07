@@ -18,20 +18,20 @@ function SkeletonRow() {
   return (
     <tr className="border-b border-white/5">
       <td className="py-3 pr-3 pl-4">
-        <div className="h-4 w-5 bg-white/5 rounded animate-pulse" />
+        <div className="h-4 w-5 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
       <td className="py-3 px-3">
-        <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
-        <div className="mt-2 h-3 w-36 bg-white/5 rounded animate-pulse" />
+        <div className="h-4 w-28 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+        <div className="mt-2 h-3 w-36 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
       <td className="py-3 px-3">
-        <div className="h-4 w-20 bg-white/5 rounded animate-pulse" />
+        <div className="h-4 w-20 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
       <td className="py-3 px-3">
-        <div className="hidden sm:inline-block h-4 w-16 bg-white/5 rounded animate-pulse" />
+        <div className="hidden sm:inline-block h-4 w-16 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
       <td className="py-3 pl-3 pr-4 text-right">
-        <div className="h-6 w-24 bg-white/5 rounded-full animate-pulse ml-auto" />
+        <div className="h-6 w-24 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse ml-auto" />
       </td>
     </tr>
   );
@@ -43,7 +43,7 @@ function StatusPill({ checked }) {
       Assigned
     </span>
   ) : (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold bg-white/5 text-gray-200 border-white/10">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10">
       Not assigned
     </span>
   );
@@ -224,14 +224,14 @@ export default function TableAssignments() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 text-sm">
+          <div className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm">
             Assigned: <span className="text-white font-bold">{selectedWaiterId ? assignedCount : "—"}</span>
           </div>
 
           <button
             onClick={fetchInit}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
           >
             <RefreshCcw size={16} />
             Refresh
@@ -253,7 +253,7 @@ export default function TableAssignments() {
               onClick={resetToInitial}
               disabled={saving}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-                bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition disabled:opacity-60"
+                bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition disabled:opacity-60"
             >
               Hoàn tác
             </button>
@@ -359,7 +359,7 @@ export default function TableAssignments() {
       </div>
 
       {/* Table list */}
-      <div className="mt-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+      <div className="mt-6 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
         <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="text-white font-bold">Danh sách bàn (tick để phân công)</div>
           <div className="text-xs text-gray-400">
@@ -387,7 +387,7 @@ export default function TableAssignments() {
                   return (
                     <tr
                       key={t.id}
-                      className={`border-b border-white/5 hover:bg-white/5 transition ${!selectedWaiterId ? "opacity-60" : ""
+                      className={`border-b border-white/5 hover:bg-white dark:bg-neutral-950/5 transition ${!selectedWaiterId ? "opacity-60" : ""
                         }`}
                     >
                       <td className="py-3 pr-3 pl-4 align-top">

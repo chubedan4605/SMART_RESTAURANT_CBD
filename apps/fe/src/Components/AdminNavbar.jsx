@@ -12,10 +12,15 @@ import {
   Menu as MenuIcon,
   X,
   Shield,
+  Moon,
+  Sun,
 } from "lucide-react";
 
 import { MdOutlineTableBar } from "react-icons/md";
 import AdminNotificationCenter from "./AdminNotificationCenter";
+import { useTheme } from "../context/ThemeContext";
+import { useDispatch } from "react-redux";
+import { logout as logoutAction } from "../store/slices/authSlice";
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
@@ -28,8 +33,10 @@ const navItems = [
 
 export default function AdminNavbar() {
   const [open, setOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => setOpen(false), [location.pathname]);
 
@@ -39,14 +46,7 @@ export default function AdminNavbar() {
   }, [open]);
 
   const logout = () => {
-    localStorage.removeItem("qrToken");
-    localStorage.removeItem("sessionToken");
-    localStorage.removeItem("tableCode");
-    localStorage.removeItem("tableNumber");
-    localStorage.removeItem("tableSession");
-    localStorage.removeItem("tableSessionId");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
+    dispatch(logoutAction());
     navigate("/signin");
     toast.success("Đăng xuất thành công");
   };
@@ -84,6 +84,15 @@ export default function AdminNavbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-400 hover:text-white transition-colors"
+              title="Toggle Theme"
+            >
+              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+
             {/* Notification Center */}
             <AdminNotificationCenter />
 
@@ -94,7 +103,7 @@ export default function AdminNavbar() {
             </Link>
             <button
               onClick={logout}
-              className="hidden xl:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 transition-all active:scale-95"
+              className="hidden xl:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95"
             >
               <LogOut size={18} className="text-orange-400" />
               Đăng xuất
@@ -103,7 +112,7 @@ export default function AdminNavbar() {
             {/* Mobile toggle */}
             <button
               onClick={() => setOpen((v) => !v)}
-              className="xl:hidden p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 active:scale-95"
+              className="xl:hidden p-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 active:scale-95"
             >
               {open ? (
                 <X size={22} className="text-orange-400" />
@@ -175,7 +184,7 @@ function AdminNavLink({ to, label, icon: Icon }) {
         "px-4 py-2 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-2",
         active
           ? "bg-orange-500/15 border border-orange-500/20 text-orange-300"
-          : "bg-white/0 border border-transparent text-gray-300 hover:bg-white/5 hover:border-white/10 hover:text-white",
+          : "bg-white dark:bg-neutral-950/0 border border-transparent text-gray-300 hover:bg-white dark:bg-neutral-950/5 hover:border-white/10 hover:text-white",
       ].join(" ")}
     >
       <Icon
@@ -200,7 +209,7 @@ function MobileAdminLink({ to, label, icon: Icon, onClick }) {
         "px-4 py-3 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-3 border",
         active
           ? "bg-orange-500/15 border-orange-500/20 text-orange-300"
-          : "bg-white/0 border-white/10 text-gray-200 hover:bg-white/5",
+          : "bg-white dark:bg-neutral-950/0 border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/5",
       ].join(" ")}
     >
       <Icon

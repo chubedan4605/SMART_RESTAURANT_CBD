@@ -54,7 +54,7 @@ export default function OrderTimer({
   };
 
   const statusStyles = {
-    normal: "bg-white/5 border-white/10 text-gray-300",
+    normal: "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-300",
     warning:
       "bg-yellow-500/10 border-yellow-500/30 text-yellow-400 animate-pulse",
     overdue: "bg-red-500/15 border-red-500/40 text-red-400",

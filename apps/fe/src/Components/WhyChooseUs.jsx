@@ -37,7 +37,7 @@ const FeatureCard = ({ feature, index }) => {
     <div
       ref={ref}
       className={`
-        p-8 bg-bistro-cream rounded-none border border-black/5 
+        p-8 bg-bistro-cream dark:bg-neutral-900 rounded-none border border-black/5 
         transition-all duration-1000 ease-out font-sans
 
         /* --- LOGIC MOBILE (Mặc định) --- */
@@ -66,14 +66,14 @@ const FeatureCard = ({ feature, index }) => {
         lg:group-hover:translate-x-0
         
         /* Hover vào chính thẻ đó */
-        hover:opacity-100 hover:scale-105 hover:border-bistro-wine/30 hover:bg-white hover:shadow-lg
+        hover:opacity-100 hover:scale-105 hover:border-bistro-wine/30 hover:bg-white dark:bg-neutral-950 hover:shadow-lg
       `}
     >
       <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-bistro-wine/5 text-bistro-wine mb-4">
         {feature.icon}
       </div>
-      <h3 className="font-display text-2xl text-bistro-charcoal mb-2">{feature.title}</h3>
-      <p className="text-bistro-charcoal/70 text-sm leading-relaxed">{feature.description}</p>
+      <h3 className="font-display text-2xl text-bistro-charcoal dark:text-gray-100 mb-2">{feature.title}</h3>
+      <p className="text-bistro-charcoal dark:text-gray-100/70 text-sm leading-relaxed">{feature.description}</p>
     </div>
   );
 };
@@ -104,7 +104,7 @@ const WhyChooseUs = () => {
   ];
 
   return (
-    <section className="py-24 px-4 bg-white group overflow-hidden font-sans">
+    <section className="py-24 px-4 bg-white dark:bg-neutral-950 group overflow-hidden font-sans">
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
           {/* CỘT TRÁI (Tiêu đề) - Giữ nguyên */}
@@ -121,7 +121,7 @@ const WhyChooseUs = () => {
             </div>
 
             {/* Heading: Giảm font size mobile (text-3xl) và giảm margin bottom (mb-4) */}
-            <h2 className="font-display text-4xl md:text-5xl text-bistro-charcoal lg:mb-6 leading-tight">
+            <h2 className="font-display text-4xl md:text-5xl text-bistro-charcoal dark:text-gray-100 lg:mb-6 leading-tight">
               Đẳng cấp <br />
               <span className="italic text-bistro-wine">
                 Ẩm Thực

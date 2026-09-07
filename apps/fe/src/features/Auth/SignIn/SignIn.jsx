@@ -101,7 +101,7 @@ const SignIn = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans bg-bistro-cream">
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans bg-bistro-cream dark:bg-neutral-900">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <img
@@ -109,14 +109,14 @@ const SignIn = () => {
           alt="Restaurant Interior"
           className="w-full h-full object-cover opacity-15"
         />
-        <div className="absolute inset-0 bg-bistro-cream/90" />
+        <div className="absolute inset-0 bg-bistro-cream dark:bg-neutral-900/90" />
       </div>
 
       {/* Left column */}
       <div className="relative hidden lg:flex lg:w-1/2 flex-col justify-between p-12 z-10 overflow-hidden h-screen">
         <div className="relative z-10">
           <div className="flex flex-col leading-none">
-            <span className="font-display text-5xl text-bistro-charcoal">
+            <span className="font-display text-5xl text-bistro-charcoal dark:text-gray-100">
               Lumière
             </span>
             <span className="font-sans text-[10px] tracking-[0.4em] uppercase mt-2 text-bistro-wine font-black">
@@ -126,7 +126,7 @@ const SignIn = () => {
         </div>
 
         <div className="relative z-10 max-w-md space-y-8 mt-16">
-          <h2 className="text-4xl font-display text-bistro-charcoal leading-tight">
+          <h2 className="text-4xl font-display text-bistro-charcoal dark:text-gray-100 leading-tight">
             {t("auth.heroTitle1")}{" "}
             <span className="italic text-bistro-wine">{t("auth.heroTitle2")}</span>{" "}
             <br />
@@ -134,19 +134,19 @@ const SignIn = () => {
           </h2>
 
           <div className="space-y-4">
-            <div className="flex items-center gap-4 text-bistro-charcoal/70">
+            <div className="flex items-center gap-4 text-bistro-charcoal dark:text-gray-100/70">
               <div className="p-2 bg-bistro-wine/5 rounded-lg text-bistro-wine">
                 <Star size={20} />
               </div>
               <p className="text-sm font-medium">{t("auth.feature1")}</p>
             </div>
-            <div className="flex items-center gap-4 text-bistro-charcoal/70">
+            <div className="flex items-center gap-4 text-bistro-charcoal dark:text-gray-100/70">
               <div className="p-2 bg-bistro-wine/5 rounded-lg text-bistro-wine">
                 <UtensilsCrossed size={20} />
               </div>
               <p className="text-sm font-medium">{t("auth.feature2")}</p>
             </div>
-            <div className="flex items-center gap-4 text-bistro-charcoal/70">
+            <div className="flex items-center gap-4 text-bistro-charcoal dark:text-gray-100/70">
               <div className="p-2 bg-bistro-wine/5 rounded-lg text-bistro-wine">
                 <Clock size={20} />
               </div>
@@ -155,29 +155,29 @@ const SignIn = () => {
           </div>
         </div>
 
-        <div className="relative z-10 text-bistro-charcoal/30 text-[10px] tracking-widest uppercase mt-auto">
+        <div className="relative z-10 text-bistro-charcoal dark:text-gray-100/30 text-[10px] tracking-widest uppercase mt-auto">
           High Quality Hospitality — Since 2026
         </div>
       </div>
 
       {/* Form */}
       <div className="relative z-10 w-full lg:w-1/2 max-w-md px-4 flex flex-col justify-center h-full">
-        <div className="bg-white border border-bistro-wine/10 rounded-sm p-10 shadow-2xl">
+        <div className="bg-white dark:bg-neutral-950 border border-bistro-wine/10 rounded-sm p-10 shadow-2xl">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-display text-bistro-charcoal leading-tight">
+            <h2 className="text-3xl font-display text-bistro-charcoal dark:text-gray-100 leading-tight">
               {t("auth.welcome")}{" "}
               <span className="italic text-bistro-wine">
                 {t("auth.welcomeTo")}
               </span>
             </h2>
-            <p className="text-bistro-charcoal/50 text-sm mt-2 uppercase tracking-[0.2em] font-sans">
+            <p className="text-bistro-charcoal dark:text-gray-100/50 text-sm mt-2 uppercase tracking-[0.2em] font-sans">
               Lumière Bistro
             </p>
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
             {/* Sửa UI Input theo light theme trong Input component hoặc css */}
-            <div className="bg-white text-bistro-charcoal">
+            <div className="bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100">
               <Input
                 label={t("auth.email")}
                 type="email"
@@ -185,13 +185,13 @@ const SignIn = () => {
                 icon={Mail}
                 error={errors.email?.message}
                 {...register("email")}
-                className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
-                labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
+                labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
                 iconClassName="!text-bistro-wine"
               />
             </div>
             
-            <div className="bg-white text-bistro-charcoal">
+            <div className="bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100">
               <Input
                 label={t("auth.password")}
                 type="password"
@@ -199,8 +199,8 @@ const SignIn = () => {
                 icon={Lock}
                 error={errors.password?.message}
                 {...register("password")}
-                className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
-                labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
+                labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
                 iconClassName="!text-bistro-wine"
               />
             </div>
@@ -208,7 +208,7 @@ const SignIn = () => {
             <div className="flex justify-end">
               <Link
                 to="/forgot"
-                className="text-xs font-medium text-bistro-charcoal/50 hover:text-bistro-wine transition-colors uppercase tracking-wide"
+                className="text-xs font-medium text-bistro-charcoal dark:text-gray-100/50 hover:text-bistro-wine transition-colors uppercase tracking-wide"
               >
                 {t("auth.forgotPassword")}
               </Link>
@@ -233,7 +233,7 @@ const SignIn = () => {
                 <div className="w-full border-t border-bistro-wine/10"></div>
               </div>
               <div className="relative flex justify-center text-[10px] uppercase">
-                <span className="px-3 bg-white text-bistro-charcoal/40 tracking-[0.3em]">
+                <span className="px-3 bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100/40 tracking-[0.3em]">
                   {t("auth.orLoginWith")}
                 </span>
               </div>
@@ -245,7 +245,7 @@ const SignIn = () => {
             </div>
           </form>
 
-          <p className="text-center text-bistro-charcoal/60 text-[13px] mt-8 font-sans">
+          <p className="text-center text-bistro-charcoal dark:text-gray-100/60 text-[13px] mt-8 font-sans">
             {t("auth.noAccount")}
             <Link
               to="/signup"
@@ -256,7 +256,7 @@ const SignIn = () => {
           </p>
 
           {/* Dev tip for quick testing */}
-          <p className="text-center text-bistro-charcoal/40 text-[11px] mt-6 tracking-wide">
+          <p className="text-center text-bistro-charcoal dark:text-gray-100/40 text-[11px] mt-6 tracking-wide">
             {t("auth.devTip")}{" "}
             <span className="text-bistro-wine font-bold">waiter</span>{" "}
             {t("common.or")}{" "}

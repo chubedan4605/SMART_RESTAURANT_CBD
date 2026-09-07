@@ -304,7 +304,7 @@ export default function WaiterOrdersPage() {
                 className={`p-2 rounded-xl border transition-all ${
                   soundEnabled
                     ? "bg-orange-500/10 border-orange-500/30 text-orange-500"
-                    : "bg-white/5 border-white/10 text-gray-500"
+                    : "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-500"
                 }`}
                 title={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
               >
@@ -313,7 +313,7 @@ export default function WaiterOrdersPage() {
 
               <button
                 onClick={fetchAllData}
-                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 transition-all inline-flex items-center gap-2"
+                className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all inline-flex items-center gap-2"
               >
                 <RefreshCw size={18} /> Làm mới
               </button>
@@ -336,7 +336,7 @@ export default function WaiterOrdersPage() {
               {search && (
                 <button
                   onClick={() => setSearch("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-500 hover:text-white hover:bg-white dark:bg-neutral-950/10 transition-colors"
                   title="Xóa tìm kiếm"
                 >
                   <X size={16} />
@@ -344,7 +344,7 @@ export default function WaiterOrdersPage() {
               )}
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10">
               <Filter size={16} className="text-gray-400" />
               <select
                 value={statusFilter}
@@ -421,7 +421,7 @@ export default function WaiterOrdersPage() {
               }
             >
               {filteredOrders.length === 0 ? (
-                <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
+                <div className="text-center py-20 bg-white dark:bg-neutral-950/5 rounded-2xl border border-white/5">
                   <p className="text-gray-400">
                     Không tìm thấy đơn hàng nào ở trạng thái này.
                   </p>
@@ -450,7 +450,7 @@ export default function WaiterOrdersPage() {
               }
             >
               {myTables.length === 0 ? (
-                <div className="text-center py-20 text-gray-500 bg-white/5 rounded-2xl border border-white/5">
+                <div className="text-center py-20 text-gray-500 bg-white dark:bg-neutral-950/5 rounded-2xl border border-white/5">
                   Bạn chưa được phân công bàn nào.
                 </div>
               ) : (
@@ -489,7 +489,7 @@ export default function WaiterOrdersPage() {
                           setSearch(table.table_number);
                           setActiveTab("orders");
                         }}
-                        className="w-full mt-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold text-gray-300 hover:text-white transition-all active:scale-95"
+                        className="w-full mt-4 py-2 bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 rounded-lg text-xs font-bold text-gray-300 hover:text-white transition-all active:scale-95"
                       >
                         Xem đơn bàn này
                       </button>

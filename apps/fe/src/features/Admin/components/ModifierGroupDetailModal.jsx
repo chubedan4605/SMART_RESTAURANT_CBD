@@ -290,14 +290,14 @@ export default function ModifierGroupDetailModal({
             <button
               onClick={load}
               className="inline-flex items-center gap-2 px-3 py-2 rounded-xl
-                bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+                bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
             >
               <RefreshCcw size={16} />
               Reload
             </button>
             <button
               onClick={onClose}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+              className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
             >
               <X size={18} />
             </button>
@@ -308,7 +308,7 @@ export default function ModifierGroupDetailModal({
           {/* body */}
           <div className="max-h-[80vh] overflow-x-auto p-5">
             {/* Create option */}
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+            <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-white font-bold">Thêm option</div>
                 <div className="text-xs text-gray-400">Option thuộc group này</div>
@@ -357,7 +357,7 @@ export default function ModifierGroupDetailModal({
             </div>
 
             {/* Options list */}
-            <div className="mt-4 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+            <div className="mt-4 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
               <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
                 <div className="text-white font-bold">Options</div>
                 <div className="text-xs text-gray-400">{loading ? "Đang tải..." : `${options.length} options`}</div>
@@ -409,7 +409,7 @@ export default function ModifierGroupDetailModal({
                         return (
                           <React.Fragment key={opt.id}>
                             {/* Row chính */}
-                            <tr className="border-b border-white/5 hover:bg-white/5 transition">
+                            <tr className="border-b border-white/5 hover:bg-white dark:bg-neutral-950/5 transition">
                               {/* Name */}
                               <td className="py-3 px-4 align-top">
                                 {isEditing ? (
@@ -491,7 +491,7 @@ export default function ModifierGroupDetailModal({
                                     </button>
                                     <button
                                       onClick={cancelEdit}
-                                      className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10"
+                                      className="px-3 py-1.5 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
                                     >
                                       Cancel
                                     </button>
@@ -500,7 +500,7 @@ export default function ModifierGroupDetailModal({
                                   <div className="inline-flex items-center gap-2 justify-end">
                                     <button
                                       onClick={() => startEdit(opt)}
-                                      className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10"
+                                      className="px-3 py-1.5 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
                                     >
                                       Edit
                                     </button>
@@ -520,7 +520,7 @@ export default function ModifierGroupDetailModal({
 
                             {/* ✅ Mobile-only edit row: hiện Price + Status khi đang edit */}
                             {isEditing ? (
-                              <tr className="sm:hidden border-b border-white/5 bg-white/3">
+                              <tr className="sm:hidden border-b border-white/5 bg-white dark:bg-neutral-950/3">
                                 <td colSpan={2} className="p-4">
                                   <div className="grid grid-cols-1 gap-3">
                                     {/* Price edit */}

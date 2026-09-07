@@ -68,7 +68,7 @@ export default function ChangePasswordModal({
           <button
             type="button"
             onClick={handleClose}
-            className="p-2 rounded-xl hover:bg-white/5 text-white/70"
+            className="p-2 rounded-xl hover:bg-white dark:bg-neutral-950/5 text-white/70"
           >
             <X size={18} />
           </button>
@@ -81,7 +81,7 @@ export default function ChangePasswordModal({
               {t("profile.currentPassword")}
             </label>
 
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/0">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white dark:bg-neutral-950/0">
               <Lock className="text-orange-400" size={18} />
               <input
                 value={currentPassword}
@@ -106,7 +106,7 @@ export default function ChangePasswordModal({
               {t("profile.newPassword")}
             </label>
 
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/0">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white dark:bg-neutral-950/0">
               <Lock className="text-orange-400" size={18} />
               <input
                 value={newPassword}
@@ -149,7 +149,7 @@ export default function ChangePasswordModal({
               onChange={(e) => setConfirmNew(e.target.value)}
               type="password"
               placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/0 text-white outline-none placeholder:text-gray-500"
+              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white dark:bg-neutral-950/0 text-white outline-none placeholder:text-gray-500"
             />
 
             {confirmNew && newPassword !== confirmNew ? (
@@ -164,7 +164,7 @@ export default function ChangePasswordModal({
           <button
             type="button"
             onClick={handleClose}
-            className="w-1/3 py-3 rounded-xl border border-white/10 text-white/80 hover:bg-white/5 font-bold"
+            className="w-1/3 py-3 rounded-xl border border-white/10 text-white/80 hover:bg-white dark:bg-neutral-950/5 font-bold"
           >
             {t("profile.cancel")}
           </button>

@@ -190,11 +190,11 @@ const TableDetailPanel = ({ table: initialTable, onClose, onRefresh }) => {
       {/* ------------------------------------------ */}
 
       {/* Header Panel */}
-      <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+      <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white dark:bg-neutral-950/5">
         <h3 className="text-lg font-bold text-white">Chi Tiết Bàn</h3>
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
+          className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-white dark:bg-neutral-950/10 transition-colors"
         >
           <X size={20} />
         </button>
@@ -204,7 +204,7 @@ const TableDetailPanel = ({ table: initialTable, onClose, onRefresh }) => {
       <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
         <div className="text-center">
           {/* QR Preview trên màn hình (UI) */}
-          <div className="inline-block bg-white p-4 rounded-2xl mb-6 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+          <div className="inline-block bg-white dark:bg-neutral-950 p-4 rounded-2xl mb-6 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
             <div id="qr-svg-container">
               <QRCode
                 value={clientUrl}
@@ -219,7 +219,7 @@ const TableDetailPanel = ({ table: initialTable, onClose, onRefresh }) => {
             {table.table_number}
           </h2>
 
-          <div className="flex flex-col gap-3 mt-4 bg-white/5 p-4 rounded-xl border border-white/5">
+          <div className="flex flex-col gap-3 mt-4 bg-white dark:bg-neutral-950/5 p-4 rounded-xl border border-white/5">
             <div className="flex justify-between text-sm">
               <span className="text-gray-400 flex gap-2">
                 <Users size={16} /> Sức chứa:

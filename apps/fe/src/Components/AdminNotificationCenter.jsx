@@ -76,9 +76,9 @@ function NotificationItem({ notification, onRead, onRemove, onClick }) {
 
   return (
     <div
-      className={`relative p-3 rounded-xl border transition-all cursor-pointer hover:bg-white/5 ${notification.read
+      className={`relative p-3 rounded-xl border transition-all cursor-pointer hover:bg-white dark:bg-neutral-950/5 ${notification.read
           ? "bg-transparent border-white/5 opacity-60"
-          : "bg-white/5 border-white/10"
+          : "bg-white dark:bg-neutral-950/5 border-white/10"
         }`}
       onClick={() => onClick?.(notification)}
     >
@@ -197,7 +197,7 @@ export default function AdminNotificationCenter() {
       {/* Bell Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95"
+        className="relative p-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 transition-all active:scale-95"
       >
         <Bell className="w-5 h-5 text-gray-300" />
 
@@ -230,7 +230,7 @@ export default function AdminNotificationCenter() {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-green-400 transition"
+                  className="p-2 rounded-lg hover:bg-white dark:bg-neutral-950/5 text-gray-400 hover:text-green-400 transition"
                   title="Đánh dấu tất cả đã đọc"
                 >
                   <CheckCheck className="w-4 h-4" />
@@ -239,7 +239,7 @@ export default function AdminNotificationCenter() {
               {notifications.length > 0 && (
                 <button
                   onClick={clearAll}
-                  className="p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-red-400 transition"
+                  className="p-2 rounded-lg hover:bg-white dark:bg-neutral-950/5 text-gray-400 hover:text-red-400 transition"
                   title="Xóa tất cả"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -247,7 +247,7 @@ export default function AdminNotificationCenter() {
               )}
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition"
+                className="p-2 rounded-lg hover:bg-white dark:bg-neutral-950/5 text-gray-400 hover:text-white transition"
               >
                 <X className="w-4 h-4" />
               </button>

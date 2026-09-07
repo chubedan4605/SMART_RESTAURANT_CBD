@@ -59,7 +59,7 @@ function statusLabel(status) {
     };
   return {
     text: String(status),
-    cls: "bg-white/10 text-gray-200 border-white/10",
+    cls: "bg-white dark:bg-neutral-950/10 text-gray-200 border-white/10",
   };
 }
 
@@ -597,10 +597,10 @@ export default function FoodDetailPopup({
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-white border border-bistro-wine/10 rounded-sm overflow-hidden flex flex-col md:flex-row shadow-2xl font-sans text-bistro-charcoal">
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-neutral-950 border border-bistro-wine/10 rounded-sm overflow-hidden flex flex-col md:flex-row shadow-2xl font-sans text-bistro-charcoal dark:text-gray-100">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-white/80 hover:bg-white text-bistro-charcoal rounded-full transition-colors shadow-sm"
+          className="absolute top-4 right-4 z-10 p-2 bg-white dark:bg-neutral-950/80 hover:bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100 rounded-full transition-colors shadow-sm"
         >
           <X size={20} />
         </button>
@@ -622,7 +622,7 @@ export default function FoodDetailPopup({
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-white via-white/80 to-transparent">
-            <h2 className="text-3xl font-display text-bistro-charcoal uppercase tracking-widest leading-tight">
+            <h2 className="text-3xl font-display text-bistro-charcoal dark:text-gray-100 uppercase tracking-widest leading-tight">
               {detail?.name ?? food?.name}
             </h2>
 
@@ -631,9 +631,9 @@ export default function FoodDetailPopup({
                 {formatMoneyVND(Number(detail?.price ?? food?.price ?? 0))}
               </span>
               <div className="h-4 w-px bg-bistro-charcoal/20 mx-2" />
-              <div className="flex items-center text-bistro-charcoal/70 gap-1 text-sm font-sans">
+              <div className="flex items-center text-bistro-charcoal dark:text-gray-100/70 gap-1 text-sm font-sans">
                 <Star size={14} fill="currentColor" className="text-yellow-500" />
-                <span className="font-medium text-bistro-charcoal">{avgRating ? `${avgRating}` : "0.0"}</span> ({totalReviews}+)
+                <span className="font-medium text-bistro-charcoal dark:text-gray-100">{avgRating ? `${avgRating}` : "0.0"}</span> ({totalReviews}+)
               </div>
 
               {(detail?.is_chef_recommended ?? food?.is_chef_recommended) && (
@@ -650,14 +650,14 @@ export default function FoodDetailPopup({
         </div>
 
         {/* RIGHT */}
-        <div className="w-full md:w-1/2 flex flex-col bg-white p-6 md:p-8 overflow-y-auto no-scrollbar">
+        <div className="w-full md:w-1/2 flex flex-col bg-white dark:bg-neutral-950 p-6 md:p-8 overflow-y-auto no-scrollbar">
           <div className="space-y-8">
             {/* description */}
             <section>
               <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-wine font-bold mb-3 font-sans">
                 {t("foodDetail.description")}
               </h4>
-              <p className="text-bistro-charcoal/70 text-sm leading-relaxed font-sans">
+              <p className="text-bistro-charcoal dark:text-gray-100/70 text-sm leading-relaxed font-sans">
                 {detail?.description ?? food?.description}
               </p>
             </section>
@@ -669,7 +669,7 @@ export default function FoodDetailPopup({
               </h4>
 
               {loadingDetail ? (
-                <div className="text-xs text-bistro-charcoal/50 font-sans">
+                <div className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans">
                   {t("foodDetail.loadingModifiers")}
                 </div>
               ) : detailError ? (
@@ -685,15 +685,15 @@ export default function FoodDetailPopup({
                     return (
                       <div
                         key={g.id}
-                        className="bg-bistro-cream/30 border border-bistro-wine/10 rounded-sm p-5"
+                        className="bg-bistro-cream dark:bg-neutral-900/30 border border-bistro-wine/10 rounded-sm p-5"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <div className="text-sm font-bold text-bistro-charcoal uppercase tracking-widest font-sans">
+                            <div className="text-sm font-bold text-bistro-charcoal dark:text-gray-100 uppercase tracking-widest font-sans">
                               {g.name}
                               <span className="text-bistro-wine">{req}</span>
                             </div>
-                            <div className="text-xs text-bistro-charcoal/50 mt-1 font-sans">
+                            <div className="text-xs text-bistro-charcoal dark:text-gray-100/50 mt-1 font-sans">
                               {g.selection_type === "single"
                                 ? t("foodDetail.selectOne")
                                 : max > 0
@@ -733,12 +733,12 @@ export default function FoodDetailPopup({
                                 onClick={onPick}
                                 className={`text-left p-3 rounded-sm border transition-all duration-200 ${
                                   isPicked
-                                    ? "bg-white border-bistro-wine shadow-sm"
-                                    : "bg-white border-bistro-charcoal/10 hover:border-bistro-wine/30"
+                                    ? "bg-white dark:bg-neutral-950 border-bistro-wine shadow-sm"
+                                    : "bg-white dark:bg-neutral-950 border-bistro-charcoal/10 dark:border-white/10 hover:border-bistro-wine/30"
                                 }`}
                               >
                                 <div className="flex items-center justify-between gap-2">
-                                  <div className="text-xs font-bold text-bistro-charcoal line-clamp-1 font-sans">
+                                  <div className="text-xs font-bold text-bistro-charcoal dark:text-gray-100 line-clamp-1 font-sans">
                                     {o.name}
                                   </div>
                                   {isPicked ? (
@@ -762,7 +762,7 @@ export default function FoodDetailPopup({
                   })}
                 </div>
               ) : (
-                <div className="text-xs text-bistro-charcoal/50 font-sans">
+                <div className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans">
                   {t("foodDetail.noModifiers")}
                 </div>
               )}
@@ -778,15 +778,15 @@ export default function FoodDetailPopup({
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder={t("foodDetail.notesPlaceholder")}
-                className="w-full bg-white border border-bistro-charcoal/20 rounded-sm p-4 text-sm text-bistro-charcoal focus:outline-none focus:border-bistro-wine min-h-24 resize-none font-sans"
+                className="w-full bg-white dark:bg-neutral-950 border border-bistro-charcoal/20 dark:border-white/20 rounded-sm p-4 text-sm text-bistro-charcoal dark:text-gray-100 focus:outline-none focus:border-bistro-wine min-h-24 resize-none font-sans"
               />
 
               <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1 border border-bistro-charcoal/10">
+                <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1 border border-bistro-charcoal/10 dark:border-white/10">
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
-                    className="w-9 h-9 rounded-full bg-white hover:bg-bistro-wine text-bistro-charcoal hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
+                    className="w-9 h-9 rounded-full bg-white dark:bg-neutral-950 hover:bg-bistro-wine text-bistro-charcoal dark:text-gray-100 hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
                   >
                     <Minus size={16} />
                   </button>
@@ -801,10 +801,10 @@ export default function FoodDetailPopup({
                 </div>
 
                 <div className="text-right">
-                  <div className="text-xs text-bistro-charcoal/50 font-sans uppercase tracking-widest font-bold">
+                  <div className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans uppercase tracking-widest font-bold">
                     {t("foodDetail.unitPrice")}
                   </div>
-                  <div className="text-xl font-bold text-bistro-charcoal font-sans mt-0.5">
+                  <div className="text-xl font-bold text-bistro-charcoal dark:text-gray-100 font-sans mt-0.5">
                     {formatMoneyVND(unitPrice)}
                   </div>
                 </div>
@@ -830,7 +830,7 @@ export default function FoodDetailPopup({
               </h4>
 
               {loadingRelated ? (
-                <div className="text-xs text-bistro-charcoal/50 font-sans">
+                <div className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans">
                   {t("foodDetail.loadingRelated")}
                 </div>
               ) : related.length ? (
@@ -840,7 +840,7 @@ export default function FoodDetailPopup({
                       type="button"
                       key={it.id}
                       onClick={() => onSelectFood?.(it.id)} // ✅ QUAN TRỌNG: gọi lên Menu đổi món
-                      className="text-left bg-white border border-bistro-charcoal/10 rounded-sm overflow-hidden hover:border-bistro-wine/30 hover:shadow-md transition-all duration-300 group"
+                      className="text-left bg-white dark:bg-neutral-950 border border-bistro-charcoal/10 dark:border-white/10 rounded-sm overflow-hidden hover:border-bistro-wine/30 hover:shadow-md transition-all duration-300 group"
                       title={it.name}
                     >
                       <div className="h-24 bg-gray-100 overflow-hidden relative">
@@ -855,10 +855,10 @@ export default function FoodDetailPopup({
                         />
                       </div>
                       <div className="p-3">
-                        <div className="text-xs font-bold text-bistro-charcoal line-clamp-1 font-sans">
+                        <div className="text-xs font-bold text-bistro-charcoal dark:text-gray-100 line-clamp-1 font-sans">
                           {it.name}
                         </div>
-                        <div className="text-xs text-bistro-charcoal/60 font-bold mt-1 font-sans">
+                        <div className="text-xs text-bistro-charcoal dark:text-gray-100/60 font-bold mt-1 font-sans">
                           {formatMoneyVND(Number(it.price || 0))}
                         </div>
                       </div>
@@ -866,7 +866,7 @@ export default function FoodDetailPopup({
                   ))}
                 </div>
               ) : (
-                <div className="text-xs text-bistro-charcoal/50 font-sans">
+                <div className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans">
                   {t("foodDetail.noRelated")}
                 </div>
               )}
@@ -880,7 +880,7 @@ export default function FoodDetailPopup({
 
               <div className="space-y-4 max-h-48 overflow-y-auto pr-2 no-scrollbar">
                 {loadingReviews && reviews.length === 0 ? (
-                  <div className="text-xs text-bistro-charcoal/50 font-sans">
+                  <div className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans">
                     {t("foodDetail.loadingReviews")}
                   </div>
                 ) : reviewsError && reviews.length === 0 ? (
@@ -891,29 +891,29 @@ export default function FoodDetailPopup({
                   reviews.map((rev) => (
                     <div
                       key={rev.id}
-                      className="bg-bistro-cream/30 p-4 rounded-sm border border-bistro-wine/10"
+                      className="bg-bistro-cream dark:bg-neutral-900/30 p-4 rounded-sm border border-bistro-wine/10"
                     >
                       <div className="flex justify-between items-start mb-2">
-                        <span className="text-sm font-bold text-bistro-charcoal font-sans">
+                        <span className="text-sm font-bold text-bistro-charcoal dark:text-gray-100 font-sans">
                           {rev.user_name || t("foodDetail.anonymous")}
                         </span>
-                        <span className="text-[10px] text-bistro-charcoal/50 italic font-sans uppercase tracking-wider">
+                        <span className="text-[10px] text-bistro-charcoal dark:text-gray-100/50 italic font-sans uppercase tracking-wider">
                           {rev.created_at || ""}
                         </span>
                       </div>
                       <StarsRow rating={Number(rev.rating || 0)} size={10} />
-                      <p className="text-xs text-bistro-charcoal/70 font-sans mt-2 leading-relaxed">{rev.comment}</p>
+                      <p className="text-xs text-bistro-charcoal dark:text-gray-100/70 font-sans mt-2 leading-relaxed">{rev.comment}</p>
                     </div>
                   ))
                 ) : (
-                  <div className="text-xs text-bistro-charcoal/50 font-sans">
+                  <div className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans">
                     {t("foodDetail.noReviews")}
                   </div>
                 )}
               </div>
 
               <div className="flex items-center justify-between mt-2">
-                <div className="text-[11px] text-bistro-charcoal/50 font-sans">
+                <div className="text-[11px] text-bistro-charcoal dark:text-gray-100/50 font-sans">
                   {reviews.length
                     ? t("foodDetail.loadedReviews", { count: reviews.length })
                     : ""}
@@ -926,7 +926,7 @@ export default function FoodDetailPopup({
                     disabled={loadingReviews}
                     className={`text-xs font-bold font-sans uppercase tracking-wider ${
                       loadingReviews
-                        ? "text-bistro-charcoal/40"
+                        ? "text-bistro-charcoal dark:text-gray-100/40"
                         : "text-bistro-wine hover:text-bistro-wine-light transition-colors"
                     }`}
                   >
@@ -935,7 +935,7 @@ export default function FoodDetailPopup({
                       : t("foodDetail.loadMore")}
                   </button>
                 ) : (
-                  <span className="text-[11px] text-bistro-charcoal/40 font-sans uppercase tracking-wider">
+                  <span className="text-[11px] text-bistro-charcoal dark:text-gray-100/40 font-sans uppercase tracking-wider">
                     {t("foodDetail.noMoreReviews")}
                   </span>
                 )}
@@ -943,8 +943,8 @@ export default function FoodDetailPopup({
             </section>
 
             {/* review form */}
-            <section className="pt-6 border-t border-bistro-charcoal/10">
-              <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-charcoal font-bold mb-4 font-sans">
+            <section className="pt-6 border-t border-bistro-charcoal/10 dark:border-white/10">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-charcoal dark:text-gray-100 font-bold mb-4 font-sans">
                 {t("foodDetail.yourReview")}
               </h4>
 
@@ -977,7 +977,7 @@ export default function FoodDetailPopup({
                       : t("foodDetail.reviewDisabled")
                   }
                   disabled={!canReview}
-                  className="w-full bg-white border border-bistro-charcoal/20 rounded-sm p-4 text-sm text-bistro-charcoal focus:outline-none focus:border-bistro-wine min-h-24 resize-none disabled:opacity-50 font-sans"
+                  className="w-full bg-white dark:bg-neutral-950 border border-bistro-charcoal/20 dark:border-white/20 rounded-sm p-4 text-sm text-bistro-charcoal dark:text-gray-100 focus:outline-none focus:border-bistro-wine min-h-24 resize-none disabled:opacity-50 font-sans"
                 />
 
                 <button

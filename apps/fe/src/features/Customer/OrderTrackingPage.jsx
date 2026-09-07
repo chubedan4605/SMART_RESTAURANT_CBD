@@ -183,7 +183,7 @@ const OrderTrackingPage = () => {
   if (orders.length === 0) {
     return (
       <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4">
-        <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
+        <div className="w-20 h-20 bg-white dark:bg-neutral-950/5 rounded-full flex items-center justify-center mb-6">
           <ChefHat size={40} className="text-gray-500" />
         </div>
         <h2 className="text-xl font-bold text-white mb-2">
@@ -213,7 +213,7 @@ const OrderTrackingPage = () => {
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 -ml-2 hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 -ml-2 hover:bg-white dark:bg-neutral-950/10 rounded-full transition-colors"
           >
             <ArrowLeft size={24} className="text-gray-300" />
           </button>
@@ -233,7 +233,7 @@ const OrderTrackingPage = () => {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="p-2 -mr-2 hover:bg-white/10 rounded-full transition-colors disabled:opacity-50"
+            className="p-2 -mr-2 hover:bg-white dark:bg-neutral-950/10 rounded-full transition-colors disabled:opacity-50"
           >
             <RefreshCw
               size={20}
@@ -254,7 +254,7 @@ const OrderTrackingPage = () => {
                 className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   selectedOrderId === order.id
                     ? "bg-orange-500 text-white"
-                    : "bg-white/5 text-gray-400 hover:bg-white/10"
+                    : "bg-white dark:bg-neutral-950/5 text-gray-400 hover:bg-white dark:bg-neutral-950/10"
                 }`}
               >
                 {order.code}
@@ -266,7 +266,7 @@ const OrderTrackingPage = () => {
         {selectedOrder && (
           <>
             {/* Order Info Card */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-xl p-4">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-sm text-gray-400">
@@ -318,7 +318,7 @@ const OrderTrackingPage = () => {
 
             {/* Status Summary */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-center">
+              <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-lg p-3 text-center">
                 <p className="text-2xl font-bold text-gray-400">
                   {summary.queued}
                 </p>
@@ -326,7 +326,7 @@ const OrderTrackingPage = () => {
                   {t("order.tracking.queued")}
                 </p>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-center">
+              <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-lg p-3 text-center">
                 <p className="text-2xl font-bold text-orange-500">
                   {summary.cooking}
                 </p>
@@ -334,7 +334,7 @@ const OrderTrackingPage = () => {
                   {t("order.tracking.cooking")}
                 </p>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-center">
+              <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-lg p-3 text-center">
                 <p className="text-2xl font-bold text-green-500">
                   {summary.ready}
                 </p>

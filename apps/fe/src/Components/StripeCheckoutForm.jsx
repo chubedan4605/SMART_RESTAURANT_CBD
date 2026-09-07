@@ -103,7 +103,7 @@ const StripeCheckoutForm = ({
       </div>
 
       {/* Stripe Payment Element */}
-      <div className="bg-white rounded-xl p-4">
+      <div className="bg-white dark:bg-neutral-950 rounded-xl p-4">
         <PaymentElement
           options={{
             layout: "tabs",
@@ -125,7 +125,7 @@ const StripeCheckoutForm = ({
           type="button"
           onClick={onCancel}
           disabled={isProcessing}
-          className="flex-1 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-semibold transition-all disabled:opacity-50"
+          className="flex-1 py-3 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-xl font-semibold transition-all disabled:opacity-50"
         >
           {t("common.cancel")}
         </button>

@@ -22,7 +22,7 @@ import { adminAccountApi } from "../../services/adminAccountApi";
 /**
  * Theme học từ MenuManagement:
  * - container max-w-7xl px-4 py-8
- * - cards: rounded-2xl bg-white/5 border border-white/10
+ * - cards: rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10
  * - panel: bg-neutral-900/60 border-white/10 p-4
  * - accent orange/red
  */
@@ -32,11 +32,11 @@ const ROLE_META = {
   admin: { label: "Admin", className: "bg-orange-500/10 text-orange-200 border-orange-500/20" },
   waiter: { label: "Waiter", className: "bg-blue-500/10 text-blue-200 border-blue-500/20" },
   kitchen: { label: "Kitchen", className: "bg-purple-500/10 text-purple-200 border-purple-500/20" },
-  customer: { label: "Customer", className: "bg-white/5 text-gray-200 border-white/10" },
+  customer: { label: "Customer", className: "bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10" },
 };
 
 function RolePill({ role }) {
-  const meta = ROLE_META[role] || { label: role || "—", className: "bg-white/5 text-gray-200 border-white/10" };
+  const meta = ROLE_META[role] || { label: role || "—", className: "bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10" };
   return (
     <span className={`inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold ${meta.className}`}>
       {meta.label}
@@ -62,20 +62,20 @@ function SkeletonRow() {
   return (
     <tr className="border-b border-white/5">
       <td className="py-3 pr-3 pl-4">
-        <div className="h-4 w-40 bg-white/5 rounded animate-pulse" />
-        <div className="mt-2 h-3 w-28 bg-white/5 rounded animate-pulse" />
+        <div className="h-4 w-40 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+        <div className="mt-2 h-3 w-28 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
       <td className="py-3 px-3">
-        <div className="h-6 w-24 bg-white/5 rounded-full animate-pulse" />
+        <div className="h-6 w-24 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse" />
       </td>
       <td className="py-3 px-3">
-        <div className="h-6 w-28 bg-white/5 rounded-full animate-pulse" />
+        <div className="h-6 w-28 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse" />
       </td>
       <td className="py-3 px-3">
-        <div className="h-6 w-20 bg-white/5 rounded-full animate-pulse" />
+        <div className="h-6 w-20 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse" />
       </td>
       <td className="py-3 pl-3 pr-4 text-right">
-        <div className="ml-auto h-4 w-24 bg-white/5 rounded animate-pulse" />
+        <div className="ml-auto h-4 w-24 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
     </tr>
   );
@@ -244,7 +244,7 @@ export default function AccountsManagement() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 text-sm">
+          <div className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm">
             Tổng:{" "}
             <span className="text-white font-bold">
               {loading ? "—" : pagination.total}
@@ -266,7 +266,7 @@ export default function AccountsManagement() {
           <button
             onClick={refetch}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-               bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+               bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
           >
             <RefreshCcw size={16} />
             Refresh
@@ -282,7 +282,7 @@ export default function AccountsManagement() {
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border transition
             ${tab === "USER"
               ? "bg-orange-500/15 border-orange-500/30 text-orange-200"
-              : "bg-white/5 border-white/10 text-gray-200 hover:bg-white/10"
+              : "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
             }`}
         >
           <Users size={16} />
@@ -295,7 +295,7 @@ export default function AccountsManagement() {
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border transition
             ${tab === "STAFF"
               ? "bg-orange-500/15 border-orange-500/30 text-orange-200"
-              : "bg-white/5 border-white/10 text-gray-200 hover:bg-white/10"
+              : "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
             }`}
         >
           <Shield size={16} />
@@ -411,7 +411,7 @@ export default function AccountsManagement() {
       </div>
 
       {/* Table */}
-      <div className="mt-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+      <div className="mt-6 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
         <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="text-white font-bold">
             {tab === "USER" ? "Danh sách Users (Customer)" : "Danh sách Staff"}
@@ -448,7 +448,7 @@ export default function AccountsManagement() {
                   <tr
                     key={u.id}
                     onClick={() => setDetailUser(u)}
-                    className="border-b border-white/5 hover:bg-white/5 transition cursor-pointer"
+                    className="border-b border-white/5 hover:bg-white dark:bg-neutral-950/5 transition cursor-pointer"
                   >
                     <td className="py-3 pr-3 pl-4 align-top">
                       <div className="text-white font-bold">{u.name}</div>

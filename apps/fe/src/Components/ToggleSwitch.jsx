@@ -13,8 +13,8 @@ export default function ToggleSwitch({ checked, disabled, onChange, label }) {
       className={`relative inline-flex h-6 w-11 items-center rounded-full border transition
         ${checked
           ? "bg-orange-500/20 border-orange-500/30"
-          : "bg-white/5 border-white/10"}
-        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-white/10"}`}
+          : "bg-white dark:bg-neutral-950/5 border-white/10"}
+        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-white dark:bg-neutral-950/10"}`}
       aria-pressed={checked}
       aria-label={label || "toggle"}
     >

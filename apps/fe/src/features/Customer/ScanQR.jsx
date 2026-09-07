@@ -250,7 +250,7 @@ const ScanQR = () => {
             <p className="text-gray-500 mb-6">{errorMessage}</p>
             <button
               onClick={() => navigate("/")}
-              className="px-6 py-2 border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+              className="px-6 py-2 border border-white/20 rounded-lg hover:bg-white dark:bg-neutral-950/10 transition-colors"
             >
               {t("table.scan.goHome")}
             </button>

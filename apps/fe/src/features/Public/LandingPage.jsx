@@ -100,7 +100,7 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="relative w-full overflow-hidden bg-bistro-cream text-bistro-charcoal font-sans">
+    <div className="relative w-full overflow-hidden bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 font-sans">
       {/* --- HIỆU ỨNG MÀN CHÀO MỪNG --- */}
       <WelcomeCurtain />
 
@@ -135,14 +135,14 @@ const LandingPage = () => {
 
             <Link
               to="/signup"
-              className="px-10 py-4 bg-transparent border border-white hover:bg-white hover:text-bistro-charcoal text-white font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center"
+              className="px-10 py-4 bg-transparent border border-white hover:bg-white dark:bg-neutral-950 hover:text-bistro-charcoal dark:text-gray-100 text-white font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center"
             >
               {t("landing.hero.registerMember")}
             </Link>
           </div>
 
           {/* Gợi ý quét QR */}
-          <div className="mt-12 flex items-center gap-4 text-white/80 text-sm p-5 rounded-none border border-white/20 backdrop-blur-md bg-white/5">
+          <div className="mt-12 flex items-center gap-4 text-white/80 text-sm p-5 rounded-none border border-white/20 backdrop-blur-md bg-white dark:bg-neutral-950/5">
             <div className="bg-bistro-wine p-2">
               <QrCode size={24} className="text-white" />
             </div>
@@ -162,7 +162,7 @@ const LandingPage = () => {
       <BlogSection />
 
       {/* 4. GALLERY / RESTAURANT SPACE SECTION */}
-      <section className="py-24 px-4 bg-bistro-cream">
+      <section className="py-24 px-4 bg-bistro-cream dark:bg-neutral-900">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-bistro-wine/5 border border-bistro-wine/10 mb-6">
@@ -171,13 +171,13 @@ const LandingPage = () => {
                 {t("landing.space.badge")}
               </span>
             </div>
-            <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal mb-6">
+            <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal dark:text-gray-100 mb-6">
               {t("landing.space.title")}{" "}
               <span className="italic text-bistro-wine">
                 {t("landing.space.titleHighlight")}
               </span>
             </h2>
-            <p className="text-bistro-charcoal/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-bistro-charcoal dark:text-gray-100/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
               {t("landing.space.description")}
             </p>
           </div>

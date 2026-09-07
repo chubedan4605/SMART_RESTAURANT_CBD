@@ -80,7 +80,7 @@ export default function CreateStaffAccountModal({ open, onClose, onSuccess }) {
 
           <button
             onClick={() => !loading && onClose?.()}
-            className="p-2 rounded-xl hover:bg-white/5 transition"
+            className="p-2 rounded-xl hover:bg-white dark:bg-neutral-950/5 transition"
             type="button"
           >
             <X className="text-gray-300" size={18} />
@@ -146,7 +146,7 @@ export default function CreateStaffAccountModal({ open, onClose, onSuccess }) {
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-xl bg-white/5 border border-white/10 px-3 py-2">
+          <div className="flex items-center justify-between rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 px-3 py-2">
             <div>
               <div className="text-white text-sm font-bold">Verified</div>
               <div className="text-gray-400 text-xs">Đánh dấu đã xác thực email</div>
@@ -165,7 +165,7 @@ export default function CreateStaffAccountModal({ open, onClose, onSuccess }) {
           <button
             type="button"
             onClick={() => !loading && onClose?.()}
-            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+            className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
           >
             Huỷ
           </button>
@@ -176,7 +176,7 @@ export default function CreateStaffAccountModal({ open, onClose, onSuccess }) {
             onClick={submit}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl transition border
               ${(!canSubmit || loading)
-                ? "bg-white/5 border-white/10 text-gray-500 cursor-not-allowed"
+                ? "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-500 cursor-not-allowed"
                 : "bg-orange-500/20 border-orange-500/30 text-orange-200 hover:bg-orange-500/30"
               }`}
           >

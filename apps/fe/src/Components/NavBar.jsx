@@ -10,6 +10,8 @@ import {
   MapPin,
   LogOut,
   ClipboardList,
+  Moon,
+  Sun,
 } from "lucide-react";
 // 1. Import useDispatch
 import { useSelector, useDispatch } from "react-redux";
@@ -23,9 +25,11 @@ import { IoRestaurant } from "react-icons/io5";
 import Avatar from "../features/Customer/components/Avatar";
 import logo from "../assets/logo.png";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useTheme } from "../context/ThemeContext";
 
 const Navbar = () => {
   const { t } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -82,7 +86,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-bistro-charcoal/10 h-16 shadow-sm">
+      <nav className="fixed top-0 w-full z-50 bg-white dark:bg-neutral-950/95 backdrop-blur-md border-b border-bistro-charcoal/10 dark:border-white/10 h-16 shadow-sm">
         <div className="container mx-auto px-4 h-full flex items-center justify-between">
           {/* 1. LOGO */}
           <Link
@@ -97,7 +101,7 @@ const Navbar = () => {
             />
 
             <div className="md:block">
-              <h1 className="text-bistro-charcoal font-bold text-lg tracking-wide font-display">
+              <h1 className="text-bistro-charcoal dark:text-gray-100 font-bold text-lg tracking-wide font-display">
                 Lumière Bistro
               </h1>
             </div>
@@ -106,6 +110,11 @@ const Navbar = () => {
           {/* 2. DESKTOP MENU (Ẩn trên Mobile) */}
           <div className="hidden md:flex items-center gap-8">
             {/* Menu cho từng role */}
+            {role === "admin" && (
+              <>
+                <NavLink to="/admin" label="Dashboard" />
+              </>
+            )}
             {role === "waiter" && (
               <>
                 <NavLink to="/waiter" label="Đơn phục vụ" />
@@ -139,6 +148,15 @@ const Navbar = () => {
 
           {/* 3. RIGHT ACTIONS */}
           <div className="flex items-center gap-3 z-50">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-bistro-charcoal dark:text-gray-100/70 hover:text-bistro-wine dark:text-gray-300 dark:hover:text-white transition-colors"
+              title="Toggle Theme"
+            >
+              {theme === "dark" ? <Sun size={22} /> : <Moon size={22} />}
+            </button>
+
             {/* Language Switcher - Only show for customer interface */}
             {(!role || role === "customer") && (
               <LanguageSwitcher className="hidden sm:block" />
@@ -150,7 +168,7 @@ const Navbar = () => {
                 <Link
                   to="/cart"
                   onClick={closeMenu}
-                  className="relative p-2 text-bistro-charcoal/70 hover:text-bistro-wine transition-colors"
+                  className="relative p-2 text-bistro-charcoal dark:text-gray-100/70 hover:text-bistro-wine transition-colors"
                 >
                   <ShoppingBag size={24} />
                   {cartCount > 0 && (
@@ -164,7 +182,7 @@ const Navbar = () => {
 
             {/* User Info / Login / Logout Desktop */}
             {isLoggedIn ? (
-              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-bistro-charcoal/10">
+              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-bistro-charcoal/10 dark:border-white/10">
                 {/* Link Profile */}
                 <Link
                   to="/profile"
@@ -178,7 +196,7 @@ const Navbar = () => {
                     className="group-hover:ring-2 group-hover:ring-bistro-wine transition shadow-sm"
                   />
 
-                  <span className="max-w-30 truncate text-sm font-semibold text-bistro-charcoal group-hover:text-bistro-wine">
+                  <span className="max-w-30 truncate text-sm font-semibold text-bistro-charcoal dark:text-gray-100 group-hover:text-bistro-wine">
                     {user?.name}
                   </span>
                 </Link>
@@ -187,16 +205,16 @@ const Navbar = () => {
                 <button
                   onClick={handleLogout}
                   title={t("navbar.logout")}
-                  className="p-2 text-bistro-charcoal/60 hover:text-red-500 transition-colors hover:bg-red-50 rounded-full"
+                  className="p-2 text-bistro-charcoal dark:text-gray-100/60 hover:text-red-500 transition-colors hover:bg-red-50 rounded-full"
                 >
                   <LogOut size={20} />
                 </button>
               </div>
             ) : (
-              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-bistro-charcoal/10">
+              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-bistro-charcoal/10 dark:border-white/10">
                 <Link
                   to="/signin"
-                  className="text-sm font-medium text-bistro-charcoal/70 hover:text-bistro-charcoal"
+                  className="text-sm font-medium text-bistro-charcoal dark:text-gray-100/70 hover:text-bistro-charcoal dark:text-gray-100"
                 >
                   {t("navbar.login")}
                 </Link>
@@ -212,7 +230,7 @@ const Navbar = () => {
             {/* Hamburger Button (Chỉ hiện Mobile) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-bistro-charcoal hover:text-bistro-wine transition-transform active:scale-90"
+              className="md:hidden p-2 text-bistro-charcoal dark:text-gray-100 hover:text-bistro-wine transition-transform active:scale-90"
             >
               {isMobileMenuOpen ? (
                 <X size={26} className="text-bistro-wine" />
@@ -234,7 +252,7 @@ const Navbar = () => {
       ></div>
 
       <div
-        className={`fixed top-0 right-0 h-full w-72 bg-white z-40 border-l border-bistro-charcoal/10 shadow-2xl transform transition-transform duration-300 ease-in-out pt-20 px-6 flex flex-col md:hidden ${
+        className={`fixed top-0 right-0 h-full w-72 bg-white dark:bg-neutral-950 z-40 border-l border-bistro-charcoal/10 dark:border-white/10 shadow-2xl transform transition-transform duration-300 ease-in-out pt-20 px-6 flex flex-col md:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -243,7 +261,7 @@ const Navbar = () => {
           <Link
             to="/profile"
             onClick={closeMenu}
-            className="flex items-center gap-3 mb-8 pb-6 border-b border-bistro-charcoal/10"
+            className="flex items-center gap-3 mb-8 pb-6 border-b border-bistro-charcoal/10 dark:border-white/10"
           >
             <Avatar
               url={user?.avatarUrl || user?.avatar_url}
@@ -253,7 +271,7 @@ const Navbar = () => {
             />
 
             <div>
-              <p className="text-bistro-charcoal font-bold truncate max-w-[160px]">
+              <p className="text-bistro-charcoal dark:text-gray-100 font-bold truncate max-w-[160px]">
                 {user?.name || t("navbar.customer")}
               </p>
 
@@ -268,13 +286,13 @@ const Navbar = () => {
             </div>
           </Link>
         ) : (
-          <div className="mb-8 pb-6 border-b border-bistro-charcoal/10">
-            <p className="text-bistro-charcoal/70 text-sm mb-4 font-medium">{t("navbar.welcome")}</p>
+          <div className="mb-8 pb-6 border-b border-bistro-charcoal/10 dark:border-white/10">
+            <p className="text-bistro-charcoal dark:text-gray-100/70 text-sm mb-4 font-medium">{t("navbar.welcome")}</p>
             <div className="grid grid-cols-2 gap-3">
               <Link
                 to="/signin"
                 onClick={closeMenu}
-                className="py-2.5 text-center rounded-lg border border-bistro-charcoal/20 text-bistro-charcoal hover:bg-bistro-cream text-sm font-medium transition-colors"
+                className="py-2.5 text-center rounded-lg border border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100 hover:bg-bistro-cream dark:bg-neutral-900 text-sm font-medium transition-colors"
               >
                 {t("navbar.login")}
               </Link>
@@ -292,6 +310,15 @@ const Navbar = () => {
         {/* Danh sách Link Mobile */}
         <div className="flex flex-col gap-2">
           {/* Menu cho từng role trên mobile */}
+          {role === "admin" && (
+            <>
+              <MobileLink
+                to="/admin"
+                label="Dashboard"
+                onClick={closeMenu}
+              />
+            </>
+          )}
           {role === "waiter" && (
             <>
               <MobileLink
@@ -344,7 +371,7 @@ const Navbar = () => {
 
         {/* Language Switcher for Mobile */}
         {(!role || role === "customer") && (
-          <div className="py-4 border-t border-bistro-charcoal/10 mt-4">
+          <div className="py-4 border-t border-bistro-charcoal/10 dark:border-white/10 mt-4">
             <LanguageSwitcher />
           </div>
         )}
@@ -360,7 +387,7 @@ const Navbar = () => {
               <LogOut size={20} /> {t("navbar.logout")}
             </button>
           )}
-          <p className="text-xs text-bistro-charcoal/50 mt-6 text-center">
+          <p className="text-xs text-bistro-charcoal dark:text-gray-100/50 mt-6 text-center">
             Version 1.0.0
           </p>
         </div>
@@ -379,7 +406,7 @@ const NavLink = ({ to, label, icon }) => {
         `flex items-center gap-2 text-sm font-semibold transition-all ` +
         (isActive
           ? "text-bistro-wine"
-          : "text-bistro-charcoal/70 hover:text-bistro-wine")
+          : "text-bistro-charcoal dark:text-gray-100/70 hover:text-bistro-wine")
       }
     >
       {icon}
@@ -392,7 +419,7 @@ const MobileLink = ({ to, label, onClick }) => (
   <Link
     to={to}
     onClick={onClick}
-    className="block py-3 px-4 rounded-xl text-base font-semibold text-bistro-charcoal/80 hover:bg-bistro-cream hover:text-bistro-wine transition-colors active:scale-95"
+    className="block py-3 px-4 rounded-xl text-base font-semibold text-bistro-charcoal dark:text-gray-100/80 hover:bg-bistro-cream dark:bg-neutral-900 hover:text-bistro-wine transition-colors active:scale-95"
   >
     {label}
   </Link>

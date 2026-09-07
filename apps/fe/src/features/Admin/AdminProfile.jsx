@@ -11,7 +11,7 @@ function Avatar({ url, name }) {
   useEffect(() => setOk(!!url), [url]);
 
   return (
-    <div className="w-28 h-28 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+    <div className="w-28 h-28 rounded-full overflow-hidden border border-white/10 bg-white dark:bg-neutral-950/5 flex items-center justify-center">
       {url && ok ? (
         <img
           src={url}
@@ -140,7 +140,7 @@ export default function AdminProfile() {
 
         <button
           onClick={load}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
           disabled={loading}
         >
           <RefreshCcw size={16} />
@@ -149,7 +149,7 @@ export default function AdminProfile() {
       </div>
 
       {/* Main */}
-      <div className="mt-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+      <div className="mt-6 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
         <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="text-white font-bold">Thông tin tài khoản</div>
           <div className="text-xs text-gray-400">{loading ? "Đang tải..." : profile?.email || ""}</div>
@@ -172,7 +172,7 @@ export default function AdminProfile() {
                 <label className="text-xs text-gray-400 mb-1 block">Chọn ảnh mới</label>
 
                 <div className="flex items-center gap-2">
-                  <label className="flex-1 cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition">
+                  <label className="flex-1 cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition">
                     <Camera size={16} />
                     Chọn ảnh
                     <input
@@ -190,7 +190,7 @@ export default function AdminProfile() {
                     disabled={!file || uploading || loading}
                     className={`px-4 py-2 rounded-xl border transition
                       ${(!file || uploading || loading)
-                        ? "bg-white/5 border-white/10 text-gray-500 cursor-not-allowed"
+                        ? "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-500 cursor-not-allowed"
                         : "bg-orange-500/20 border-orange-500/30 text-orange-200 hover:bg-orange-500/30"
                       }`}
                   >
@@ -238,7 +238,7 @@ export default function AdminProfile() {
                   toast.info("Đã reset name theo profile");
                 }}
                 disabled={loading}
-                className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+                className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
               >
                 Reset
               </button>
@@ -249,7 +249,7 @@ export default function AdminProfile() {
                 disabled={!canSaveName || savingName || loading}
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border transition
                   ${(!canSaveName || savingName || loading)
-                    ? "bg-white/5 border-white/10 text-gray-500 cursor-not-allowed"
+                    ? "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-500 cursor-not-allowed"
                     : "bg-orange-500/20 border-orange-500/30 text-orange-200 hover:bg-orange-500/30"
                   }`}
               >

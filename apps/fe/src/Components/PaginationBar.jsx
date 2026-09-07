@@ -22,7 +22,7 @@ export default function PaginationBar({
         <select
           value={limit}
           onChange={(e) => onChangeLimit(Number(e.target.value))}
-          className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500/40"
+          className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500/40"
         >
           {[10, 20, 30, 50].map((n) => (
             <option key={n} value={n} className="bg-neutral-900">
@@ -34,7 +34,7 @@ export default function PaginationBar({
         <button
           onClick={onPrev}
           disabled={page <= 1}
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition disabled:opacity-40 disabled:hover:bg-white/5"
+          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition disabled:opacity-40 disabled:hover:bg-white dark:bg-neutral-950/5"
           type="button"
         >
           <ChevronLeft size={16} />
@@ -44,7 +44,7 @@ export default function PaginationBar({
         <button
           onClick={onNext}
           disabled={page >= totalPages}
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition disabled:opacity-40 disabled:hover:bg-white/5"
+          className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition disabled:opacity-40 disabled:hover:bg-white dark:bg-neutral-950/5"
           type="button"
         >
           Next

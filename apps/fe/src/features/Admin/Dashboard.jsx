@@ -243,7 +243,7 @@ export default function AdminDashboard() {
 
         <div className="flex items-center gap-3">
           {/* period selector */}
-          <div className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 text-sm ">
+          <div className="px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm ">
             <span className="text-gray-400">Doanh thu:</span>
             <select
               value={revenuePeriod}
@@ -259,7 +259,7 @@ export default function AdminDashboard() {
             </select>
           </div>
 
-          <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 text-sm">
+          <div className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm">
             Dữ liệu ngày: <span className="text-white font-bold">{today}</span>
           </div>
         </div>
@@ -341,7 +341,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Analytics Charts */}
-      <div className="rounded-2xl bg-white/5 border border-white/10 p-3 sm:p-4 lg:col-span-3 mt-6">
+      <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3 sm:p-4 lg:col-span-3 mt-6">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="text-white font-black text-xl">
@@ -355,7 +355,7 @@ export default function AdminDashboard() {
 
         <div className="mt-4 grid grid-cols-1 lg:grid-cols-5 gap-4">
           {/* Line */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-4 lg:col-span-3">
+          <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-4 lg:col-span-3">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-white font-bold">Số đơn theo ngày</div>
@@ -418,7 +418,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Pie */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-3 lg:col-span-2">
+          <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3 lg:col-span-2">
             <div className="flex justify-between gap-3">
               <div>
                 <div className="text-white font-bold">Mặt hàng phổ biến</div>
@@ -430,7 +430,7 @@ export default function AdminDashboard() {
               <select
                 value={popularItemsPeriod}
                 onChange={(e) => setPopularItemsPeriod(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 text-sm
+                className="px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 text-sm
                 focus:outline-none focus:border-orange-500/40 transition [&>option]:bg-neutral-900 [&>option]:text-white"
               >
                 {PERIODS.map((p) => (
@@ -488,7 +488,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Bar */}
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-3 sm:p-4 lg:col-span-5">
+          <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3 sm:p-4 lg:col-span-5">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-white font-bold">Giờ cao điểm</div>
@@ -500,7 +500,7 @@ export default function AdminDashboard() {
               <select
                 value={peakHoursPeriod}
                 onChange={(e) => setPeakHoursPeriod(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 text-sm
+                className="px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 text-sm
                 focus:outline-none focus:border-orange-500/40 transition [&>option]:bg-neutral-900 [&>option]:text-white"
               >
                 {PERIODS.map((p) => (

@@ -140,7 +140,7 @@ export default function KitchenOrderCard({
                       ? "bg-red-500/10 border border-red-500/20 opacity-50"
                       : itemOverdue
                         ? "bg-red-500/10 border border-red-500/20"
-                        : "bg-white/5"
+                        : "bg-white dark:bg-neutral-950/5"
                 }`}
               >
                 <div className="min-w-0 flex items-center gap-2">
@@ -176,7 +176,7 @@ export default function KitchenOrderCard({
                       +{elapsed - itemPrepTime}m
                     </span>
                   )}
-                  <div className="px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-200 text-sm font-bold">
+                  <div className="px-2 py-1 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 text-sm font-bold">
                     x{it.qty}
                   </div>
                   {/* Nút hoàn thành từng item */}
@@ -214,7 +214,7 @@ export default function KitchenOrderCard({
         <div className="mt-auto pt-5 flex flex-col sm:flex-row gap-2">
           <button
             onClick={onView}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
           >
             <Eye size={18} />
             Xem chi tiết

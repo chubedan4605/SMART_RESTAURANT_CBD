@@ -253,7 +253,7 @@ const Booking = () => {
           <div className="bg-neutral-900 border border-white/10 rounded-2xl p-6 w-full max-w-sm relative shadow-2xl shadow-orange-500/10 transform transition-all scale-100">
             <button
               onClick={() => setSelectedTable(null)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 p-2 rounded-full transition-colors"
             >
               <X size={20} />
             </button>
@@ -266,7 +266,7 @@ const Booking = () => {
                 {t("table.booking.scanToOrder")}
               </p>
 
-              <div className="bg-white p-4 rounded-xl inline-block mb-6 mx-auto">
+              <div className="bg-white dark:bg-neutral-950 p-4 rounded-xl inline-block mb-6 mx-auto">
                 <QRCode
                   value={`${window.location.origin}/scan/${selectedTable.id}?qrToken=${selectedTable.qr_token}`}
                   size={200}

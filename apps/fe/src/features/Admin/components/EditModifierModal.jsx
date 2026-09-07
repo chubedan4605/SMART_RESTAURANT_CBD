@@ -42,7 +42,7 @@ export default function EditModifierModal({ open, item, onClose, onUpdated }) {
       <div className="w-full max-w-lg rounded-2xl bg-neutral-950 border border-white/10 overflow-hidden">
         <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="text-white font-bold">Sửa Modifier</div>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/5">
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-white dark:bg-neutral-950/5">
             <X size={18} className="text-gray-300" />
           </button>
         </div>
@@ -71,7 +71,7 @@ export default function EditModifierModal({ open, item, onClose, onUpdated }) {
         <div className="px-4 py-3 border-t border-white/10 flex items-center justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10"
+            className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
             disabled={saving}
           >
             Huỷ

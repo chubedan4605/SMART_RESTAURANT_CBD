@@ -235,7 +235,7 @@ export default function KitchenPage() {
                 className={`p-2 rounded-xl border transition-all ${
                   soundEnabled
                     ? "bg-orange-500/10 border-orange-500/30 text-orange-500"
-                    : "bg-white/5 border-white/10 text-gray-500"
+                    : "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-500"
                 }`}
                 title={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
               >
@@ -252,7 +252,7 @@ export default function KitchenPage() {
                 </div>
               )}
 
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200">
                 <Flame size={18} className="text-orange-500" />
                 <span className="text-sm">
                   Đang chờ:{" "}

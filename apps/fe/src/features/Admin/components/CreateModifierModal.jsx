@@ -204,7 +204,7 @@ export default function CreateModifierModal({ open, onClose, onSuccess }) {
       <div className="w-full max-w-3xl rounded-2xl bg-neutral-950 border border-white/10 overflow-hidden">
         <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="text-white font-bold">+ Tạo Modifier Group</div>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/5" disabled={saving}>
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-white dark:bg-neutral-950/5" disabled={saving}>
             <X size={18} className="text-gray-300" />
           </button>
         </div>
@@ -212,7 +212,7 @@ export default function CreateModifierModal({ open, onClose, onSuccess }) {
         <ScrollArea>
           <div className="max-h-[80vh] overflow-x-auto p-4 space-y-4">
             {/* GROUP INFO */}
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+            <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-4">
               <div className="text-white font-bold">Thông tin group</div>
 
               <div className="mt-3 grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -316,14 +316,14 @@ export default function CreateModifierModal({ open, onClose, onSuccess }) {
             </div>
 
             {/* OPTIONS */}
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+            <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-white font-bold">Options *</div>
                 <button
                   type="button"
                   onClick={addOptionRow}
                   className="inline-flex items-center gap-2 px-3 py-2 rounded-xl
-                  bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+                  bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
                   disabled={saving}
                 >
                   <Plus size={16} />
@@ -353,7 +353,7 @@ export default function CreateModifierModal({ open, onClose, onSuccess }) {
         <div className="px-4 py-3 border-t border-white/10 flex items-center justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10"
+            className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
             disabled={saving}
           >
             Huỷ

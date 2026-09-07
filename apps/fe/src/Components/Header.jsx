@@ -9,7 +9,7 @@ const Header = () => {
   const tableNumber = t("table.tableNumber", { number: "05" });
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow-sm z-40 px-4 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-neutral-950 shadow-sm z-40 px-4 flex items-center justify-between">
       {/* 1. Logo & Restaurant name */}
       <Link to="/" className="flex items-center gap-2">
         <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">

@@ -60,7 +60,7 @@ function StatusPill({ status }) {
   const meta =
     STATUS_META[status] || {
       label: status || "—",
-      className: "bg-white/5 text-gray-200 border-white/10",
+      className: "bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10",
     };
   return (
     <span
@@ -74,27 +74,27 @@ function SkeletonRow() {
   return (
     <tr className="border-b border-white/5">
       <td className="py-3 pr-3 pl-4">
-        <div className="h-4 w-36 bg-white/5 rounded animate-pulse" />
-        <div className="mt-2 h-3 w-20 bg-white/5 rounded animate-pulse" />
+        <div className="h-4 w-36 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+        <div className="mt-2 h-3 w-20 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
 
       <td className="hidden sm:table-cell py-3 px-3">
-        <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
-        <div className="mt-2 h-3 w-36 bg-white/5 rounded animate-pulse" />
+        <div className="h-4 w-28 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+        <div className="mt-2 h-3 w-36 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
 
       <td className="py-3 px-3">
-        <div className="h-6 w-24 bg-white/5 rounded-full animate-pulse" />
+        <div className="h-6 w-24 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse" />
       </td>
 
       <td className="hidden sm:table-cell py-3 px-3">
-        <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
-        <div className="mt-2 h-3 w-28 bg-white/5 rounded animate-pulse" />
+        <div className="h-4 w-14 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+        <div className="mt-2 h-3 w-28 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
 
       <td className="py-3 pl-3 pr-4 text-right">
-        <div className="ml-auto h-4 w-24 bg-white/5 rounded animate-pulse" />
-        <div className="hidden sm:block mt-2 ml-auto h-3 w-20 bg-white/5 rounded animate-pulse" />
+        <div className="ml-auto h-4 w-24 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+        <div className="hidden sm:block mt-2 ml-auto h-3 w-20 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
       </td>
     </tr>
   );
@@ -164,7 +164,7 @@ export default function OrderManagement() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300 text-sm">
+          <div className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm">
             Tổng:{" "}
             <span className="text-white font-bold">
               {isLoading ? "—" : pagination.total}
@@ -174,7 +174,7 @@ export default function OrderManagement() {
 
           <button
             onClick={refetch}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
             type="button"
           >
             <RefreshCcw size={16} />
@@ -312,7 +312,7 @@ export default function OrderManagement() {
       </div>
 
       {/* Table */}
-      <div className="mt-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+      <div className="mt-6 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
         <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="text-white font-bold">Danh sách order</div>
         </div>
@@ -342,7 +342,7 @@ export default function OrderManagement() {
                   <tr
                     key={o.id}
                     onClick={() => setSelectedOrderId(o.id)}
-                    className="border-b border-white/5 hover:bg-white/5 transition cursor-pointer"
+                    className="border-b border-white/5 hover:bg-white dark:bg-neutral-950/5 transition cursor-pointer"
                     title="Click để xem chi tiết"
                   >
                     <td className="py-3 pr-3 pl-4 align-top">

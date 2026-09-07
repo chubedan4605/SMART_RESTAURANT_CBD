@@ -234,7 +234,7 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
   };
 
   return (
-    <div className="mt-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+    <div className="mt-6 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
       <div className="px-4 py-3 border-b border-white/10 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div className="flex gap-2 items-center">
           <div className="w-9 h-9 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
@@ -282,7 +282,7 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
           <button
             onClick={() => fetchCategories()}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
           >
             <RefreshCcw size={16} />
             Refresh
@@ -311,7 +311,7 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
 
                 <div className="flex items-center gap-2">
                   <button
-                    className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10"
+                    className="px-3 py-1.5 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
                     onClick={() => {
                       setEditCat(c);
                       setOpenEdit(true);

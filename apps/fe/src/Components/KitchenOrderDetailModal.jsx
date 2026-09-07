@@ -108,11 +108,11 @@ export default function KitchenOrderDetailModal({
           )}
 
           {/* Header */}
-          <div className="p-5 border-b border-white/10 flex items-start justify-between gap-4 bg-white/5">
+          <div className="p-5 border-b border-white/10 flex items-start justify-between gap-4 bg-white dark:bg-neutral-950/5">
             <div>
               <div className="text-white font-black text-2xl flex items-center gap-2">
                 {order.table_number || "Mang về"}
-                <span className="text-sm font-normal text-gray-400 bg-white/10 px-2 py-0.5 rounded-md">
+                <span className="text-sm font-normal text-gray-400 bg-white dark:bg-neutral-950/10 px-2 py-0.5 rounded-md">
                   #{order.id.slice(0, 6)}
                 </span>
               </div>
@@ -135,7 +135,7 @@ export default function KitchenOrderDetailModal({
 
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+              className="p-2 rounded-full hover:bg-white dark:bg-neutral-950/10 text-gray-400 hover:text-white transition-colors"
             >
               <X size={24} />
             </button>
@@ -144,7 +144,7 @@ export default function KitchenOrderDetailModal({
           {/* Body (Scrollable) */}
           <div className="p-5 overflow-y-auto custom-scrollbar flex-1">
             <div className="rounded-2xl bg-neutral-900/60 border border-white/10 overflow-hidden">
-              <div className="p-4 flex items-center justify-between bg-white/5">
+              <div className="p-4 flex items-center justify-between bg-white dark:bg-neutral-950/5">
                 <div className="font-bold text-white uppercase tracking-wider text-sm">
                   Chi tiết món ăn
                 </div>
@@ -172,7 +172,7 @@ export default function KitchenOrderDetailModal({
                           ? "bg-red-500/10 opacity-50"
                           : itemOverdue
                           ? "bg-red-500/10"
-                          : "hover:bg-white/5"
+                          : "hover:bg-white dark:bg-neutral-950/5"
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -185,7 +185,7 @@ export default function KitchenOrderDetailModal({
                               ? "bg-red-500/20 border-red-500/30 text-red-300"
                               : itemOverdue
                               ? "bg-red-500/20 border-red-500/30 text-red-300"
-                              : "bg-white/10 border-white/10 text-white"
+                              : "bg-white dark:bg-neutral-950/10 border-white/10 text-white"
                           }`}
                         >
                           {it.qty}
@@ -288,7 +288,7 @@ export default function KitchenOrderDetailModal({
           <div className="p-5 border-t border-white/10 bg-black/40 flex gap-3">
             <button
               onClick={onClose}
-              className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-bold transition-all"
+              className="px-6 py-3 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-300 font-bold transition-all"
             >
               Đóng
             </button>

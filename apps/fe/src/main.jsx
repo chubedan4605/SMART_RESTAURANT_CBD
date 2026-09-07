@@ -11,13 +11,17 @@ import { SocketProvider } from "./context/SocketContext";
 // Initialize i18n
 import "./i18n";
 
+import { ThemeProvider } from "./context/ThemeContext";
+
 injectStore(store);
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <SocketProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </SocketProvider>
+    <ThemeProvider>
+      <SocketProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SocketProvider>
+    </ThemeProvider>
   </Provider>,
 );

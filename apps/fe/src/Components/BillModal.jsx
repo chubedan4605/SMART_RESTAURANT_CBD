@@ -618,7 +618,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
     <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-neutral-900 w-full max-w-lg rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 border-b border-white/10 flex justify-between items-center bg-white/5">
+        <div className="p-5 border-b border-white/10 flex justify-between items-center bg-white dark:bg-neutral-950/5">
           <div>
             <h3 className="text-white font-bold text-lg">
               {t("bill.paymentFor")}: {tableName}
@@ -646,11 +646,11 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
               </span>
             </div>
 
-            <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden shadow-inner">
+            <div className="bg-white dark:bg-neutral-950/5 rounded-2xl border border-white/10 overflow-hidden shadow-inner">
               {billData.items.map((item, idx) => (
                 <div
                   key={idx}
-                  className="group p-4 border-b border-white/5 last:border-0 hover:bg-white/2 transition-colors"
+                  className="group p-4 border-b border-white/5 last:border-0 hover:bg-white dark:bg-neutral-950/2 transition-colors"
                 >
                   {/* HÀNG TRÊN: Thông tin chính món ăn */}
                   <div className="flex justify-between items-start gap-4">
@@ -799,7 +799,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Manual Discount - Disabled when coupon applied */}
             <div
-              className={`bg-white/5 p-3 rounded-xl border border-white/5 space-y-2 ${appliedCoupon ? "opacity-50" : ""}`}
+              className={`bg-white dark:bg-neutral-950/5 p-3 rounded-xl border border-white/5 space-y-2 ${appliedCoupon ? "opacity-50" : ""}`}
             >
               <label className="text-xs font-bold text-gray-400 uppercase">
                 {t("bill.manualDiscount")}{" "}
@@ -832,7 +832,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
             </div>
 
             {/* Payment Method - Đã thêm background để cân đối với bên trái */}
-            <div className="bg-white/5 p-3 rounded-xl border border-white/5 space-y-2">
+            <div className="bg-white dark:bg-neutral-950/5 p-3 rounded-xl border border-white/5 space-y-2">
               <label className="text-xs font-bold text-gray-400 uppercase block">
                 {t("bill.paymentBy")}
               </label>
@@ -870,7 +870,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                     className={`flex-1 min-w-15 flex flex-col items-center justify-center p-2 rounded-lg border transition-all ${
                       paymentMethod === m.id
                         ? "bg-orange-600 text-white border-orange-500"
-                        : "bg-white/5 text-gray-400 border-white/5 hover:bg-white/10"
+                        : "bg-white dark:bg-neutral-950/5 text-gray-400 border-white/5 hover:bg-white dark:bg-neutral-950/10"
                     }`}
                   >
                     {m.icon}
@@ -884,7 +884,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
           {/* QR Code Section */}
           {paymentMethod === "transfer" && (
             <div className="flex flex-col items-center animate-in zoom-in-95 duration-300">
-              <div className="bg-white p-3 rounded-xl shadow-lg">
+              <div className="bg-white dark:bg-neutral-950 p-3 rounded-xl shadow-lg">
                 {qrBankUrl ? (
                   <img
                     src={qrBankUrl}
@@ -911,7 +911,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
 
           {/* Stripe Checkout Section */}
           {paymentMethod === "stripe" && !showStripeForm && !showStripeQR && (
-            <div className="flex flex-col items-center animate-in zoom-in-95 duration-300 p-4 bg-white/5 rounded-xl border border-white/10">
+            <div className="flex flex-col items-center animate-in zoom-in-95 duration-300 p-4 bg-white dark:bg-neutral-950/5 rounded-xl border border-white/10">
               <Wallet size={48} className="text-purple-500 mb-3" />
               <h4 className="text-white font-bold mb-2">
                 {t("bill.stripePayment")}
@@ -970,7 +970,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                 {t("bill.scanStripeDesc")}
               </p>
 
-              <div className="bg-white p-4 rounded-xl shadow-lg">
+              <div className="bg-white dark:bg-neutral-950 p-4 rounded-xl shadow-lg">
                 <QRCodeReact
                   value={stripePaymentUrl}
                   size={200}
@@ -1003,7 +1003,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
               <div className="mt-4 flex gap-2 w-full">
                 <button
                   onClick={() => window.open(stripePaymentUrl, "_blank")}
-                  className="flex-1 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-lg transition-all flex items-center justify-center gap-2"
                 >
                   <ExternalLink size={16} />
                   {t("bill.openLink")}
@@ -1112,7 +1112,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
         <div className="p-5 border-t border-white/10 bg-black/40 flex gap-3">
           <button
             onClick={handleDownload}
-            className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all"
+            className="px-4 py-3 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-xl transition-all"
             title={t("bill.downloadPDF")}
           >
             <FileDown size={20} />
@@ -1120,7 +1120,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
 
           <button
             onClick={handlePrint}
-            className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all"
+            className="px-4 py-3 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-xl transition-all"
             title={t("bill.printBill")}
           >
             <Printer size={20} />

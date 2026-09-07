@@ -16,6 +16,9 @@
   --color-bistro-charcoal: #2C2C2C;
 }
 
+/* Enable class-based dark mode in Tailwind v4 */
+@custom-variant dark (&:is(.dark *));
+
 /* Fix Chrome/Edge autofill background */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

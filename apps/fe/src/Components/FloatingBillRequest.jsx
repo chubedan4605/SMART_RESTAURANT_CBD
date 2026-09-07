@@ -160,7 +160,7 @@ const FloatingBillRequest = ({ tableId, sessionId }) => {
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="flex-1 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-medium transition-all"
+                  className="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-300 font-medium transition-all"
                 >
                   {t("bill.later")}
                 </button>

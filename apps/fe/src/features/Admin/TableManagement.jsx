@@ -442,7 +442,7 @@ const TableManagement = () => {
           <button
             onClick={handleDownloadZip}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition text-sm"
+              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition text-sm"
             title="Tải tất cả ảnh (ZIP)"
           >
             <Archive size={16} />
@@ -452,7 +452,7 @@ const TableManagement = () => {
           <button
             onClick={() => handleGeneratePDF("grid")}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition text-sm"
+              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition text-sm"
             title="In lưới 4 bàn/trang"
           >
             <Grid size={16} />
@@ -462,7 +462,7 @@ const TableManagement = () => {
           <button
             onClick={() => handleGeneratePDF("single")}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition text-sm"
+              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition text-sm"
             title="In 1 bàn/trang"
           >
             <Square size={16} />
@@ -572,7 +572,7 @@ const TableManagement = () => {
       {/* Left grid (full width) */}
       <div className="mt-6">
         {loading ? (
-          <div className="rounded-2xl bg-white/5 border border-white/10 p-10 text-center text-gray-500">
+          <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-10 text-center text-gray-500">
             Đang tải dữ liệu...
           </div>
         ) : (
@@ -587,10 +587,10 @@ const TableManagement = () => {
                   className={`group relative rounded-2xl border p-5 cursor-pointer transition
                 ${hasCustomer
                       ? "bg-blue-500/10 border-blue-500/30 hover:bg-blue-500/15 hover:border-blue-500/40"
-                      : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-orange-500/20"
+                      : "bg-white dark:bg-neutral-950/5 border-white/10 hover:bg-white dark:bg-neutral-950/10 hover:border-orange-500/20"
                     }
                 ${selectedTable?.id === table.id
-                      ? "border-orange-500/40 ring-1 ring-orange-500/30 bg-white/10"
+                      ? "border-orange-500/40 ring-1 ring-orange-500/30 bg-white dark:bg-neutral-950/10"
                       : ""
                     }
                 ${table.status === "inactive" ? "opacity-60 grayscale" : ""}
@@ -615,7 +615,7 @@ const TableManagement = () => {
                             ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
                             : table.status === "active"
                               ? "bg-orange-500/10 text-orange-300 border border-orange-500/20"
-                              : "bg-white/5 text-gray-400 border border-white/10"
+                              : "bg-white dark:bg-neutral-950/5 text-gray-400 border border-white/10"
                           }`}
                       >
                         {String(table.table_number || "").replace(/\D/g, "") ||
@@ -672,7 +672,7 @@ const TableManagement = () => {
                         openEdit(table);
                       }}
                       className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl
-                    bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+                    bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
                       title="Edit"
                     >
                       <Edit size={16} />
@@ -700,7 +700,7 @@ const TableManagement = () => {
 
             {/* Kiểm tra nếu không có bàn nào thì hiện thông báo */}
             {tables.length === 0 && (
-              <div className="col-span-full rounded-2xl bg-white/5 border border-white/10 p-10 text-center">
+              <div className="col-span-full rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-10 text-center">
                 <div className="text-white font-black">Chưa có bàn</div>
                 <div className="text-gray-400 text-sm mt-1">
                   Bấm “Thêm bàn” để tạo mới.
@@ -727,7 +727,7 @@ const TableManagement = () => {
                 </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-200"
+                  className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200"
                 >
                   <X size={18} />
                 </button>
@@ -830,7 +830,7 @@ const TableManagement = () => {
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
                   >
                     Huỷ
                   </button>

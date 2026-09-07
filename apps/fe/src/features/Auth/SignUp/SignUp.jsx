@@ -126,7 +126,7 @@ const SignUp = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans bg-bistro-cream">
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans bg-bistro-cream dark:bg-neutral-900">
       {/* 1. Background */}
       <div className="absolute inset-0 z-0">
         <img
@@ -134,35 +134,35 @@ const SignUp = () => {
           alt="Fine Dining"
           className="w-full h-full object-cover opacity-15"
         />
-        <div className="absolute inset-0 bg-bistro-cream/90 lg:bg-linear-to-r lg:from-bistro-cream/90 lg:via-bistro-cream/50 lg:to-transparent"></div>
+        <div className="absolute inset-0 bg-bistro-cream dark:bg-neutral-900/90 lg:bg-linear-to-r lg:from-bistro-cream/90 lg:via-bistro-cream/50 lg:to-transparent"></div>
       </div>
 
       {/* 2. Left Desktop */}
       <div className="relative hidden lg:flex lg:w-1/2 flex-col justify-between p-24 lg:p-32 z-10 overflow-hidden h-screen">
         <div className="flex flex-col leading-none">
-          <span className="font-display text-5xl text-bistro-charcoal">Lumière</span>
+          <span className="font-display text-5xl text-bistro-charcoal dark:text-gray-100">Lumière</span>
           <span className="font-sans text-[10px] tracking-[0.4em] uppercase mt-2 text-bistro-wine font-black">
             Bistro
           </span>
         </div>
 
         <div className="max-w-md space-y-8 mt-16">
-          <h2 className="text-4xl font-display text-bistro-charcoal leading-tight">
+          <h2 className="text-4xl font-display text-bistro-charcoal dark:text-gray-100 leading-tight">
             {t("auth.becomeMember")} <span className="italic text-bistro-wine"></span>{" "}
             <br />
             {t("auth.getMemberBenefits")}
           </h2>
 
-          <div className="space-y-5 text-bistro-charcoal/70">
+          <div className="space-y-5 text-bistro-charcoal dark:text-gray-100/70">
             <div className="flex items-start gap-4">
               <div className="p-2 bg-bistro-wine/5 rounded-lg text-bistro-wine mt-1">
                 <Star size={20} />
               </div>
               <div>
-                <p className="font-medium text-bistro-charcoal">
+                <p className="font-medium text-bistro-charcoal dark:text-gray-100">
                   {t("auth.firstOrderDiscount")}
                 </p>
-                <p className="text-xs text-bistro-charcoal/50 mt-1">{t("auth.applyToMenu")}</p>
+                <p className="text-xs text-bistro-charcoal dark:text-gray-100/50 mt-1">{t("auth.applyToMenu")}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -170,10 +170,10 @@ const SignUp = () => {
                 <Utensils size={20} />
               </div>
               <div>
-                <p className="font-medium text-bistro-charcoal">
+                <p className="font-medium text-bistro-charcoal dark:text-gray-100">
                   {t("auth.earnPoints")}
                 </p>
-                <p className="text-xs text-bistro-charcoal/50 mt-1">
+                <p className="text-xs text-bistro-charcoal dark:text-gray-100/50 mt-1">
                   {t("auth.pointsBenefit")}
                 </p>
               </div>
@@ -181,31 +181,31 @@ const SignUp = () => {
           </div>
         </div>
 
-        <div className="text-bistro-charcoal/30 text-[10px] tracking-widest uppercase mt-auto">
+        <div className="text-bistro-charcoal dark:text-gray-100/30 text-[10px] tracking-widest uppercase mt-auto">
           Join the Elite Taste — Since 2026
         </div>
       </div>
 
       {/* 3. Form */}
       <div className="relative z-10 w-full lg:w-1/2 flex justify-center items-center px-4 py-10 h-full">
-        <div className="w-full max-w-md bg-white border border-bistro-wine/10 rounded-sm p-8 md:p-10 shadow-2xl">
+        <div className="w-full max-w-md bg-white dark:bg-neutral-950 border border-bistro-wine/10 rounded-sm p-8 md:p-10 shadow-2xl">
           {/* Mobile Header */}
           <div className="lg:hidden text-center mb-6">
-            <p className="font-display text-4xl text-bistro-charcoal">Lumière</p>
+            <p className="font-display text-4xl text-bistro-charcoal dark:text-gray-100">Lumière</p>
           </div>
 
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-display text-bistro-charcoal leading-tight">
+            <h2 className="text-2xl md:text-3xl font-display text-bistro-charcoal dark:text-gray-100 leading-tight">
               {t("auth.createAccount")}
             </h2>
-            <p className="text-bistro-charcoal/50 text-xs mt-2 uppercase tracking-[0.2em] font-sans">
+            <p className="text-bistro-charcoal dark:text-gray-100/50 text-xs mt-2 uppercase tracking-[0.2em] font-sans">
               {t("auth.startJourney")}
             </p>
           </div>
 
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             {/* Full Name */}
-            <div className="bg-white text-bistro-charcoal">
+            <div className="bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100">
               <Input
                 label={t("auth.fullName")}
                 type="text"
@@ -213,14 +213,14 @@ const SignUp = () => {
                 icon={User}
                 error={errors.fullName?.message}
                 {...register("fullName")}
-                className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
-                labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
+                labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
                 iconClassName="!text-bistro-wine"
               />
             </div>
 
             {/* Email */}
-            <div className="bg-white text-bistro-charcoal">
+            <div className="bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100">
               <Input
                 label={t("auth.email")}
                 type="email"
@@ -230,15 +230,15 @@ const SignUp = () => {
                 {...register("email", {
                   onChange: (e) => checkEmailRealtime(e.target.value),
                 })}
-                className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
-                labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
+                labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
                 iconClassName="!text-bistro-wine"
               />
             </div>
 
             {/* Password + Confirm */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white text-bistro-charcoal">
+              <div className="bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100">
                 <Input
                   label={t("auth.password")}
                   type="password"
@@ -246,12 +246,12 @@ const SignUp = () => {
                   icon={Lock}
                   error={errors.password?.message}
                   {...register("password")}
-                  className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
-                  labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                  className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
+                  labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
                   iconClassName="!text-bistro-wine"
                 />
               </div>
-              <div className="bg-white text-bistro-charcoal">
+              <div className="bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100">
                 <Input
                   label={t("auth.confirmPassword")}
                   type="password"
@@ -259,8 +259,8 @@ const SignUp = () => {
                   icon={ShieldCheck}
                   error={errors.confirmPassword?.message}
                   {...register("confirmPassword")}
-                  className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
-                  labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                  className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
+                  labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
                   iconClassName="!text-bistro-wine"
                 />
               </div>
@@ -271,12 +271,12 @@ const SignUp = () => {
               <input
                 type="checkbox"
                 id="terms"
-                className="mt-0.5 w-4 h-4 accent-bistro-wine rounded border-bistro-charcoal/20"
+                className="mt-0.5 w-4 h-4 accent-bistro-wine rounded border-bistro-charcoal/20 dark:border-white/20"
                 {...register("terms")}
               />
               <label
                 htmlFor="terms"
-                className="text-xs text-bistro-charcoal/60 leading-relaxed font-sans"
+                className="text-xs text-bistro-charcoal dark:text-gray-100/60 leading-relaxed font-sans"
               >
                 {t("auth.agreeTerms")}{" "}
                 <span className="text-bistro-wine font-medium underline cursor-pointer hover:text-bistro-wine-light transition-colors">
@@ -311,7 +311,7 @@ const SignUp = () => {
                 <div className="w-full border-t border-bistro-wine/10"></div>
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-sans tracking-[0.2em]">
-                <span className="bg-white px-3 text-bistro-charcoal/40">
+                <span className="bg-white dark:bg-neutral-950 px-3 text-bistro-charcoal dark:text-gray-100/40">
                   {t("auth.orFasterWith")}
                 </span>
               </div>
@@ -328,7 +328,7 @@ const SignUp = () => {
             </div>
           </form>
 
-          <p className="text-center text-bistro-charcoal/60 text-[13px] mt-8 font-sans">
+          <p className="text-center text-bistro-charcoal dark:text-gray-100/60 text-[13px] mt-8 font-sans">
             {t("auth.haveAccount")}
             <Link
               to="/signin"

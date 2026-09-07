@@ -68,7 +68,7 @@ const OrderHistory = () => {
           {orders.map((o) => (
             <div
               key={o.id}
-              className="bg-white/5 border border-white/10 rounded-xl p-4"
+              className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-xl p-4"
             >
               {/* Header */}
               <div className="flex items-center justify-between">
@@ -99,7 +99,7 @@ const OrderHistory = () => {
                     className="flex items-center gap-3 text-sm text-white/80"
                   >
                     {/* Image */}
-                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-white/10 flex-shrink-0">
+                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-white dark:bg-neutral-950/10 flex-shrink-0">
                       {it.image_url ? (
                         <img
                           src={it.image_url}
@@ -153,7 +153,7 @@ const OrderHistory = () => {
         <button
           disabled={page === 1}
           onClick={() => setPage((p) => Math.max(1, p - 1))}
-          className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm disabled:opacity-40"
+          className="px-4 py-2 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-sm disabled:opacity-40"
         >
           {t("order.history.prevPage")}
         </button>
@@ -165,7 +165,7 @@ const OrderHistory = () => {
         <button
           disabled={!hasMore}
           onClick={() => setPage((p) => p + 1)}
-          className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm disabled:opacity-40"
+          className="px-4 py-2 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-sm disabled:opacity-40"
         >
           {t("order.history.nextPage")}
         </button>

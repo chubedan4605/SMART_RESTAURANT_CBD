@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { ClipboardList, LogOut, Menu as MenuIcon, X, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ClipboardList, LogOut, Menu as MenuIcon, X, User, Moon, Sun } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
+import { useDispatch } from "react-redux";
+import { logout as logoutAction } from "../store/slices/authSlice";
 
 const waiterNavItems = [
   { to: "/waiter", label: "Đơn phục vụ", icon: ClipboardList },
@@ -9,11 +12,14 @@ const waiterNavItems = [
 
 export default function WaiterNavbar() {
   const [open, setOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const logout = () => {
-    localStorage.clear();
-    window.location.href = "/signin";
+    dispatch(logoutAction());
+    navigate("/signin");
   };
 
   return (
@@ -40,16 +46,24 @@ export default function WaiterNavbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-400 hover:text-white transition-colors"
+              title="Toggle Theme"
+            >
+              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
             <button
               onClick={logout}
-              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 transition-all active:scale-95"
+              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95"
             >
               <LogOut size={18} className="text-orange-400" />
               Đăng xuất
             </button>
             <button
               onClick={() => setOpen((v) => !v)}
-              className="md:hidden p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 active:scale-95"
+              className="md:hidden p-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 active:scale-95"
             >
               {open ? <X size={22} className="text-orange-400" /> : <MenuIcon size={22} />}
             </button>
@@ -101,7 +115,7 @@ function WaiterNavLink({ to, label, icon: Icon }) {
         "px-4 py-2 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-2",
         active
           ? "bg-orange-500/15 border border-orange-500/20 text-orange-300"
-          : "bg-white/0 border border-transparent text-gray-300 hover:bg-white/5 hover:border-white/10 hover:text-white",
+          : "bg-white dark:bg-neutral-950/0 border border-transparent text-gray-300 hover:bg-white dark:bg-neutral-950/5 hover:border-white/10 hover:text-white",
       ].join(" ")}
     >
       <Icon size={16} className={active ? "text-orange-400" : "text-gray-400"} />
@@ -121,7 +135,7 @@ function MobileWaiterLink({ to, label, icon: Icon, onClick }) {
         "px-4 py-3 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-3 border",
         active
           ? "bg-orange-500/15 border-orange-500/20 text-orange-300"
-          : "bg-white/0 border-white/10 text-gray-200 hover:bg-white/5",
+          : "bg-white dark:bg-neutral-950/0 border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/5",
       ].join(" ")}
     >
       <Icon size={18} className={active ? "text-orange-400" : "text-gray-400"} />

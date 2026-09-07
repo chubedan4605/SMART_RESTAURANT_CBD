@@ -13,7 +13,7 @@ export default function Avatar({ url, name, size = 56, className = "" }) {
   return (
     <div
       style={boxStyle}
-      className={`rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center ${className}`}
+      className={`rounded-full overflow-hidden border border-white/10 bg-white dark:bg-neutral-950/5 flex items-center justify-center ${className}`}
     >
       {url && ok ? (
         <img

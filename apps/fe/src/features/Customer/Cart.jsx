@@ -153,15 +153,15 @@ const Cart = () => {
 
   if (!cartItems || cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-bistro-cream text-bistro-charcoal flex items-center justify-center p-4 font-sans">
+      <div className="min-h-screen bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 flex items-center justify-center p-4 font-sans">
         <div className="text-center max-w-md">
-          <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-white border border-bistro-wine/10 flex items-center justify-center shadow-lg">
+          <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-white dark:bg-neutral-950 border border-bistro-wine/10 flex items-center justify-center shadow-lg">
             <ShoppingCart size={64} className="text-bistro-wine/40" />
           </div>
-          <h2 className="text-3xl font-display text-bistro-charcoal mb-3">
+          <h2 className="text-3xl font-display text-bistro-charcoal dark:text-gray-100 mb-3">
             {t("cart.empty")}
           </h2>
-          <p className="text-bistro-charcoal/60 mb-8 font-sans leading-relaxed">
+          <p className="text-bistro-charcoal dark:text-gray-100/60 mb-8 font-sans leading-relaxed">
             {t("cart.emptyDescription")}
           </p>
           <Link
@@ -181,15 +181,15 @@ const Cart = () => {
   const grandTotal = subtotal + serviceFee;
 
   return (
-    <div className="min-h-screen bg-bistro-cream text-bistro-charcoal pb-32 font-sans">
-      <div className="sticky top-0 z-20 bg-bistro-cream/95 backdrop-blur-2xl border-b border-bistro-wine/10 py-5 shadow-sm">
+    <div className="min-h-screen bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 pb-32 font-sans">
+      <div className="sticky top-0 z-20 bg-bistro-cream dark:bg-neutral-900/95 backdrop-blur-2xl border-b border-bistro-wine/10 py-5 shadow-sm">
         <div className="container mx-auto max-w-4xl px-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display text-bistro-charcoal">
+              <h1 className="text-3xl font-display text-bistro-charcoal dark:text-gray-100">
                 {t("cart.title").toUpperCase()}
               </h1>
-              <p className="text-xs font-sans text-bistro-charcoal/50 mt-1 uppercase tracking-widest font-bold">
+              <p className="text-xs font-sans text-bistro-charcoal dark:text-gray-100/50 mt-1 uppercase tracking-widest font-bold">
                 {t("cart.items", { count: totalItems })}
               </p>
             </div>
@@ -211,7 +211,7 @@ const Cart = () => {
             <div
               key={item.lineKey}
               onClick={() => setEditingItem(item)} // ✅ click mở popup sửa
-              className="cursor-pointer group bg-white hover:bg-bistro-cream/30 rounded-sm p-4 transition-all duration-300 border border-bistro-charcoal/10 hover:border-bistro-wine/30 shadow-sm hover:shadow-md"
+              className="cursor-pointer group bg-white dark:bg-neutral-950 hover:bg-bistro-cream dark:bg-neutral-900/30 rounded-sm p-4 transition-all duration-300 border border-bistro-charcoal/10 dark:border-white/10 hover:border-bistro-wine/30 shadow-sm hover:shadow-md"
               title={t("cart.clickToEdit")}
             >
               <div className="flex gap-4">
@@ -227,13 +227,13 @@ const Cart = () => {
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-lg font-display text-bistro-charcoal group-hover:text-bistro-wine transition-colors line-clamp-1">
+                      <h3 className="text-lg font-display text-bistro-charcoal dark:text-gray-100 group-hover:text-bistro-wine transition-colors line-clamp-1">
                         {item.name}
                       </h3>
 
                       <button
                         onClick={(e) => handleRemoveItem(e, item)}
-                        className="p-1.5 text-bistro-charcoal/40 hover:text-red-500 hover:bg-red-50 rounded-sm transition-all"
+                        className="p-1.5 text-bistro-charcoal dark:text-gray-100/40 hover:text-red-500 hover:bg-red-50 rounded-sm transition-all"
                       >
                         <X size={18} />
                       </button>
@@ -241,15 +241,15 @@ const Cart = () => {
 
                     {Array.isArray(item.modifiers) &&
                     item.modifiers.length > 0 ? (
-                      <div className="mt-2 text-xs text-bistro-charcoal/70 space-y-1 font-sans">
+                      <div className="mt-2 text-xs text-bistro-charcoal dark:text-gray-100/70 space-y-1 font-sans">
                         {item.modifiers.map((m, i) => (
                           <div
                             key={`${item.lineKey}-m-${i}`}
                             className="flex justify-between gap-2"
                           >
-                            <span className="text-bistro-charcoal/60">
+                            <span className="text-bistro-charcoal dark:text-gray-100/60">
                               • {m.group_name ? `${m.group_name}: ` : ""}
-                              <span className="text-bistro-charcoal font-medium">
+                              <span className="text-bistro-charcoal dark:text-gray-100 font-medium">
                                 {m.name}
                               </span>
                             </span>
@@ -262,13 +262,13 @@ const Cart = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="mt-2 text-xs text-bistro-charcoal/40 italic font-sans">
+                      <div className="mt-2 text-xs text-bistro-charcoal dark:text-gray-100/40 italic font-sans">
                         (Nhấn để chọn tuỳ chọn)
                       </div>
                     )}
 
                     {item.note ? (
-                      <div className="mt-2 text-[11px] text-bistro-charcoal/50 italic font-sans">
+                      <div className="mt-2 text-[11px] text-bistro-charcoal dark:text-gray-100/50 italic font-sans">
                         Ghi chú: {item.note}
                       </div>
                     ) : null}
@@ -276,23 +276,23 @@ const Cart = () => {
 
                   <div className="flex justify-between items-end mt-4">
                     <div className="flex flex-col">
-                      <span className="text-xl font-sans font-bold text-bistro-charcoal">
+                      <span className="text-xl font-sans font-bold text-bistro-charcoal dark:text-gray-100">
                         {formatMoneyVND(item.lineTotal)}
                       </span>
-                      <span className="text-xs text-bistro-charcoal/50 font-sans mt-0.5">
+                      <span className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans mt-0.5">
                         {formatMoneyVND(item.unit)} × {item.quantity}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1 border border-bistro-charcoal/10">
+                    <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1 border border-bistro-charcoal/10 dark:border-white/10">
                       <button
                         onClick={(e) => handleDecrement(e, item)}
-                        className="w-8 h-8 rounded-full bg-white hover:bg-bistro-wine text-bistro-charcoal hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
+                        className="w-8 h-8 rounded-full bg-white dark:bg-neutral-950 hover:bg-bistro-wine text-bistro-charcoal dark:text-gray-100 hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
                       >
                         <Minus size={16} />
                       </button>
 
-                      <span className="text-sm font-sans font-bold w-6 text-center text-bistro-charcoal">
+                      <span className="text-sm font-sans font-bold w-6 text-center text-bistro-charcoal dark:text-gray-100">
                         {item.quantity}
                       </span>
 
@@ -311,25 +311,25 @@ const Cart = () => {
         </div>
 
         {/* Summary */}
-        <div className="mt-8 bg-white rounded-sm p-8 border border-bistro-wine/10 shadow-xl">
-          <h3 className="text-xl font-display mb-6 text-bistro-charcoal">
+        <div className="mt-8 bg-white dark:bg-neutral-950 rounded-sm p-8 border border-bistro-wine/10 shadow-xl">
+          <h3 className="text-xl font-display mb-6 text-bistro-charcoal dark:text-gray-100">
             {t("cart.orderDetails")}
           </h3>
 
-          <div className="flex justify-between text-bistro-charcoal/70 font-sans text-sm mb-3">
+          <div className="flex justify-between text-bistro-charcoal dark:text-gray-100/70 font-sans text-sm mb-3">
             <span>{t("cart.itemsTotal", { count: totalItems })}</span>
-            <span className="font-medium text-bistro-charcoal">{formatMoneyVND(subtotal)}</span>
+            <span className="font-medium text-bistro-charcoal dark:text-gray-100">{formatMoneyVND(subtotal)}</span>
           </div>
 
-          <div className="flex justify-between text-bistro-charcoal/70 font-sans text-sm">
+          <div className="flex justify-between text-bistro-charcoal dark:text-gray-100/70 font-sans text-sm">
             <span>{t("cart.serviceFee")}</span>
-            <span className="font-medium text-bistro-charcoal">{formatMoneyVND(serviceFee)}</span>
+            <span className="font-medium text-bistro-charcoal dark:text-gray-100">{formatMoneyVND(serviceFee)}</span>
           </div>
 
           <div className="h-px bg-bistro-wine/10 my-6" />
 
           <div className="flex justify-between text-xl font-sans font-bold items-end">
-            <span className="text-bistro-charcoal text-sm uppercase tracking-widest">{t("cart.total")}</span>
+            <span className="text-bistro-charcoal dark:text-gray-100 text-sm uppercase tracking-widest">{t("cart.total")}</span>
             <span className="text-2xl text-bistro-wine">
               {formatMoneyVND(grandTotal)}
             </span>
@@ -345,7 +345,7 @@ const Cart = () => {
 
           <Link
             to={tableCode ? `/menu/${tableCode}` : "/menu"}
-            className="block text-center mt-6 text-[11px] uppercase tracking-widest font-sans font-bold text-bistro-charcoal/50 hover:text-bistro-wine transition-colors"
+            className="block text-center mt-6 text-[11px] uppercase tracking-widest font-sans font-bold text-bistro-charcoal dark:text-gray-100/50 hover:text-bistro-wine transition-colors"
           >
             {t("cart.continueShopping")}
           </Link>

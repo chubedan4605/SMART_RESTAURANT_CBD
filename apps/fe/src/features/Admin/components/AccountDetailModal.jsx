@@ -31,7 +31,7 @@ function AvatarBlock({ name, avatarUrl }) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="w-26 h-26 rounded-full overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+      <div className="w-26 h-26 rounded-full overflow-hidden border border-white/10 bg-white dark:bg-neutral-950/5 flex items-center justify-center">
         {avatarUrl && imgOk ? (
           <img
             src={avatarUrl}
@@ -201,7 +201,7 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl hover:bg-white/5 transition"
+              className="p-2 rounded-xl hover:bg-white dark:bg-neutral-950/5 transition"
               type="button"
               aria-label="Close"
             >
@@ -220,7 +220,7 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
                   <button
                     type="button"
                     onClick={startEdit}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
                   >
                     <Pencil size={16} />
                     Edit
@@ -231,7 +231,7 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
                       type="button"
                       onClick={cancelEdit}
                       disabled={saving}
-                      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition disabled:opacity-60"
+                      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition disabled:opacity-60"
                     >
                       <Ban size={16} />
                       Cancel
@@ -249,7 +249,7 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
                 ))}
             </div>
 
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-3">
+            <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3">
               {/* Name (editable) */}
               <Row
                 label="Name"
@@ -321,7 +321,7 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
             </div>
 
             {/* ✅ Active toggle (giống ngoài page) */}
-            <div className="flex items-center justify-between rounded-2xl bg-white/5 border border-white/10 p-3">
+            <div className="flex items-center justify-between rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3">
               <div>
                 <div className="text-white font-bold text-sm">Active</div>
                 <div className="text-xs text-gray-400">Bật/tắt tài khoản</div>
@@ -353,7 +353,7 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+              className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
             >
               Close
             </button>

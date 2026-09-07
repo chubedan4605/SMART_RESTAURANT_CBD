@@ -34,7 +34,7 @@ export default function PaymentSuccess() {
         <p className="text-gray-400 mb-6">{t("payment.successMessage")}</p>
 
         {sessionId && (
-          <div className="bg-white/5 rounded-xl p-4 mb-6">
+          <div className="bg-white dark:bg-neutral-950/5 rounded-xl p-4 mb-6">
             <p className="text-xs text-gray-500 mb-1">
               {t("payment.transactionId")}
             </p>

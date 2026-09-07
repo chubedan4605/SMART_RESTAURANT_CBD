@@ -74,7 +74,7 @@ export default function EditProfileModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-white/5 text-white/70"
+            className="p-2 rounded-xl hover:bg-white dark:bg-neutral-950/5 text-white/70"
           >
             <X size={18} />
           </button>
@@ -84,7 +84,7 @@ export default function EditProfileModal({
           {/* Avatar */}
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="h-16 w-16 rounded-full overflow-hidden border border-white/10 bg-white/5">
+              <div className="h-16 w-16 rounded-full overflow-hidden border border-white/10 bg-white dark:bg-neutral-950/5">
                 {previewUrl ? (
                   <img
                     src={previewUrl}
@@ -132,7 +132,7 @@ export default function EditProfileModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t("profile.fullNamePlaceholder")}
-              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/0 text-white outline-none placeholder:text-gray-500"
+              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white dark:bg-neutral-950/0 text-white outline-none placeholder:text-gray-500"
             />
             {String(name || "").trim().length > 0 &&
             String(name || "").trim().length < 2 ? (
@@ -152,7 +152,7 @@ export default function EditProfileModal({
               onChange={(e) => setPreferences(e.target.value)}
               placeholder={t("profile.preferencesPlaceholder")}
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/0 text-white outline-none placeholder:text-gray-500 resize-none"
+              className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white dark:bg-neutral-950/0 text-white outline-none placeholder:text-gray-500 resize-none"
             />
             {String(preferences || "").length > 255 ? (
               <p className="text-xs text-red-300">
@@ -166,7 +166,7 @@ export default function EditProfileModal({
           <button
             type="button"
             onClick={onClose}
-            className="w-1/3 py-3 rounded-xl border border-white/10 text-white/80 hover:bg-white/5 font-bold"
+            className="w-1/3 py-3 rounded-xl border border-white/10 text-white/80 hover:bg-white dark:bg-neutral-950/5 font-bold"
           >
             {t("profile.cancel")}
           </button>

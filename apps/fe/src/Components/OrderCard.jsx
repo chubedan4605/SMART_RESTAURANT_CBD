@@ -121,7 +121,7 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
         <div className="mt-auto pt-5 flex flex-col sm:flex-row gap-2">
           <button
             onClick={onView}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
           >
             <Eye size={18} />
             Xem chi tiết

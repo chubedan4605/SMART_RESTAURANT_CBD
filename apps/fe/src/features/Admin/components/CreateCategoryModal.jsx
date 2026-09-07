@@ -87,7 +87,7 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
 
             <button
               onClick={handleClose}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+              className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
               type="button"
               aria-label="Close"
               disabled={isLoading}
@@ -149,7 +149,7 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
           <div className="px-5 py-4 border-t border-white/10 flex items-center justify-end gap-2">
             <button
               onClick={handleClose}
-              className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+              className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
               type="button"
               disabled={isLoading}
             >

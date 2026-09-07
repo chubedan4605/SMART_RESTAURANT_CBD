@@ -47,7 +47,7 @@ export default function ResetPassword() {
   if (!tokenOk) {
     return (
       <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center px-4">
-        <div className="w-full max-w-md bg-white/3 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
+        <div className="w-full max-w-md bg-white dark:bg-neutral-950/3 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
           <h1 className="text-2xl font-black">{t("auth.invalidLink")}</h1>
           <p className="text-sm text-white/60 mt-2">
             {t("auth.invalidLinkDesc")}
@@ -65,7 +65,7 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white/3 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
+      <div className="w-full max-w-md bg-white dark:bg-neutral-950/3 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
         <h1 className="text-2xl font-black">{t("auth.resetPassword")}</h1>
         <p className="text-sm text-white/60 mt-2">
           {t("auth.resetPasswordDesc")}

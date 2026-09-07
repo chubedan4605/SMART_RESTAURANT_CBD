@@ -32,15 +32,15 @@ export default function Forgot() {
   };
 
   return (
-    <div className="min-h-screen bg-bistro-cream text-bistro-charcoal font-sans flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white border border-bistro-wine/10 rounded-sm p-10 shadow-2xl">
-        <h1 className="text-3xl font-display text-bistro-charcoal">{t("auth.forgotPasswordTitle")}</h1>
-        <p className="text-sm text-bistro-charcoal/60 mt-3 font-sans leading-relaxed">
+    <div className="min-h-screen bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 font-sans flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-white dark:bg-neutral-950 border border-bistro-wine/10 rounded-sm p-10 shadow-2xl">
+        <h1 className="text-3xl font-display text-bistro-charcoal dark:text-gray-100">{t("auth.forgotPasswordTitle")}</h1>
+        <p className="text-sm text-bistro-charcoal dark:text-gray-100/60 mt-3 font-sans leading-relaxed">
           {t("auth.forgotPasswordDesc")}
         </p>
 
         <form className="space-y-6 mt-8" onSubmit={handleSubmit(onSubmit)}>
-          <div className="bg-white text-bistro-charcoal">
+          <div className="bg-white dark:bg-neutral-950 text-bistro-charcoal dark:text-gray-100">
             <Input
               label={t("auth.email")}
               type="email"
@@ -48,8 +48,8 @@ export default function Forgot() {
               icon={Mail}
               error={errors.email?.message}
               {...register("email")}
-              className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
-              labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+              className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
+              labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
               iconClassName="!text-bistro-wine"
             />
           </div>

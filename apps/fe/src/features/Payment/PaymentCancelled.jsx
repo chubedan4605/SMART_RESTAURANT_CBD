@@ -45,7 +45,7 @@ export default function PaymentCancelled() {
 
         <button
           onClick={() => navigate("/")}
-          className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition-all"
+          className="w-full py-3 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-xl font-bold transition-all"
         >
           {t("payment.backToHome")}
         </button>

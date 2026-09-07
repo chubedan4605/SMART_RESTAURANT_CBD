@@ -20,7 +20,7 @@ const OrderStatus = () => {
         {/* Nút quay lại menu */}
         <Link
           to="/menu"
-          className="block w-full px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-center text-gray-300 font-medium transition-all"
+          className="block w-full px-6 py-3 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-center text-gray-300 font-medium transition-all"
         >
           {t("order.tracking.viewMenu")}
         </Link>

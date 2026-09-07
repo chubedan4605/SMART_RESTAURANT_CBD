@@ -47,7 +47,7 @@ function ToastItem({ notification, onClose, onNavigate }) {
       case "table_update":
         return "border-green-500/50 bg-green-500/10";
       default:
-        return "border-white/20 bg-white/5";
+        return "border-white/20 bg-white dark:bg-neutral-950/5";
     }
   };
 
@@ -62,7 +62,7 @@ function ToastItem({ notification, onClose, onNavigate }) {
       case "table_update":
         return "text-green-400 bg-green-500/20";
       default:
-        return "text-gray-400 bg-white/10";
+        return "text-gray-400 bg-white dark:bg-neutral-950/10";
     }
   };
 
@@ -82,7 +82,7 @@ function ToastItem({ notification, onClose, onNavigate }) {
           e.stopPropagation();
           handleClose();
         }}
-        className="absolute top-2 right-2 p-1 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition"
+        className="absolute top-2 right-2 p-1 rounded-lg hover:bg-white dark:bg-neutral-950/10 text-gray-400 hover:text-white transition"
       >
         <X className="w-4 h-4" />
       </button>
@@ -110,7 +110,7 @@ function ToastItem({ notification, onClose, onNavigate }) {
       </div>
 
       {/* Progress bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5 rounded-b-2xl overflow-hidden">
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white dark:bg-neutral-950/5 rounded-b-2xl overflow-hidden">
         <div
           className="h-full bg-orange-500 animate-shrink-width"
           style={{ animationDuration: "5s" }}

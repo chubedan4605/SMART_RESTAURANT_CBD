@@ -120,7 +120,7 @@ const BillRequestNotification = () => {
               </div>
 
               {req.note && (
-                <div className="mt-2 text-sm text-gray-300 bg-white/5 p-2 rounded-lg">
+                <div className="mt-2 text-sm text-gray-300 bg-white dark:bg-neutral-950/5 p-2 rounded-lg">
                   {req.note}
                 </div>
               )}

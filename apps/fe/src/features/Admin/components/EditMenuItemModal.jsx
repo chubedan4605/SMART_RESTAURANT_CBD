@@ -219,7 +219,7 @@ export default function EditMenuItemModal({
             <button
               type="button"
               onClick={() => !disabledAll && onClose?.()}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-200"
+              className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200"
             >
               <X size={18} />
             </button>
@@ -304,7 +304,7 @@ export default function EditMenuItemModal({
               </div>
 
               {/* Photos */}
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-2xl border border-white/10 bg-white dark:bg-neutral-950/5 p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-white font-bold">Ảnh món</div>
@@ -357,7 +357,7 @@ export default function EditMenuItemModal({
                             <button
                               type="button"
                               onClick={() => setPrimary(p.id)}
-                              className="px-2 py-1 text-xs text-black bg-white rounded"
+                              className="px-2 py-1 text-xs text-black bg-white dark:bg-neutral-950 rounded"
                               disabled={disabledAll}
                             >
                               Làm ảnh chính
@@ -386,7 +386,7 @@ export default function EditMenuItemModal({
               </div>
 
               {/* Modifiers */}
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-2xl border border-white/10 bg-white dark:bg-neutral-950/5 p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-white font-bold">Modifiers cho món</div>
@@ -430,7 +430,7 @@ export default function EditMenuItemModal({
             <button
               type="button"
               onClick={() => !disabledAll && onClose?.()}
-              className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 disabled:opacity-60"
+              className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 disabled:opacity-60"
               disabled={disabledAll}
             >
               Huỷ

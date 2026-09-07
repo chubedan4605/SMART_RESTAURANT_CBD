@@ -22,7 +22,7 @@ const STATUS_META = {
 function StatusPill({ status }) {
   const meta = STATUS_META[status] || {
     label: status || "—",
-    className: "bg-white/5 text-gray-200 border-white/10",
+    className: "bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10",
   };
   return (
     <span
@@ -159,7 +159,7 @@ export default function AdminMenuItemDetailModal({ open, item, onClose }) {
 
             <button
               onClick={() => !loading && onClose?.()}
-              className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition disabled:opacity-60"
+              className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition disabled:opacity-60"
               type="button"
               aria-label="Close"
               disabled={loading}
@@ -182,7 +182,7 @@ export default function AdminMenuItemDetailModal({ open, item, onClose }) {
                 <div className="mt-4 flex justify-end">
                   <button
                     onClick={onClose}
-                    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-200 hover:bg-white/10 transition"
+                    className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
                     type="button"
                   >
                     Đóng
@@ -191,7 +191,7 @@ export default function AdminMenuItemDetailModal({ open, item, onClose }) {
               </div>
             ) : (
               <div className="p-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-5 rounded-2xl bg-white/5 border border-white/10 p-4">
+                <div className="lg:col-span-5 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-4">
                   <div className="flex items-center justify-between">
                     <div className="text-white font-bold">Thông tin</div>
                     <StatusPill status={view?.status} />
@@ -240,7 +240,7 @@ export default function AdminMenuItemDetailModal({ open, item, onClose }) {
                                   {g.options.map((o) => (
                                     <span
                                       key={o.id}
-                                      className="inline-flex items-center rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-gray-200"
+                                      className="inline-flex items-center rounded-lg border border-white/10 bg-white dark:bg-neutral-950/5 px-2 py-1 text-xs text-gray-200"
                                     >
                                       {o.name}
                                       {Number(o.priceAdjustment) > 0
@@ -266,7 +266,7 @@ export default function AdminMenuItemDetailModal({ open, item, onClose }) {
                   </div>
                 </div>
 
-                <div className="lg:col-span-7 rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+                <div className="lg:col-span-7 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
                   <div className="px-4 py-3 border-b border-white/10 text-white font-bold">
                     Mô tả
                   </div>
