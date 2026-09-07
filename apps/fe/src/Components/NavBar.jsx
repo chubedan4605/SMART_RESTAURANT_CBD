@@ -130,13 +130,11 @@ const Navbar = () => {
               <>
                 <NavLink to="/" label={t("navbar.home")} />
                 <NavLink to="/menu" label={t("navbar.menu")} />
-                {!hasQrToken && (
-                  <NavLink
-                    to="/booking"
-                    label={t("navbar.tableMap")}
-                    icon={<MapPin size={16} />}
-                  />
-                )}
+                <NavLink
+                  to="/booking"
+                  label={t("navbar.tableMap")}
+                  icon={<MapPin size={16} />}
+                />
                 <NavLink
                   to="/order-tracking"
                   label={t("navbar.orderTracking")}
@@ -341,13 +339,11 @@ const Navbar = () => {
                 label={t("navbar.menu")}
                 onClick={closeMenu}
               />
-              {!hasQrToken && (
-                <MobileLink
-                  to="/booking"
-                  label={t("navbar.booking")}
-                  onClick={closeMenu}
-                />
-              )}
+              <MobileLink
+                to="/booking"
+                label={t("navbar.booking")}
+                onClick={closeMenu}
+              />
               <MobileLink
                 to="/cart"
                 label={t("navbar.yourCart")}
