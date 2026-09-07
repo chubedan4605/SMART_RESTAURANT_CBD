@@ -185,9 +185,10 @@ const SignIn = () => {
                 icon={Mail}
                 error={errors.email?.message}
                 {...register("email")}
-                className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
-                labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
-                iconClassName="!text-bistro-wine"
+                className="!bg-white dark:!bg-neutral-950 !text-bistro-charcoal dark:!text-gray-100 !border-bistro-charcoal/20 dark:!border-white/20 focus:!border-bistro-wine"
+                labelClassName="!text-bistro-charcoal dark:!text-gray-100/70 font-sans text-xs uppercase tracking-wider"
+                iconClassName="!text-bistro-wine dark:!text-gray-100/70"
+                inputClassName="!text-bistro-charcoal dark:!text-gray-100"
               />
             </div>
             
@@ -199,9 +200,10 @@ const SignIn = () => {
                 icon={Lock}
                 error={errors.password?.message}
                 {...register("password")}
-                className="!bg-white dark:bg-neutral-950 !text-bistro-charcoal dark:text-gray-100 !border-bistro-charcoal/20 dark:border-white/20 focus:!border-bistro-wine"
-                labelClassName="!text-bistro-charcoal dark:text-gray-100/70 font-sans text-xs uppercase tracking-wider"
-                iconClassName="!text-bistro-wine"
+                className="!bg-white dark:!bg-neutral-950 !text-bistro-charcoal dark:!text-gray-100 !border-bistro-charcoal/20 dark:!border-white/20 focus:!border-bistro-wine"
+                labelClassName="!text-bistro-charcoal dark:!text-gray-100/70 font-sans text-xs uppercase tracking-wider"
+                iconClassName="!text-bistro-wine dark:!text-gray-100/70"
+                inputClassName="!text-bistro-charcoal dark:!text-gray-100"
               />
             </div>
 

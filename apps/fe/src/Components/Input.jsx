@@ -6,6 +6,9 @@ const Input = forwardRef(
       label,
       icon: Icon,
       error,
+      labelClassName = "",
+      iconClassName = "",
+      inputClassName = "",
       className = "",
       ...props
     },
@@ -14,7 +17,7 @@ const Input = forwardRef(
     return (
       <div className="space-y-2">
         {label && (
-          <label className="text-xs font-bold text-gray-300 uppercase tracking-wider">
+          <label className={["text-xs font-bold uppercase tracking-wider", labelClassName || "text-gray-300"].join(" ")}>
             {label}
           </label>
         )}
@@ -26,12 +29,12 @@ const Input = forwardRef(
             className,
           ].join(" ")}
         >
-          {Icon ? <Icon className={error ? "text-red-300" : "text-orange-400"} size={18} /> : null}
+          {Icon ? <Icon className={[error ? "text-red-300" : "", iconClassName || (!error ? "text-orange-400" : "")].join(" ")} size={18} /> : null}
 
           <input
             ref={ref}
             {...props}
-            className="w-full bg-transparent outline-none text-white placeholder:text-gray-500 text-sm outline-0"
+            className={["w-full bg-transparent outline-none placeholder:text-gray-500 text-sm outline-0", inputClassName || "text-white"].join(" ")}
           />
         </div>
 
