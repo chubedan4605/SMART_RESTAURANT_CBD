@@ -82,7 +82,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 bg-neutral-950/95 backdrop-blur-md border-b border-white/10 h-16">
+      <nav className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-bistro-charcoal/10 h-16 shadow-sm">
         <div className="container mx-auto px-4 h-full flex items-center justify-between">
           {/* 1. LOGO */}
           <Link
@@ -93,11 +93,11 @@ const Navbar = () => {
             <img
               src={logo}
               alt="Lumière Bistro"
-              className="h-20 w-auto object-contain"
+              className="h-20 w-auto object-contain drop-shadow-sm"
             />
 
             <div className="md:block">
-              <h1 className="text-white font-bold text-lg tracking-wide font-display">
+              <h1 className="text-bistro-charcoal font-bold text-lg tracking-wide font-display">
                 Lumière Bistro
               </h1>
             </div>
@@ -150,11 +150,11 @@ const Navbar = () => {
                 <Link
                   to="/cart"
                   onClick={closeMenu}
-                  className="relative p-2 text-gray-300 hover:text-orange-500 transition-colors"
+                  className="relative p-2 text-bistro-charcoal/70 hover:text-bistro-wine transition-colors"
                 >
                   <ShoppingBag size={24} />
                   {cartCount > 0 && (
-                    <span className="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                    <span className="absolute top-0 right-0 bg-bistro-wine text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
                       {cartCount}
                     </span>
                   )}
@@ -164,7 +164,7 @@ const Navbar = () => {
 
             {/* User Info / Login / Logout Desktop */}
             {isLoggedIn ? (
-              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-white/10">
+              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-bistro-charcoal/10">
                 {/* Link Profile */}
                 <Link
                   to="/profile"
@@ -175,10 +175,10 @@ const Navbar = () => {
                     url={user?.avatarUrl || user?.avatar_url}
                     name={user?.name}
                     size={36}
-                    className="group-hover:ring-2 group-hover:ring-orange-500 transition"
+                    className="group-hover:ring-2 group-hover:ring-bistro-wine transition shadow-sm"
                   />
 
-                  <span className="max-w-30 truncate text-sm font-semibold text-gray-200 group-hover:text-white">
+                  <span className="max-w-30 truncate text-sm font-semibold text-bistro-charcoal group-hover:text-bistro-wine">
                     {user?.name}
                   </span>
                 </Link>
@@ -187,22 +187,22 @@ const Navbar = () => {
                 <button
                   onClick={handleLogout}
                   title={t("navbar.logout")}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors hover:bg-white/5 rounded-full"
+                  className="p-2 text-bistro-charcoal/60 hover:text-red-500 transition-colors hover:bg-red-50 rounded-full"
                 >
                   <LogOut size={20} />
                 </button>
               </div>
             ) : (
-              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-white/10">
+              <div className="hidden md:flex items-center gap-3 pl-4 border-l border-bistro-charcoal/10">
                 <Link
                   to="/signin"
-                  className="text-sm font-medium text-gray-300 hover:text-white"
+                  className="text-sm font-medium text-bistro-charcoal/70 hover:text-bistro-charcoal"
                 >
                   {t("navbar.login")}
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-lg transition-all"
+                  className="px-4 py-2 bg-bistro-wine hover:bg-bistro-wine/90 text-white text-sm font-bold rounded-lg transition-all shadow-md"
                 >
                   {t("navbar.register")}
                 </Link>
@@ -212,10 +212,10 @@ const Navbar = () => {
             {/* Hamburger Button (Chỉ hiện Mobile) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-gray-300 hover:text-white transition-transform active:scale-90"
+              className="md:hidden p-2 text-bistro-charcoal hover:text-bistro-wine transition-transform active:scale-90"
             >
               {isMobileMenuOpen ? (
-                <X size={26} className="text-orange-500" />
+                <X size={26} className="text-bistro-wine" />
               ) : (
                 <MenuIcon size={26} />
               )}
@@ -227,14 +227,14 @@ const Navbar = () => {
       {/* --- 4. MOBILE MENU OVERLAY & DRAWER --- */}
 
       <div
-        className={`fixed inset-0 bg-black/60 z-40 md:hidden transition-opacity duration-300 backdrop-blur-sm ${
+        className={`fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity duration-300 backdrop-blur-sm ${
           isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={closeMenu}
       ></div>
 
       <div
-        className={`fixed top-0 right-0 h-full w-70 bg-neutral-900 z-40 border-l border-white/10 shadow-2xl transform transition-transform duration-300 ease-in-out pt-20 px-6 flex flex-col md:hidden ${
+        className={`fixed top-0 right-0 h-full w-72 bg-white z-40 border-l border-bistro-charcoal/10 shadow-2xl transform transition-transform duration-300 ease-in-out pt-20 px-6 flex flex-col md:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -243,22 +243,23 @@ const Navbar = () => {
           <Link
             to="/profile"
             onClick={closeMenu}
-            className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10"
+            className="flex items-center gap-3 mb-8 pb-6 border-b border-bistro-charcoal/10"
           >
             <Avatar
               url={user?.avatarUrl || user?.avatar_url}
               name={user?.name}
               size={48}
+              className="shadow-sm"
             />
 
             <div>
-              <p className="text-white font-bold truncate max-w-[160px]">
+              <p className="text-bistro-charcoal font-bold truncate max-w-[160px]">
                 {user?.name || t("navbar.customer")}
               </p>
 
               {/* Chỉ hiện cho customer hoặc khi role chưa có */}
               {(role === "customer" || !role) && (
-                <p className="text-orange-500 text-xs font-bold bg-orange-500/10 px-2 py-0.5 rounded-full inline-block mt-1">
+                <p className="text-bistro-wine text-xs font-bold bg-bistro-wine/10 px-2 py-0.5 rounded-full inline-block mt-1">
                   {tableNumber
                     ? t("navbar.sittingAt", { table: tableNumber })
                     : t("navbar.noTable")}
@@ -267,20 +268,20 @@ const Navbar = () => {
             </div>
           </Link>
         ) : (
-          <div className="mb-8 pb-6 border-b border-white/10">
-            <p className="text-gray-400 text-sm mb-4">{t("navbar.welcome")}</p>
+          <div className="mb-8 pb-6 border-b border-bistro-charcoal/10">
+            <p className="text-bistro-charcoal/70 text-sm mb-4 font-medium">{t("navbar.welcome")}</p>
             <div className="grid grid-cols-2 gap-3">
               <Link
                 to="/signin"
                 onClick={closeMenu}
-                className="py-2.5 text-center rounded-lg border border-white/10 text-gray-300 hover:bg-white/5 text-sm font-medium"
+                className="py-2.5 text-center rounded-lg border border-bistro-charcoal/20 text-bistro-charcoal hover:bg-bistro-cream text-sm font-medium transition-colors"
               >
                 {t("navbar.login")}
               </Link>
               <Link
                 to="/signup"
                 onClick={closeMenu}
-                className="py-2.5 text-center rounded-lg bg-orange-500 text-white font-bold hover:bg-orange-600 text-sm"
+                className="py-2.5 text-center rounded-lg bg-bistro-wine text-white font-bold hover:bg-bistro-wine/90 text-sm transition-colors shadow-md"
               >
                 {t("navbar.register")}
               </Link>
@@ -343,7 +344,7 @@ const Navbar = () => {
 
         {/* Language Switcher for Mobile */}
         {(!role || role === "customer") && (
-          <div className="py-4 border-t border-white/10 mt-4">
+          <div className="py-4 border-t border-bistro-charcoal/10 mt-4">
             <LanguageSwitcher />
           </div>
         )}
@@ -354,12 +355,12 @@ const Navbar = () => {
             // 5. Cập nhật nút đăng xuất Mobile gọi hàm handleLogout
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-red-500 font-medium hover:text-red-400 w-full py-3 rounded-xl hover:bg-white/5 transition-colors"
+              className="flex items-center gap-2 text-red-500 font-bold hover:text-red-600 w-full py-3 px-4 rounded-xl hover:bg-red-50 transition-colors"
             >
               <LogOut size={20} /> {t("navbar.logout")}
             </button>
           )}
-          <p className="text-xs text-gray-600 mt-6 text-center">
+          <p className="text-xs text-bistro-charcoal/50 mt-6 text-center">
             Version 1.0.0
           </p>
         </div>
@@ -375,10 +376,10 @@ const NavLink = ({ to, label, icon }) => {
     <Link
       to={to}
       className={
-        `flex items-center gap-2 text-sm font-medium transition-colors ` +
+        `flex items-center gap-2 text-sm font-semibold transition-all ` +
         (isActive
-          ? "text-orange-500 font-bold"
-          : "text-gray-400 hover:text-orange-500")
+          ? "text-bistro-wine"
+          : "text-bistro-charcoal/70 hover:text-bistro-wine")
       }
     >
       {icon}
@@ -391,7 +392,7 @@ const MobileLink = ({ to, label, onClick }) => (
   <Link
     to={to}
     onClick={onClick}
-    className="block py-3 px-4 rounded-xl text-base font-medium text-gray-300 hover:bg-white/5 hover:text-orange-500 transition-colors active:scale-95"
+    className="block py-3 px-4 rounded-xl text-base font-semibold text-bistro-charcoal/80 hover:bg-bistro-cream hover:text-bistro-wine transition-colors active:scale-95"
   >
     {label}
   </Link>
