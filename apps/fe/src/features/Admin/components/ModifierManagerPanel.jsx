@@ -49,7 +49,7 @@ export default function ModifierManagerPanel({ onReload }) {
   useEffect(() => {
     // console.log("ModifierManagerPanel mounted");
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   const filtered = useMemo(() => {

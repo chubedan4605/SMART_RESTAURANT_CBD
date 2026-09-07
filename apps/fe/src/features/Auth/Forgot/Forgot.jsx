@@ -32,39 +32,45 @@ export default function Forgot() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white/3 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
-        <h1 className="text-2xl font-black">{t("auth.forgotPasswordTitle")}</h1>
-        <p className="text-sm text-white/60 mt-2">
+    <div className="min-h-screen bg-bistro-cream text-bistro-charcoal font-sans flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-white border border-bistro-wine/10 rounded-sm p-10 shadow-2xl">
+        <h1 className="text-3xl font-display text-bistro-charcoal">{t("auth.forgotPasswordTitle")}</h1>
+        <p className="text-sm text-bistro-charcoal/60 mt-3 font-sans leading-relaxed">
           {t("auth.forgotPasswordDesc")}
         </p>
 
-        <form className="space-y-5 mt-6" onSubmit={handleSubmit(onSubmit)}>
-          <Input
-            label={t("auth.email")}
-            type="email"
-            placeholder="example@lumiere.com"
-            icon={Mail}
-            error={errors.email?.message}
-            {...register("email")}
-          />
+        <form className="space-y-6 mt-8" onSubmit={handleSubmit(onSubmit)}>
+          <div className="bg-white text-bistro-charcoal">
+            <Input
+              label={t("auth.email")}
+              type="email"
+              placeholder="example@lumiere.com"
+              icon={Mail}
+              error={errors.email?.message}
+              {...register("email")}
+              className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
+              labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+              iconClassName="!text-bistro-wine"
+            />
+          </div>
 
           <button
             disabled={isSubmitting}
             className={[
-              "w-full py-4 bg-linear-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500",
-              "text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 uppercase text-sm tracking-widest",
+              "w-full py-4 bg-bistro-charcoal hover:bg-black",
+              "text-white font-sans text-xs uppercase tracking-[0.2em] rounded-sm transition-all duration-300",
+              "transform active:scale-[0.98] flex items-center justify-center gap-3 shadow-lg mt-6",
               isSubmitting ? "opacity-70 cursor-not-allowed" : "",
             ].join(" ")}
           >
             {isSubmitting ? t("auth.sending") : t("auth.sendResetLink")}{" "}
-            <ArrowRight size={18} />
+            <ArrowRight size={16} />
           </button>
 
-          <div className="text-center text-sm text-white/60">
+          <div className="text-center text-sm font-sans mt-8">
             <Link
               to="/signin"
-              className="text-orange-400 font-bold hover:text-orange-300"
+              className="text-bistro-wine font-bold hover:text-bistro-wine-light transition-colors uppercase tracking-widest text-[11px]"
             >
               {t("auth.backToLogin")}
             </Link>

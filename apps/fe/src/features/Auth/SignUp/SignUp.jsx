@@ -126,54 +126,54 @@ const SignUp = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans bg-neutral-950">
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden font-sans bg-bistro-cream">
       {/* 1. Background */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1200&q=80"
+          src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?q=80&w=2070&auto=format&fit=crop"
           alt="Fine Dining"
-          className="w-full h-full object-cover opacity-30 lg:opacity-50"
+          className="w-full h-full object-cover opacity-15"
         />
-        <div className="absolute inset-0 bg-neutral-950/80 lg:bg-linear-to-r lg:from-neutral-950/80 lg:via-neutral-950/40 lg:to-transparent"></div>
+        <div className="absolute inset-0 bg-bistro-cream/90 lg:bg-linear-to-r lg:from-bistro-cream/90 lg:via-bistro-cream/50 lg:to-transparent"></div>
       </div>
 
       {/* 2. Left Desktop */}
-      <div className="relative hidden lg:flex lg:w-1/2 flex-col justify-between p-48 z-10 overflow-hidden">
+      <div className="relative hidden lg:flex lg:w-1/2 flex-col justify-between p-24 lg:p-32 z-10 overflow-hidden h-screen">
         <div className="flex flex-col leading-none">
-          <span className="font-display text-5xl text-orange-400">Lumière</span>
-          <span className="font-sans text-[10px] tracking-[0.4em] uppercase mt-2 text-white/60 font-black">
+          <span className="font-display text-5xl text-bistro-charcoal">Lumière</span>
+          <span className="font-sans text-[10px] tracking-[0.4em] uppercase mt-2 text-bistro-wine font-black">
             Bistro
           </span>
         </div>
 
-        <div className="max-w-md space-y-8">
-          <h2 className="text-4xl font-black text-white leading-tight">
-            {t("auth.becomeMember")} <span className="text-orange-500"></span>{" "}
+        <div className="max-w-md space-y-8 mt-16">
+          <h2 className="text-4xl font-display text-bistro-charcoal leading-tight">
+            {t("auth.becomeMember")} <span className="italic text-bistro-wine"></span>{" "}
             <br />
             {t("auth.getMemberBenefits")}
           </h2>
 
-          <div className="space-y-5 text-white/80">
+          <div className="space-y-5 text-bistro-charcoal/70">
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-orange-500/20 rounded-lg text-orange-400 mt-1">
+              <div className="p-2 bg-bistro-wine/5 rounded-lg text-bistro-wine mt-1">
                 <Star size={20} />
               </div>
               <div>
-                <p className="font-bold text-white italic">
+                <p className="font-medium text-bistro-charcoal">
                   {t("auth.firstOrderDiscount")}
                 </p>
-                <p className="text-xs text-white/50">{t("auth.applyToMenu")}</p>
+                <p className="text-xs text-bistro-charcoal/50 mt-1">{t("auth.applyToMenu")}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-orange-500/20 rounded-lg text-orange-400 mt-1">
+              <div className="p-2 bg-bistro-wine/5 rounded-lg text-bistro-wine mt-1">
                 <Utensils size={20} />
               </div>
               <div>
-                <p className="font-bold text-white italic">
+                <p className="font-medium text-bistro-charcoal">
                   {t("auth.earnPoints")}
                 </p>
-                <p className="text-xs text-white/50">
+                <p className="text-xs text-bistro-charcoal/50 mt-1">
                   {t("auth.pointsBenefit")}
                 </p>
               </div>
@@ -181,92 +181,112 @@ const SignUp = () => {
           </div>
         </div>
 
-        <div className="text-white/30 text-[10px] tracking-widest uppercase italic">
+        <div className="text-bistro-charcoal/30 text-[10px] tracking-widest uppercase mt-auto">
           Join the Elite Taste — Since 2026
         </div>
       </div>
 
       {/* 3. Form */}
-      <div className="relative z-10 w-full lg:w-1/2 flex justify-center items-center px-4 py-10">
-        <div className="w-full max-w-md bg-white/3 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-10 shadow-2xl">
+      <div className="relative z-10 w-full lg:w-1/2 flex justify-center items-center px-4 py-10 h-full">
+        <div className="w-full max-w-md bg-white border border-bistro-wine/10 rounded-sm p-8 md:p-10 shadow-2xl">
           {/* Mobile Header */}
           <div className="lg:hidden text-center mb-6">
-            <p className="font-display text-4xl text-orange-400">Lumière</p>
+            <p className="font-display text-4xl text-bistro-charcoal">Lumière</p>
           </div>
 
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-black text-white leading-tight uppercase tracking-tighter">
+            <h2 className="text-2xl md:text-3xl font-display text-bistro-charcoal leading-tight">
               {t("auth.createAccount")}
             </h2>
-            <p className="text-gray-500 text-xs mt-2 uppercase tracking-widest font-light">
+            <p className="text-bistro-charcoal/50 text-xs mt-2 uppercase tracking-[0.2em] font-sans">
               {t("auth.startJourney")}
             </p>
           </div>
 
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             {/* Full Name */}
-            <Input
-              label={t("auth.fullName")}
-              type="text"
-              placeholder="John Doe"
-              icon={User}
-              error={errors.fullName?.message}
-              {...register("fullName")}
-            />
-
-            {/* Email */}
-            <Input
-              label={t("auth.email")}
-              type="email"
-              placeholder="example@lumiere.com"
-              icon={Mail}
-              error={errors.email?.message}
-              {...register("email", {
-                onChange: (e) => checkEmailRealtime(e.target.value),
-              })}
-            />
-
-            {/* Password + Confirm */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white text-bistro-charcoal">
               <Input
-                label={t("auth.password")}
-                type="password"
-                placeholder="••••••••"
-                icon={Lock}
-                error={errors.password?.message}
-                {...register("password")}
-              />
-              <Input
-                label={t("auth.confirmPassword")}
-                type="password"
-                placeholder="••••••••"
-                icon={ShieldCheck}
-                error={errors.confirmPassword?.message}
-                {...register("confirmPassword")}
+                label={t("auth.fullName")}
+                type="text"
+                placeholder="John Doe"
+                icon={User}
+                error={errors.fullName?.message}
+                {...register("fullName")}
+                className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
+                labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                iconClassName="!text-bistro-wine"
               />
             </div>
 
+            {/* Email */}
+            <div className="bg-white text-bistro-charcoal">
+              <Input
+                label={t("auth.email")}
+                type="email"
+                placeholder="example@lumiere.com"
+                icon={Mail}
+                error={errors.email?.message}
+                {...register("email", {
+                  onChange: (e) => checkEmailRealtime(e.target.value),
+                })}
+                className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
+                labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                iconClassName="!text-bistro-wine"
+              />
+            </div>
+
+            {/* Password + Confirm */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white text-bistro-charcoal">
+                <Input
+                  label={t("auth.password")}
+                  type="password"
+                  placeholder="••••••••"
+                  icon={Lock}
+                  error={errors.password?.message}
+                  {...register("password")}
+                  className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
+                  labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                  iconClassName="!text-bistro-wine"
+                />
+              </div>
+              <div className="bg-white text-bistro-charcoal">
+                <Input
+                  label={t("auth.confirmPassword")}
+                  type="password"
+                  placeholder="••••••••"
+                  icon={ShieldCheck}
+                  error={errors.confirmPassword?.message}
+                  {...register("confirmPassword")}
+                  className="!bg-white !text-bistro-charcoal !border-bistro-charcoal/20 focus:!border-bistro-wine"
+                  labelClassName="!text-bistro-charcoal/70 font-sans text-xs uppercase tracking-wider"
+                  iconClassName="!text-bistro-wine"
+                />
+              </div>
+            </div>
+
             {/* Terms */}
-            <div className="flex items-start gap-2 px-1">
+            <div className="flex items-start gap-3 px-1 mt-2">
               <input
                 type="checkbox"
                 id="terms"
-                className="mt-0.5 w-4 h-4 accent-orange-500 rounded border-white/10"
+                className="mt-0.5 w-4 h-4 accent-bistro-wine rounded border-bistro-charcoal/20"
                 {...register("terms")}
               />
               <label
                 htmlFor="terms"
-                className="text-[11px] text-gray-400 leading-snug"
+                className="text-xs text-bistro-charcoal/60 leading-relaxed font-sans"
               >
                 {t("auth.agreeTerms")}{" "}
-                <span className="text-white underline cursor-pointer">
+                <span className="text-bistro-wine font-medium underline cursor-pointer hover:text-bistro-wine-light transition-colors">
                   {t("auth.termsAndPolicy")}
                 </span>{" "}
                 {t("auth.ofRestaurant")}
               </label>
             </div>
             {errors.terms?.message ? (
-              <p className="text-xs text-red-300 px-1">
+              <p className="text-xs text-red-500 px-1 mt-1 font-medium">
                 {errors.terms.message}
               </p>
             ) : null}
@@ -275,30 +295,30 @@ const SignUp = () => {
             <button
               disabled={isSubmitting}
               className={[
-                "w-full py-4 bg-linear-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500",
-                "text-white font-black rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all",
-                "transform active:scale-95 flex items-center justify-center gap-2 uppercase text-sm tracking-widest mt-4",
+                "w-full py-4 bg-bistro-charcoal hover:bg-black",
+                "text-white font-sans text-xs uppercase tracking-[0.2em] rounded-sm transition-all duration-300",
+                "transform active:scale-[0.98] flex items-center justify-center gap-3 shadow-lg mt-6",
                 isSubmitting ? "opacity-70 cursor-not-allowed" : "",
               ].join(" ")}
             >
               {isSubmitting ? t("auth.creating") : t("auth.registerMember")}{" "}
-              <ArrowRight size={18} />
+              <ArrowRight size={16} />
             </button>
 
             {/* Divider */}
-            <div className="relative py-2">
+            <div className="relative py-4 mt-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/5"></div>
+                <div className="w-full border-t border-bistro-wine/10"></div>
               </div>
-              <div className="relative flex justify-center text-[10px] uppercase text-gray-500 tracking-[0.2em]">
-                <span className="bg-[#080808] px-2 lg:bg-transparent">
+              <div className="relative flex justify-center text-[10px] uppercase font-sans tracking-[0.2em]">
+                <span className="bg-white px-3 text-bistro-charcoal/40">
                   {t("auth.orFasterWith")}
                 </span>
               </div>
             </div>
 
             {/* Social */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4 mt-2">
               <div className="w-full">
                 <div
                   ref={googleBtnRef}
@@ -308,11 +328,11 @@ const SignUp = () => {
             </div>
           </form>
 
-          <p className="text-center text-gray-500 text-xs mt-8 uppercase tracking-wider">
+          <p className="text-center text-bistro-charcoal/60 text-[13px] mt-8 font-sans">
             {t("auth.haveAccount")}
             <Link
               to="/signin"
-              className="text-white ml-2 font-black hover:text-orange-400 transition-colors border-b border-orange-500/30"
+              className="text-bistro-wine ml-2 font-bold hover:text-bistro-wine-light transition-colors"
             >
               {t("auth.signIn")}
             </Link>

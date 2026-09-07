@@ -67,36 +67,36 @@ const BlogSection = () => {
   ];
 
   return (
-    <section className="py-20 px-4 bg-neutral-900">
+    <section className="py-24 px-4 bg-bistro-cream/50 font-sans">
       <div className="container mx-auto max-w-7xl">
         {/* HEADER SECTION */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 mb-4">
-            <BookOpen className="w-4 h-4 text-orange-500" />
-            <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-bistro-wine/5 border border-bistro-wine/10 mb-6">
+            <BookOpen className="w-4 h-4 text-bistro-wine" />
+            <span className="text-bistro-wine font-sans text-xs uppercase tracking-[0.2em]">
               {t("blog.ourStories")}
             </span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
+          <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal mb-6">
             {t("blog.corner")}{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
+            <span className="italic text-bistro-wine">
               {t("blog.culinary")}
             </span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-bistro-charcoal/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
             {t("blog.description")}
           </p>
         </div>
 
         {/* SWIPER CAROUSEL */}
-        <div className="mb-12">
+        <div className="mb-16">
           <Swiper
             modules={[Autoplay, Pagination]}
-            spaceBetween={30}
+            spaceBetween={32}
             slidesPerView={1}
             loop={true}
             autoplay={{
-              delay: 3500,
+              delay: 4500,
               disableOnInteraction: false,
             }}
             pagination={{
@@ -111,56 +111,56 @@ const BlogSection = () => {
                 slidesPerView: 3, // PC: 3 cột
               },
             }}
-            className="pb-12 px-2" // Padding bottom cho dấu chấm pagination
+            className="pb-16 px-2" // Padding bottom cho dấu chấm pagination
           >
             {blogPosts.map((post) => (
               <SwiperSlide key={post.id} className="h-auto">
-                <article className="group h-120 flex flex-col bg-neutral-950 rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10">
+                <article className="group h-[420px] flex flex-col bg-white overflow-hidden border border-black/5 hover:border-bistro-wine/30 transition-all duration-500 hover:shadow-xl rounded-sm">
                   {/* ẢNH THUMBNAIL */}
-                  <div className="relative h-60 overflow-hidden shrink-0">
+                  <div className="relative h-56 overflow-hidden shrink-0">
                     <img
                       src={post.image}
                       alt={t(post.titleKey)}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     {/* Badge Category */}
-                    <div className="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    <div className="absolute top-4 left-4 bg-bistro-wine text-white text-[10px] font-sans uppercase tracking-widest px-3 py-1 shadow-md">
                       {t(post.categoryKey)}
                     </div>
                     {/* Overlay */}
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300"></div>
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500"></div>
                   </div>
 
                   {/* NỘI DUNG */}
-                  <div className="p-6 flex flex-col grow">
+                  <div className="p-8 flex flex-col grow bg-white">
                     {/* Metadata */}
-                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-                      <div className="flex items-center gap-1">
-                        <Calendar size={14} className="text-orange-500" />
+                    <div className="flex items-center gap-4 text-xs text-bistro-charcoal/50 mb-4 font-sans tracking-wide">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar size={14} className="text-bistro-wine" />
                         <span>{post.date}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <User size={14} className="text-orange-500" />
+                      <div className="flex items-center gap-1.5">
+                        <User size={14} className="text-bistro-wine" />
                         <span>{post.author}</span>
                       </div>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-orange-500 transition-colors">
+                    <h3 className="font-display text-2xl text-bistro-charcoal mb-3 line-clamp-2 group-hover:text-bistro-wine transition-colors">
                       <Link to={`/blog/${post.id}`}>{t(post.titleKey)}</Link>
                     </h3>
 
                     {/* Excerpt */}
-                    <p className="text-gray-400 text-sm mb-6 line-clamp-3 grow">
+                    <p className="text-bistro-charcoal/60 font-sans text-sm mb-6 line-clamp-3 grow leading-relaxed">
                       {t(post.excerptKey)}
                     </p>
 
                     {/* Button */}
-                    <button className="inline-flex items-center gap-2 text-orange-500 font-bold text-sm uppercase tracking-wide group/link mt-auto">
+                    <button className="inline-flex items-center gap-2 text-bistro-wine font-sans text-xs uppercase tracking-widest group/link mt-auto hover:text-bistro-wine-light transition-colors">
                       {t("blog.viewDetails")}
                       <ArrowRight
                         size={16}
-                        className="transition-transform duration-300 group-hover/link:translate-x-1"
+                        className="transition-transform duration-300 group-hover/link:translate-x-2"
                       />
                     </button>
                   </div>
@@ -172,9 +172,9 @@ const BlogSection = () => {
 
         {/* BUTTON XEM TẤT CẢ */}
         <div className="text-center">
-          <button className="inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-white/10 text-white font-bold hover:bg-white/10 transition-all hover:scale-105">
+          <button className="inline-flex items-center gap-3 px-10 py-4 bg-transparent border border-bistro-charcoal hover:bg-bistro-charcoal hover:text-white text-bistro-charcoal font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300">
             {t("blog.viewAllPosts")}
-            <ArrowRight size={20} />
+            <ArrowRight size={18} />
           </button>
         </div>
       </div>

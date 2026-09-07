@@ -593,14 +593,14 @@ export default function FoodDetailPopup({
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4 ">
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-bistro-charcoal/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl">
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-white border border-bistro-wine/10 rounded-sm overflow-hidden flex flex-col md:flex-row shadow-2xl font-sans text-bistro-charcoal">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-orange-500 text-white rounded-full transition-colors"
+          className="absolute top-4 right-4 z-10 p-2 bg-white/80 hover:bg-white text-bistro-charcoal rounded-full transition-colors shadow-sm"
         >
           <X size={20} />
         </button>
@@ -615,32 +615,32 @@ export default function FoodDetailPopup({
 
           <div className="absolute top-4 left-4 z-10">
             <span
-              className={`text-[11px] font-extrabold px-3 py-1 rounded-full border ${statusMeta.cls}`}
+              className={`text-[11px] font-extrabold px-3 py-1 rounded-sm border ${statusMeta.cls}`}
             >
               {statusMeta.text}
             </span>
           </div>
 
-          <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-neutral-900 via-neutral-900/40 to-transparent">
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">
+          <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-white via-white/80 to-transparent">
+            <h2 className="text-3xl font-display text-bistro-charcoal uppercase tracking-widest leading-tight">
               {detail?.name ?? food?.name}
             </h2>
 
             <div className="flex items-center gap-2 mt-2 flex-wrap">
-              <span className="text-2xl font-black text-orange-500">
+              <span className="text-2xl font-bold text-bistro-wine font-sans">
                 {formatMoneyVND(Number(detail?.price ?? food?.price ?? 0))}
               </span>
-              <div className="h-4 w-px bg-white/20 mx-2" />
-              <div className="flex items-center text-yellow-500 gap-1 text-sm">
-                <Star size={14} fill="currentColor" />
-                {avgRating ? `${avgRating}` : "0.0"} ({totalReviews}+)
+              <div className="h-4 w-px bg-bistro-charcoal/20 mx-2" />
+              <div className="flex items-center text-bistro-charcoal/70 gap-1 text-sm font-sans">
+                <Star size={14} fill="currentColor" className="text-yellow-500" />
+                <span className="font-medium text-bistro-charcoal">{avgRating ? `${avgRating}` : "0.0"}</span> ({totalReviews}+)
               </div>
 
               {(detail?.is_chef_recommended ?? food?.is_chef_recommended) && (
-                <span className="ml-2 inline-flex items-center gap-1 text-xs font-bold text-orange-400">
+                <span className="ml-2 inline-flex items-center gap-1 text-xs font-bold text-bistro-wine font-sans">
                   <Flame
                     size={14}
-                    className="fill-orange-500 text-orange-500"
+                    className="fill-bistro-wine text-bistro-wine"
                   />{" "}
                   {t("foodDetail.chefPick")}
                 </span>
@@ -650,30 +650,30 @@ export default function FoodDetailPopup({
         </div>
 
         {/* RIGHT */}
-        <div className="w-full md:w-1/2 flex flex-col bg-neutral-900 p-6 md:p-8 overflow-y-auto no-scrollbar">
-          <div className="space-y-6">
+        <div className="w-full md:w-1/2 flex flex-col bg-white p-6 md:p-8 overflow-y-auto no-scrollbar">
+          <div className="space-y-8">
             {/* description */}
             <section>
-              <h4 className="text-xs uppercase tracking-[0.2em] text-orange-500 font-bold mb-2">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-wine font-bold mb-3 font-sans">
                 {t("foodDetail.description")}
               </h4>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-bistro-charcoal/70 text-sm leading-relaxed font-sans">
                 {detail?.description ?? food?.description}
               </p>
             </section>
 
             {/* ===== modifiers UI ===== */}
-            <section className="space-y-3">
-              <h4 className="text-xs uppercase tracking-[0.2em] text-orange-500 font-bold">
+            <section className="space-y-4">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-wine font-bold font-sans">
                 {t("foodDetail.modifiers")}
               </h4>
 
               {loadingDetail ? (
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-bistro-charcoal/50 font-sans">
                   {t("foodDetail.loadingModifiers")}
                 </div>
               ) : detailError ? (
-                <div className="text-xs text-red-300">
+                <div className="text-xs text-red-500 font-sans">
                   {t("foodDetail.error")}: {detailError}
                 </div>
               ) : groups.length ? (
@@ -685,15 +685,15 @@ export default function FoodDetailPopup({
                     return (
                       <div
                         key={g.id}
-                        className="bg-white/5 border border-white/5 rounded-2xl p-4"
+                        className="bg-bistro-cream/30 border border-bistro-wine/10 rounded-sm p-5"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <div className="text-sm font-extrabold text-white">
+                            <div className="text-sm font-bold text-bistro-charcoal uppercase tracking-widest font-sans">
                               {g.name}
-                              <span className="text-orange-400">{req}</span>
+                              <span className="text-bistro-wine">{req}</span>
                             </div>
-                            <div className="text-[11px] text-gray-500 mt-1">
+                            <div className="text-xs text-bistro-charcoal/50 mt-1 font-sans">
                               {g.selection_type === "single"
                                 ? t("foodDetail.selectOne")
                                 : max > 0
@@ -703,7 +703,7 @@ export default function FoodDetailPopup({
                           </div>
                         </div>
 
-                        <div className="mt-3 grid grid-cols-2 gap-2">
+                        <div className="mt-4 grid grid-cols-2 gap-3">
                           {(g.options || []).map((o) => {
                             const price = Number(
                               o.price ?? o.price_adjustment ?? 0,
@@ -731,24 +731,24 @@ export default function FoodDetailPopup({
                                 type="button"
                                 key={o.id}
                                 onClick={onPick}
-                                className={`text-left p-3 rounded-xl border transition-all ${
+                                className={`text-left p-3 rounded-sm border transition-all duration-200 ${
                                   isPicked
-                                    ? "bg-orange-500/20 border-orange-500/40"
-                                    : "bg-neutral-900/30 border-white/10 hover:border-orange-500/30"
+                                    ? "bg-white border-bistro-wine shadow-sm"
+                                    : "bg-white border-bistro-charcoal/10 hover:border-bistro-wine/30"
                                 }`}
                               >
                                 <div className="flex items-center justify-between gap-2">
-                                  <div className="text-xs font-bold text-white line-clamp-1">
+                                  <div className="text-xs font-bold text-bistro-charcoal line-clamp-1 font-sans">
                                     {o.name}
                                   </div>
                                   {isPicked ? (
                                     <Check
                                       size={14}
-                                      className="text-orange-400"
+                                      className="text-bistro-wine"
                                     />
                                   ) : null}
                                 </div>
-                                <div className="text-[11px] mt-1 font-extrabold text-orange-300">
+                                <div className="text-[11px] mt-1 font-bold text-bistro-wine font-sans">
                                   {price > 0
                                     ? `+ ${formatMoneyVND(price)}`
                                     : "+ 0₫"}
@@ -762,15 +762,15 @@ export default function FoodDetailPopup({
                   })}
                 </div>
               ) : (
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-bistro-charcoal/50 font-sans">
                   {t("foodDetail.noModifiers")}
                 </div>
               )}
             </section>
 
             {/* note + qty + confirm */}
-            <section className="space-y-3">
-              <h4 className="text-xs uppercase tracking-[0.2em] text-orange-500 font-bold">
+            <section className="space-y-4">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-wine font-bold font-sans">
                 {t("foodDetail.notes")}
               </h4>
 
@@ -778,33 +778,33 @@ export default function FoodDetailPopup({
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder={t("foodDetail.notesPlaceholder")}
-                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-orange-500/50 min-h-20 resize-none"
+                className="w-full bg-white border border-bistro-charcoal/20 rounded-sm p-4 text-sm text-bistro-charcoal focus:outline-none focus:border-bistro-wine min-h-24 resize-none font-sans"
               />
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 bg-neutral-800 rounded-full p-1">
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1 border border-bistro-charcoal/10">
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
-                    className="w-9 h-9 rounded-full bg-neutral-700 hover:bg-orange-500 text-white flex items-center justify-center transition-all active:scale-90"
+                    className="w-9 h-9 rounded-full bg-white hover:bg-bistro-wine text-bistro-charcoal hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
                   >
                     <Minus size={16} />
                   </button>
-                  <span className="w-10 text-center font-extrabold">{qty}</span>
+                  <span className="w-8 text-center font-bold text-sm font-sans">{qty}</span>
                   <button
                     type="button"
                     onClick={() => setQty((q) => q + 1)}
-                    className="w-9 h-9 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all active:scale-90"
+                    className="w-9 h-9 rounded-full bg-bistro-wine hover:bg-bistro-wine-light text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
                   >
                     <Plus size={16} />
                   </button>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-bistro-charcoal/50 font-sans uppercase tracking-widest font-bold">
                     {t("foodDetail.unitPrice")}
                   </div>
-                  <div className="text-xl font-black text-orange-500">
+                  <div className="text-xl font-bold text-bistro-charcoal font-sans mt-0.5">
                     {formatMoneyVND(unitPrice)}
                   </div>
                 </div>
@@ -814,7 +814,7 @@ export default function FoodDetailPopup({
                 type="button"
                 onClick={handleConfirm}
                 disabled={!canOrder}
-                className="w-full mt-2 px-5 py-4 rounded-2xl font-black text-white bg-linear-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:opacity-50"
+                className="w-full mt-4 px-6 py-4 rounded-sm font-sans font-bold text-xs uppercase tracking-[0.2em] text-white bg-bistro-charcoal hover:bg-black disabled:opacity-50 transition-all duration-300 shadow-md active:scale-95 flex items-center justify-center gap-2"
               >
                 {mode === "edit"
                   ? t("foodDetail.update")
@@ -824,41 +824,41 @@ export default function FoodDetailPopup({
             </section>
 
             {/* related */}
-            <section className="space-y-3">
-              <h4 className="text-xs uppercase tracking-[0.2em] text-orange-500 font-bold">
+            <section className="space-y-4">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-wine font-bold font-sans">
                 {t("foodDetail.relatedItems")}
               </h4>
 
               {loadingRelated ? (
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-bistro-charcoal/50 font-sans">
                   {t("foodDetail.loadingRelated")}
                 </div>
               ) : related.length ? (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {related.slice(0, 4).map((it) => (
                     <button
                       type="button"
                       key={it.id}
                       onClick={() => onSelectFood?.(it.id)} // ✅ QUAN TRỌNG: gọi lên Menu đổi món
-                      className="text-left bg-white/5 border border-white/5 rounded-xl overflow-hidden hover:border-orange-500/30 transition-all"
+                      className="text-left bg-white border border-bistro-charcoal/10 rounded-sm overflow-hidden hover:border-bistro-wine/30 hover:shadow-md transition-all duration-300 group"
                       title={it.name}
                     >
-                      <div className="h-20 bg-white/5">
+                      <div className="h-24 bg-gray-100 overflow-hidden relative">
                         <img
                           src={
                             it.image ||
                             "https://via.placeholder.com/400x400?text=No+Image"
                           }
                           alt={it.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           loading="lazy"
                         />
                       </div>
-                      <div className="p-2">
-                        <div className="text-xs font-bold text-white line-clamp-1">
+                      <div className="p-3">
+                        <div className="text-xs font-bold text-bistro-charcoal line-clamp-1 font-sans">
                           {it.name}
                         </div>
-                        <div className="text-[11px] text-orange-400 font-extrabold mt-1">
+                        <div className="text-xs text-bistro-charcoal/60 font-bold mt-1 font-sans">
                           {formatMoneyVND(Number(it.price || 0))}
                         </div>
                       </div>
@@ -866,7 +866,7 @@ export default function FoodDetailPopup({
                   ))}
                 </div>
               ) : (
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-bistro-charcoal/50 font-sans">
                   {t("foodDetail.noRelated")}
                 </div>
               )}
@@ -874,46 +874,46 @@ export default function FoodDetailPopup({
 
             {/* reviews */}
             <section className="space-y-4">
-              <h4 className="text-xs uppercase tracking-[0.2em] text-orange-500 font-bold flex items-center gap-2">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-wine font-bold flex items-center gap-2 font-sans">
                 <MessageSquare size={14} /> {t("foodDetail.customerReviews")}
               </h4>
 
               <div className="space-y-4 max-h-48 overflow-y-auto pr-2 no-scrollbar">
                 {loadingReviews && reviews.length === 0 ? (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-bistro-charcoal/50 font-sans">
                     {t("foodDetail.loadingReviews")}
                   </div>
                 ) : reviewsError && reviews.length === 0 ? (
-                  <div className="text-xs text-red-300">
+                  <div className="text-xs text-red-500 font-sans">
                     {t("foodDetail.error")}: {reviewsError}
                   </div>
                 ) : reviews.length ? (
                   reviews.map((rev) => (
                     <div
                       key={rev.id}
-                      className="bg-white/5 p-3 rounded-xl border border-white/5"
+                      className="bg-bistro-cream/30 p-4 rounded-sm border border-bistro-wine/10"
                     >
-                      <div className="flex justify-between items-start mb-1">
-                        <span className="text-sm font-bold text-white">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-sm font-bold text-bistro-charcoal font-sans">
                           {rev.user_name || t("foodDetail.anonymous")}
                         </span>
-                        <span className="text-[10px] text-gray-500 italic">
+                        <span className="text-[10px] text-bistro-charcoal/50 italic font-sans uppercase tracking-wider">
                           {rev.created_at || ""}
                         </span>
                       </div>
                       <StarsRow rating={Number(rev.rating || 0)} size={10} />
-                      <p className="text-xs text-gray-400">{rev.comment}</p>
+                      <p className="text-xs text-bistro-charcoal/70 font-sans mt-2 leading-relaxed">{rev.comment}</p>
                     </div>
                   ))
                 ) : (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-bistro-charcoal/50 font-sans">
                     {t("foodDetail.noReviews")}
                   </div>
                 )}
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="text-[11px] text-gray-500">
+              <div className="flex items-center justify-between mt-2">
+                <div className="text-[11px] text-bistro-charcoal/50 font-sans">
                   {reviews.length
                     ? t("foodDetail.loadedReviews", { count: reviews.length })
                     : ""}
@@ -924,10 +924,10 @@ export default function FoodDetailPopup({
                     type="button"
                     onClick={loadMoreReviews}
                     disabled={loadingReviews}
-                    className={`text-xs font-bold ${
+                    className={`text-xs font-bold font-sans uppercase tracking-wider ${
                       loadingReviews
-                        ? "text-gray-600"
-                        : "text-orange-400 hover:underline"
+                        ? "text-bistro-charcoal/40"
+                        : "text-bistro-wine hover:text-bistro-wine-light transition-colors"
                     }`}
                   >
                     {loadingReviews
@@ -935,7 +935,7 @@ export default function FoodDetailPopup({
                       : t("foodDetail.loadMore")}
                   </button>
                 ) : (
-                  <span className="text-[11px] text-gray-600">
+                  <span className="text-[11px] text-bistro-charcoal/40 font-sans uppercase tracking-wider">
                     {t("foodDetail.noMoreReviews")}
                   </span>
                 )}
@@ -943,12 +943,12 @@ export default function FoodDetailPopup({
             </section>
 
             {/* review form */}
-            <section className="pt-4 border-t border-white/10">
-              <h4 className="text-xs uppercase tracking-[0.2em] text-white font-bold mb-3">
+            <section className="pt-6 border-t border-bistro-charcoal/10">
+              <h4 className="text-xs uppercase tracking-[0.2em] text-bistro-charcoal font-bold mb-4 font-sans">
                 {t("foodDetail.yourReview")}
               </h4>
 
-              <div className="flex gap-2 mb-3">
+              <div className="flex gap-2 mb-4">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <button
                     type="button"
@@ -956,7 +956,7 @@ export default function FoodDetailPopup({
                     onClick={() => setUserRating(s)}
                     disabled={!canReview}
                     className={`${
-                      userRating >= s ? "text-orange-500" : "text-gray-600"
+                      userRating >= s ? "text-yellow-500" : "text-gray-300"
                     } hover:scale-110 transition-transform disabled:opacity-40`}
                   >
                     <Star
@@ -977,14 +977,14 @@ export default function FoodDetailPopup({
                       : t("foodDetail.reviewDisabled")
                   }
                   disabled={!canReview}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-orange-500/50 min-h-20 resize-none disabled:opacity-50"
+                  className="w-full bg-white border border-bistro-charcoal/20 rounded-sm p-4 text-sm text-bistro-charcoal focus:outline-none focus:border-bistro-wine min-h-24 resize-none disabled:opacity-50 font-sans"
                 />
 
                 <button
                   type="button"
                   onClick={handleSubmitReview}
                   disabled={!canReview}
-                  className="absolute bottom-3 right-3 p-2 bg-orange-500 text-white rounded-lg hover:bg-orange-400 transition-colors disabled:opacity-50"
+                  className="absolute bottom-4 right-4 p-2 bg-bistro-charcoal text-white rounded-sm hover:bg-black transition-colors disabled:opacity-50 shadow-sm"
                 >
                   <Send size={16} />
                 </button>

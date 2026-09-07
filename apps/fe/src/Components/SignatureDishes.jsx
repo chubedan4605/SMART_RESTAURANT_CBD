@@ -18,25 +18,25 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
   }, []);
 
   return (
-    <section className="py-20 px-4 bg-neutral-950">
+    <section className="py-24 px-4 bg-bistro-cream font-sans">
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 mb-4">
-            <Sparkles className="w-4 h-4 text-orange-500" />
-            <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-bistro-wine/5 border border-bistro-wine/10 mb-6">
+            <Sparkles className="w-4 h-4 text-bistro-wine" />
+            <span className="text-bistro-wine font-sans text-xs uppercase tracking-[0.2em]">
               Signature Dishes
             </span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
+          <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal mb-6">
             Món Ăn{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
+            <span className="italic text-bistro-wine">
               Đặc Trưng
             </span>
           </h2>
 
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-bistro-charcoal/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
             Top món được đầu bếp đề xuất và được gọi nhiều nhất
           </p>
         </div>
@@ -44,17 +44,17 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
         {/* Slider */}
         <div className="mb-16 px-2">
           {signatureDishes.length === 0 ? (
-            <div className="text-center text-gray-400 py-10">
+            <div className="text-center text-bistro-charcoal/50 py-10 font-sans">
               Chưa có dữ liệu món ăn.
             </div>
           ) : (
             <Swiper
               modules={[Autoplay, Pagination, Navigation]}
-              spaceBetween={24}
+              spaceBetween={32}
               slidesPerView={1}
               loop={true}
               autoplay={{
-                delay: 3000,
+                delay: 4000,
                 disableOnInteraction: false,
               }}
               pagination={{
@@ -65,11 +65,11 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
                 640: { slidesPerView: 2 },
                 1024: { slidesPerView: 3 },
               }}
-              className="pb-12"
+              className="pb-16"
             >
               {signatureDishes.map((dish) => (
                 <SwiperSlide key={dish.id} className="h-auto">
-                  <div className="group h-120 relative bg-neutral-900 rounded-2xl overflow-hidden border border-white/5 hover:border-orange-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/20 flex flex-col">
+                  <div className="group h-[420px] relative bg-white overflow-hidden border border-black/5 hover:border-bistro-wine/30 transition-all duration-500 hover:shadow-xl flex flex-col rounded-sm">
                     {/* Image */}
                     <div className="relative h-64 overflow-hidden shrink-0">
                       <img
@@ -77,60 +77,57 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
                           dish.image || "https://via.placeholder.com/600x400"
                         }
                         alt={dish.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                       {/* Badge thay cho category text */}
                       <div className="absolute top-4 left-4 flex gap-2">
-                        <span className="px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full shadow-lg">
+                        <span className="px-3 py-1 bg-bistro-wine text-white text-[10px] font-sans uppercase tracking-widest shadow-md">
                           Chef’s Choice
                         </span>
 
                         {typeof dish.soldQty === "number" && (
-                          <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white text-xs font-bold rounded-full border border-white/10 flex items-center gap-1">
-                            <TrendingUp className="w-3.5 h-3.5" />
+                          <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-bistro-charcoal text-[10px] font-sans uppercase tracking-widest shadow-md flex items-center gap-1">
+                            <TrendingUp className="w-3 h-3" />
                             {dish.soldQty} sold
                           </span>
                         )}
                       </div>
 
-                      {/* Rating fake (giữ style), nếu muốn bỏ thì xoá */}
-                      <div className="absolute top-4 right-4 flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-full border border-white/10">
-                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                        <span className="text-white text-xs font-bold">
+                      {/* Rating fake */}
+                      <div className="absolute top-4 right-4 flex items-center gap-1 bg-white/90 backdrop-blur-md px-2 py-1 shadow-md">
+                        <Star className="w-3 h-3 text-bistro-gold fill-bistro-gold" />
+                        <span className="text-bistro-charcoal text-xs font-bold font-sans">
                           4.9
                         </span>
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-xl font-bold text-white mb-2 group-hover:text-orange-500 transition-colors line-clamp-1">
+                    <div className="p-6 flex flex-col flex-grow bg-white">
+                      <h3 className="font-display text-2xl text-bistro-charcoal mb-2 group-hover:text-bistro-wine transition-colors line-clamp-1">
                         {dish.name}
                       </h3>
 
-                      <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-grow">
+                      <p className="text-bistro-charcoal/60 font-sans text-sm mb-4 line-clamp-2 flex-grow leading-relaxed">
                         {dish.description}
                       </p>
 
                       <div className="flex items-center justify-between mt-auto">
                         {/* Giá VND */}
-                        <span className="text-2xl font-black text-orange-500">
+                        <span className="font-sans text-xl font-medium text-bistro-wine">
                           {formatVND(dish.price)}
                         </span>
 
-                        {/* Nút gọi món: đưa qua menu (có thể truyền query) */}
+                        {/* Nút gọi món */}
                         <Link
                           to={`/menu?itemId=${dish.id}`}
-                          className="px-4 py-2 bg-orange-500/10 hover:bg-orange-500 text-orange-500 hover:text-white font-bold rounded-lg transition-all"
+                          className="px-5 py-2 bg-transparent border border-bistro-wine hover:bg-bistro-wine hover:text-white text-bistro-wine font-sans text-xs tracking-widest uppercase transition-all duration-300"
                         >
                           Gọi món
                         </Link>
                       </div>
-
-                      {/* Nếu muốn hiển thị categoryId nhỏ nhỏ */}
-                      {/* <div className="mt-3 text-xs text-gray-500">categoryId: {dish.categoryId}</div> */}
                     </div>
                   </div>
                 </SwiperSlide>
@@ -140,20 +137,20 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link
             to="/menu"
-            className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg shadow-orange-500/30"
+            className="px-10 py-4 bg-bistro-charcoal hover:bg-black text-white font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 flex items-center gap-3 shadow-lg"
           >
             Xem Toàn Bộ Menu
-            <ArrowRight size={20} />
+            <ArrowRight size={18} />
           </Link>
 
           <Link
             to="/booking"
-            className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/10 text-white font-bold rounded-xl flex items-center gap-2 transition-all"
+            className="px-10 py-4 bg-transparent border border-bistro-charcoal hover:bg-bistro-charcoal hover:text-white text-bistro-charcoal font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 flex items-center gap-3"
           >
-            <QrCode size={20} />
+            <QrCode size={18} />
             Quét mã QR
           </Link>
         </div>

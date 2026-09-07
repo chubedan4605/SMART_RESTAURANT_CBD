@@ -19,12 +19,11 @@ export default function KitchenOrderDetailModal({
   onComplete,
   onUpdateItemStatus,
 }) {
-  if (!order) return null;
-
-  const items = order.items || [];
+  const items = order?.items || [];
 
   // Tính prep time và trạng thái urgent
   const { maxPrepTime, elapsed, isUrgent, overdueItems } = useMemo(() => {
+    if (!order) return { maxPrepTime: 15, elapsed: 0, isUrgent: false, overdueItems: [] };
     const max = Math.max(...items.map((it) => it.prep_time_minutes || 15), 15);
     const elapsedMins =
       (Date.now() - new Date(order.created_at).getTime()) / 60000;
@@ -64,9 +63,11 @@ export default function KitchenOrderDetailModal({
   };
 
   // Kiểm tra tất cả items đã ready hoặc rejected chưa
-  const allItemsDone = order.items?.every(
+  const allItemsDone = order?.items?.every(
     (item) => item.status === "ready" || item.status === "rejected",
   );
+
+  if (!order) return null;
 
   return (
     <div className="fixed inset-0 z-60">

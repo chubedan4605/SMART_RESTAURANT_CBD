@@ -37,8 +37,8 @@ const FeatureCard = ({ feature, index }) => {
     <div
       ref={ref}
       className={`
-        p-8 bg-neutral-950 rounded-2xl border border-white/5 
-        transition-all duration-1000 ease-out
+        p-8 bg-bistro-cream rounded-none border border-black/5 
+        transition-all duration-1000 ease-out font-sans
 
         /* --- LOGIC MOBILE (Mặc định) --- */
         /* Nếu đã lướt tới (isInView = true) -> Hiện rõ, về giữa */
@@ -66,14 +66,14 @@ const FeatureCard = ({ feature, index }) => {
         lg:group-hover:translate-x-0
         
         /* Hover vào chính thẻ đó */
-        hover:opacity-100 hover:scale-105 hover:border-orange-500/50 hover:bg-neutral-900
+        hover:opacity-100 hover:scale-105 hover:border-bistro-wine/30 hover:bg-white hover:shadow-lg
       `}
     >
-      <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-orange-500/10 text-orange-500 mb-4">
+      <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-bistro-wine/5 text-bistro-wine mb-4">
         {feature.icon}
       </div>
-      <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-      <p className="text-gray-500 text-sm">{feature.description}</p>
+      <h3 className="font-display text-2xl text-bistro-charcoal mb-2">{feature.title}</h3>
+      <p className="text-bistro-charcoal/70 text-sm leading-relaxed">{feature.description}</p>
     </div>
   );
 };
@@ -104,7 +104,7 @@ const WhyChooseUs = () => {
   ];
 
   return (
-    <section className="py-20 px-4 bg-neutral-900 group overflow-hidden">
+    <section className="py-24 px-4 bg-white group overflow-hidden font-sans">
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
           {/* CỘT TRÁI (Tiêu đề) - Giữ nguyên */}
@@ -113,17 +113,17 @@ const WhyChooseUs = () => {
           {/* Thêm: mb-8 (để tạo khoảng cách với phần Grid bên dưới trên mobile) */}
           <div className="w-full lg:w-1/3 sticky top-4 lg:top-10 z-10 flex flex-col items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0">
             {/* Badge: Giảm margin bottom từ mb-6 xuống mb-4 */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 mb-4 lg:mb-6">
-              <Heart className="w-4 h-4 text-orange-500" />
-              <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-bistro-wine/5 border border-bistro-wine/10 mb-6">
+              <Heart className="w-4 h-4 text-bistro-wine" />
+              <span className="text-bistro-wine font-sans text-xs uppercase tracking-[0.2em]">
                 Why Choose Us
               </span>
             </div>
 
             {/* Heading: Giảm font size mobile (text-3xl) và giảm margin bottom (mb-4) */}
-            <h2 className="text-3xl md:text-5xl font-black text-white  lg:mb-6 leading-tight">
+            <h2 className="font-display text-4xl md:text-5xl text-bistro-charcoal lg:mb-6 leading-tight">
               Đẳng cấp <br />
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
+              <span className="italic text-bistro-wine">
                 Ẩm Thực
               </span>
             </h2>
@@ -132,7 +132,7 @@ const WhyChooseUs = () => {
           </div>
 
           {/* CỘT PHẢI (Grid Features) */}
-          <div className="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-8">
             {features.map((feature, index) => (
               // Gọi Component con đã tách ra ở trên
               <FeatureCard key={index} feature={feature} index={index} />

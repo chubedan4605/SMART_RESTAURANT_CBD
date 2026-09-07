@@ -100,7 +100,7 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="relative w-full overflow-hidden bg-neutral-950">
+    <div className="relative w-full overflow-hidden bg-bistro-cream text-bistro-charcoal font-sans">
       {/* --- HIỆU ỨNG MÀN CHÀO MỪNG --- */}
       <WelcomeCurtain />
 
@@ -111,46 +111,46 @@ const LandingPage = () => {
           <img
             src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
             alt="Restaurant Background"
-            className="w-full h-full object-cover opacity-60 transition-transform duration-[10s] hover:scale-110"
+            className="w-full h-full object-cover opacity-80 transition-transform duration-[10s] hover:scale-105"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-950/80 to-transparent"></div>
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
           <HeroTitle />
 
-          <p className="text-gray-300 text-lg md:text-xl max-w-2xl mb-10 font-light">
+          <p className="text-white/90 text-lg md:text-xl max-w-2xl mb-10 font-sans font-light tracking-wide">
             {t("landing.hero.subtitle")}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
             <Link
               to="/menu"
-              className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(249,115,22,0.4)]"
+              className="px-10 py-4 bg-bistro-wine hover:bg-bistro-wine-light text-white font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-3 shadow-lg"
             >
               {t("landing.hero.viewMenu")}
-              <ArrowRight size={20} />
+              <ArrowRight size={18} />
             </Link>
 
             <Link
               to="/signup"
-              className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/10 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all "
+              className="px-10 py-4 bg-transparent border border-white hover:bg-white hover:text-bistro-charcoal text-white font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center"
             >
               {t("landing.hero.registerMember")}
             </Link>
           </div>
 
           {/* Gợi ý quét QR */}
-          <div className="mt-12 flex items-center gap-4 text-gray-400 text-sm p-4 rounded-lg bg-black/40 border border-white/5 backdrop-blur-md">
-            <div className="bg-white p-1 rounded">
-              <QrCode size={24} className="text-black" />
+          <div className="mt-12 flex items-center gap-4 text-white/80 text-sm p-5 rounded-none border border-white/20 backdrop-blur-md bg-white/5">
+            <div className="bg-bistro-wine p-2">
+              <QrCode size={24} className="text-white" />
             </div>
-            <div className="text-left">
-              <p className="text-gray-200 font-bold">
+            <div className="text-left font-sans">
+              <p className="text-white font-medium tracking-wide">
                 {t("landing.hero.atRestaurant")}
               </p>
-              <p>{t("landing.hero.scanQRHint")}</p>
+              <p className="text-white/70">{t("landing.hero.scanQRHint")}</p>
             </div>
           </div>
         </div>
@@ -162,50 +162,50 @@ const LandingPage = () => {
       <BlogSection />
 
       {/* 4. GALLERY / RESTAURANT SPACE SECTION */}
-      <section className="py-20 px-4 bg-neutral-950">
+      <section className="py-24 px-4 bg-bistro-cream">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 mb-4">
-              <Users className="w-4 h-4 text-orange-500" />
-              <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-bistro-wine/5 border border-bistro-wine/10 mb-6">
+              <Users className="w-4 h-4 text-bistro-wine" />
+              <span className="text-bistro-wine font-sans text-xs uppercase tracking-[0.2em]">
                 {t("landing.space.badge")}
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
+            <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal mb-6">
               {t("landing.space.title")}{" "}
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
+              <span className="italic text-bistro-wine">
                 {t("landing.space.titleHighlight")}
               </span>
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-bistro-charcoal/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
               {t("landing.space.description")}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {galleryImages.map((image, index) => (
               <div
                 key={index}
-                className={`group relative overflow-hidden rounded-2xl ${
-                  index === 0 ? "md:col-span-2 h-96" : "h-72"
+                className={`group relative overflow-hidden ${
+                  index === 0 ? "md:col-span-2 h-96" : "h-80"
                 }`}
               >
                 <img
                   src={image.url}
                   alt={image.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/50 transition-colors duration-500"></div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="text-2xl font-bold text-white mb-2">
+                <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                  <h3 className="font-display text-3xl text-white mb-2">
                     {image.title}
                   </h3>
-                  <p className="text-gray-300 text-sm">{image.description}</p>
+                  <p className="font-sans text-white/80 text-sm tracking-wide">{image.description}</p>
                 </div>
 
-                <div className="absolute top-4 right-4 px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute top-6 right-6 px-4 py-2 bg-bistro-wine text-white text-xs font-sans tracking-[0.1em] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-md">
                   {t("landing.viewMore")}
                 </div>
               </div>

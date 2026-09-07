@@ -1,14 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Patrick+Hand&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Outfit:wght@100..900&family=Pacifico&display=swap");
 @import "tailwindcss";
 
 @theme {
-  /* 1. Gán Poppins làm font Sans mặc định (thay vì Inter) */
-  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  /* Premium Typography */
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-cursive: "Pacifico", cursive;
 
-  /* 2. Gán Pacifico cho class font-display (phải đúng tên "Pacifico") */
-  --font-display: "Pacifico", cursive;
-
-  --font-text: "Patrick Hand", cursive;
+  /* Custom Color Palette (Light & Clean) */
+  --color-bistro-wine: #722F37;
+  --color-bistro-wine-light: #8e3e48;
+  --color-bistro-wine-dark: #5c232b;
+  --color-bistro-gold: #D4AF37;
+  --color-bistro-cream: #FAFAF8;
+  --color-bistro-charcoal: #2C2C2C;
 }
 
 /* Fix Chrome/Edge autofill background */

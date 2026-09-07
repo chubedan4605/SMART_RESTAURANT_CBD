@@ -68,13 +68,13 @@ const HeroTitle = () => {
   return (
     <h1
       ref={titleRef}
-      className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight drop-shadow-2xl overflow-hidden p-2"
+      className="text-5xl md:text-7xl font-display text-white mb-6 leading-tight drop-shadow-2xl overflow-hidden p-2"
     >
       {/* Dòng 1 */}
       <div className="block">{splitText(t("hero.enjoy") + " ")}</div>
 
       {/* Dòng 2 */}
-      <span className="text-orange-500 font-display">
+      <span className="text-bistro-gold italic font-display">
         {splitText(t("hero.essence")).map((span, idx) =>
           React.cloneElement(span, {
             key: idx,
@@ -85,7 +85,7 @@ const HeroTitle = () => {
       <br />
 
       {/* Dòng 3 */}
-      <div className="block mt-2">{splitText(t("hero.cuisine"))}</div>
+      <div className="block mt-4">{splitText(t("hero.cuisine"))}</div>
     </h1>
   );
 };

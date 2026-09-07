@@ -58,7 +58,7 @@ export default function AdminProfile() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   const canSaveName = useMemo(() => {

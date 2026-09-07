@@ -425,7 +425,7 @@ export default function Menu() {
   );
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white pb-24 font-sans selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-bistro-cream text-bistro-charcoal pb-24 font-sans selection:bg-bistro-wine selection:text-white">
       <Navbar></Navbar>
 
       {/* HEADER */}

@@ -4,7 +4,9 @@ export default function Avatar({ url, name, size = 56, className = "" }) {
   const initial = useMemo(() => (name?.trim()?.[0] || "A").toUpperCase(), [name]);
   const [ok, setOk] = useState(!!url);
 
-  useEffect(() => setOk(!!url), [url]);
+  useEffect(() => {
+    setOk(!!url);
+  }, [url]);
 
   const boxStyle = { width: size, height: size };
 
