@@ -15,7 +15,7 @@ COPY apps/be/package.json apps/be/
 
 
 # Install dependencies for backend
-RUN pnpm --filter backend install --frozen-lockfile
+RUN pnpm --filter backend install --no-frozen-lockfile
 
 # Copy backend source
 COPY apps/be apps/be/

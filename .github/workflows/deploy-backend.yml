@@ -29,7 +29,7 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           
-          # Cài đặt thư viện bằng pnpm từ root (vì đây là monorepo)
+          # Cài đặt thư viện bằng pnpm từ root
           pnpm install --frozen-lockfile
           
           # Chạy database migration (nếu có)
