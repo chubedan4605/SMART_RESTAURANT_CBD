@@ -6,35 +6,63 @@ on:
     branches:
       - main
     paths:
-      - 'apps/be/**' # Chỉ chạy khi có thay đổi trong thư mục code Backend
+      - 'apps/be/**'
 
 jobs:
-  deploy-backend:
+  build-and-push:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Kết nối SSH và Deploy Backend
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          cd ~/SMART_RESTAURANT_CBD
-          
-          # Lưu lại những thay đổi tạm thời nếu có để tránh lỗi git pull
-          git stash || true
-          
-          # Kéo code mới nhất từ nhánh main
-          git fetch origin main
-          git reset --hard origin/main
-          
-          # Cài đặt thư viện bằng pnpm từ root
-          pnpm install --frozen-lockfile
-          
-          # Chạy database migration (nếu có)
-          cd apps/be
-          npx knex migrate:latest || true
-          
-          # Khởi động lại PM2 với Zero-Downtime
-          pm2 reload smart-restaurant-backend || pm2 restart smart-restaurant-backend
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/be/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:${{ github.sha }}
+
+  deploy-to-ec2:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Kéo image mới nhất từ Docker Hub
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest
+            
+            # Dừng và xóa PM2 cũ (nếu có - dành cho quá trình chuyển đổi)
+            pm2 stop smart-restaurant-backend || true
+            pm2 delete smart-restaurant-backend || true
+            
+            # Chạy Database Migrations thông qua một temporary container
+            docker run --rm --env-file ~/SMART_RESTAURANT_CBD/apps/be/.env ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest npx knex migrate:latest
+            
+            # Dừng và xóa container backend cũ (nếu có)
+            docker stop smart-restaurant-backend || true
+            docker rm smart-restaurant-backend || true
+            
+            # Khởi chạy container backend mới
+            docker run -d \
+              --name smart-restaurant-backend \
+              -p 3030:3030 \
+              --restart unless-stopped \
+              --env-file ~/SMART_RESTAURANT_CBD/apps/be/.env \
+              ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest
