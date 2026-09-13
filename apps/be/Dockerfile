@@ -5,7 +5,7 @@ COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY turbo.json ./
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@9
 
 # Copy workspace config
 COPY pnpm-workspace.yaml ./
