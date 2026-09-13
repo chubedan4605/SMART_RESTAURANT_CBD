@@ -60,6 +60,21 @@ function buildRange(period) {
   return { from: start.toISOString(), to: end.toISOString(), month };
 }
 
+const DarkTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="px-3 py-2 rounded-xl bg-neutral-900/95 border border-white/10 shadow-xl">
+        <div className="text-white text-sm font-bold">
+          {label}h
+        </div>
+        <div className="text-orange-300 text-xs mt-0.5">
+          {payload[0].value} đơn
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function AdminDashboard() {
   const { data, isLoading, error } = useAdminDashboard();
@@ -83,21 +98,7 @@ export default function AdminDashboard() {
     { value: "month", label: "Tháng" },
   ];
 
-  const DarkTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="px-3 py-2 rounded-xl bg-neutral-900/95 border border-white/10 shadow-xl">
-          <div className="text-white text-sm font-bold">
-            {label}h
-          </div>
-          <div className="text-orange-300 text-xs mt-0.5">
-            {payload[0].value} đơn
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
+
 
   const [revenuePeriod, setRevenuePeriod] = useState("month");
   const [ordersDailyPeriod, setOrdersDailyPeriod] = useState("month");

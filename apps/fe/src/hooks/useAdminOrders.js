@@ -51,7 +51,7 @@ export function useAdminOrders(params) {
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params)]);
+  }, [params?.status, params?.page, params?.limit, params?.keyword]);
 
   useEffect(() => {
     fetchOrders();

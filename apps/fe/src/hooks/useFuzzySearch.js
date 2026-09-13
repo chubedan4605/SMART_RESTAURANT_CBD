@@ -39,7 +39,7 @@ const useFuzzySearch = (items, searchTerm, options = {}) => {
   const fuseOptions = useMemo(
     () => ({ ...DEFAULT_OPTIONS, ...options }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [JSON.stringify(options)],
+    [options]
   );
 
   // Create Fuse instance - memoized for performance
