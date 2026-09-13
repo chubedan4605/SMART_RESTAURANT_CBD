@@ -5,8 +5,8 @@
     "dev": "pnpm --parallel --filter \"./apps/*\" dev",
     "dev:fe": "pnpm --filter frontend dev",
     "dev:be": "pnpm --filter backend dev",
-    "quality:fe": "pnpm --filter frontend lint",
-    "quality:be": "pnpm --filter backend test",
+    "quality:fe": "pnpm --filter frontend lint && pnpm --filter frontend test",
+    "quality:be": "pnpm --filter backend test && pnpm --filter backend lint",
     "build": "pnpm --recursive build"
   }
 }

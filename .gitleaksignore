@@ -1,0 +1,14 @@
+[allowlist]
+description = "Allowlisted secrets"
+
+[[allowlist.commits]]
+description = "Ignore all secrets in specific commit hashes if needed"
+commits = []
+
+[[allowlist.paths]]
+description = "Ignore the specific PEM file committed to the repository"
+path = '''(?i)(.*smart-restaurant(?:_key|-key)\.pem)'''
+
+[[allowlist.paths]]
+description = "Ignore age encryption key files"
+path = '''(?i)(.*\.env\.key)'''

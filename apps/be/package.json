@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "lint": "eslint src/",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node prisma/seed.js",
@@ -43,6 +44,9 @@
     "stripe": "^20.2.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "eslint": "^9.39.1",
+    "jest": "^30.5.1",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.2.2"
   }
 }

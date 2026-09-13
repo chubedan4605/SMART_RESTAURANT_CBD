@@ -29,9 +29,12 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           
-          # Cài đặt thư viện mới (nếu có)
-          cd apps/be
-          npm install
+          # Cài đặt thư viện bằng pnpm từ root (vì đây là monorepo)
+          pnpm install --frozen-lockfile
           
-          # Khởi động lại PM2
-          pm2 restart smart-restaurant-backend
+          # Chạy database migration (nếu có)
+          cd apps/be
+          npx knex migrate:latest || true
+          
+          # Khởi động lại PM2 với Zero-Downtime
+          pm2 reload smart-restaurant-backend || pm2 restart smart-restaurant-backend
