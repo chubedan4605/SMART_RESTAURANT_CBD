@@ -52,8 +52,22 @@ jobs:
           pnpm --filter frontend lint
           pnpm --filter backend lint || true
           
-      - name: Security Audit (pnpm audit)
-        run: pnpm audit --audit-level=high || true
+      - name: Snyk Security Scan (Dependencies)
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --all-projects --severity-threshold=high
+        continue-on-error: true
+        
+      - name: Snyk Code Scan (SAST)
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: code test
+          args: --severity-threshold=high
+        continue-on-error: true
         
       - name: Run Tests
         run: |
@@ -62,7 +76,7 @@ jobs:
 
   # Stage 7-8: Build and Security Scan for Backend Docker Image
   container-security:
-    name: Container Build & Trivy Scan
+    name: Container Build & Snyk Scan
     runs-on: ubuntu-latest
     needs: quality-gate
     
@@ -73,12 +87,11 @@ jobs:
       - name: Build Docker Image
         run: docker build -t smart-restaurant-backend:${{ github.sha }} -f apps/be/Dockerfile .
         
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+      - name: Snyk Container Scan
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image-ref: 'smart-restaurant-backend:${{ github.sha }}'
-          format: 'table'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          image: smart-restaurant-backend:${{ github.sha }}
+          args: --file=apps/be/Dockerfile --severity-threshold=high
+        continue-on-error: true
