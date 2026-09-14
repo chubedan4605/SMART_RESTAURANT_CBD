@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY turbo.json ./
+# Update npm to fix vulnerabilities in base image
+RUN npm install -g npm@latest
 # Install pnpm
 RUN npm install -g pnpm@9
 
@@ -23,6 +25,8 @@ COPY apps/be apps/be/
 
 
 FROM node:20-alpine AS runner
+# Update npm to fix vulnerabilities in base image
+RUN npm install -g npm@latest
 WORKDIR /app
 COPY --from=builder /app/apps/be/node_modules ./apps/be/node_modules
 COPY --from=builder /app/apps/be/package.json ./apps/be/
