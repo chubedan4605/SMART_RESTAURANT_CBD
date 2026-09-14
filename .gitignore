@@ -39,3 +39,6 @@ node_modules
 
 # nvm
 .nvmrc
+
+# Certificates and Keys
+*.pem
