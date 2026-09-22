@@ -48,13 +48,6 @@ jobs:
             # Kéo image mới nhất từ Docker Hub
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest
             
-            # Dừng và xóa PM2 cũ (nếu có - dành cho quá trình chuyển đổi)
-            pm2 stop smart-restaurant-backend || true
-            pm2 delete smart-restaurant-backend || true
-            
-            # Chạy Database Migrations thông qua một temporary container
-            docker run --rm --env-file ~/SMART_RESTAURANT_CBD/apps/be/.env ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest npx knex migrate:latest
-            
             # Dừng và xóa container backend cũ (nếu có)
             docker stop smart-restaurant-backend || true
             docker rm smart-restaurant-backend || true
