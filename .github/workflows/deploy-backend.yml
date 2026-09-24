@@ -47,7 +47,7 @@ jobs:
 
       - name: Fetch .env from AWS SSM Parameter Store
         run: |
-          PARAM_NAME="${{ secrets.AWS_SSM_PARAM_NAME || '/smart-restaurant/backend/env' }}"
+          PARAM_NAME="${{ secrets.AWS_SSM_PARAM_NAME || '/smart-restaurant/backend-env' }}"
           aws ssm get-parameter \
             --name "$PARAM_NAME" \
             --with-decryption \
