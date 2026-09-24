@@ -13,6 +13,16 @@ export default [
         process: "readonly",
         console: "readonly",
         __dirname: "readonly",
+        __filename: "readonly",
+        exports: "readonly",
+        Buffer: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        setImmediate: "readonly",
+        clearImmediate: "readonly",
+        global: "readonly"
       }
     },
     rules: {

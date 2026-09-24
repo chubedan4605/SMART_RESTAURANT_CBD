@@ -38,6 +38,39 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-1
+
+      - name: Fetch .env from AWS SSM Parameter Store
+        run: |
+          PARAM_NAME="${{ secrets.AWS_SSM_PARAM_NAME || '/smart-restaurant/backend/env' }}"
+          aws ssm get-parameter \
+            --name "$PARAM_NAME" \
+            --with-decryption \
+            --query "Parameter.Value" \
+            --output text > .env
+
+      - name: Ensure target directory exists on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: mkdir -p /home/${{ secrets.EC2_USERNAME }}/SMART_RESTAURANT_CBD/apps/be
+
+      - name: Copy .env to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: ".env"
+          target: "/home/${{ secrets.EC2_USERNAME }}/SMART_RESTAURANT_CBD/apps/be"
+
       - name: SSH and Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -57,5 +90,5 @@ jobs:
               --name smart-restaurant-backend \
               -p 3030:3030 \
               --restart unless-stopped \
-              --env-file ~/SMART_RESTAURANT_CBD/apps/be/.env \
+              --env-file /home/${{ secrets.EC2_USERNAME }}/SMART_RESTAURANT_CBD/apps/be/.env \
               ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest
