@@ -13,25 +13,27 @@ COPY pnpm-workspace.yaml ./
 # Copy backend app
 COPY apps/be/package.json apps/be/
 
-
 # Install dependencies for backend
 RUN pnpm --filter backend install --no-frozen-lockfile
 
 # Copy backend source
 COPY apps/be apps/be/
 
+# Generate Prisma client
+RUN pnpm --filter backend run build
+
+# Deploy backend to an isolated folder for production
+RUN pnpm --filter backend --prod deploy /pruned
 
 
 FROM node:20-alpine AS runner
 # Remove built-in npm to fix Snyk vulnerabilities (not needed in production)
 RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm
 WORKDIR /app
-COPY --from=builder /app/apps/be/node_modules ./apps/be/node_modules
-COPY --from=builder /app/apps/be/package.json ./apps/be/
-COPY --from=builder /app/apps/be/src ./apps/be/src
 
+# Copy the isolated backend package
+COPY --from=builder /pruned ./
 
-WORKDIR /app/apps/be
 EXPOSE 3030
 
 CMD ["node", "src/server.js"]
