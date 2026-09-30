@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - 'apps/be/**'
+      - '.github/workflows/deploy-backend.yml'
 
 jobs:
   build-and-push:
@@ -48,11 +49,13 @@ jobs:
       - name: Fetch .env from AWS SSM Parameter Store
         run: |
           PARAM_NAME="${{ secrets.AWS_SSM_PARAM_NAME || '/smart-restaurant/backend-env' }}"
-          aws ssm get-parameter \
-            --name "$PARAM_NAME" \
-            --with-decryption \
-            --query "Parameter.Value" \
-            --output text > .env
+          REGION="${{ secrets.AWS_REGION || 'ap-southeast-1' }}"
+          echo "Attempting to fetch $PARAM_NAME from region $REGION..."
+          if ! aws ssm get-parameter --name "$PARAM_NAME" --region "$REGION" --with-decryption --query "Parameter.Value" --output text > .env 2>/dev/null; then
+            echo "Parameter not found in $REGION, trying eu-north-1..."
+            aws ssm get-parameter --name "$PARAM_NAME" --region "eu-north-1" --with-decryption --query "Parameter.Value" --output text > .env
+          fi
+          echo "Successfully fetched .env (lines: $(wc -l < .env))"
 
       - name: Ensure target directory exists on EC2
         uses: appleboy/ssh-action@v1.0.3
