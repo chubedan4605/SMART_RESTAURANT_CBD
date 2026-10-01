@@ -4,7 +4,7 @@ const express = require('express');
 const cookieParser = require("cookie-parser");
 
 
-const allowedOrigins = [
+const defaultAllowedOrigins = [
   "https://smart-restaurant.id.vn",
   "https://d1qu7ng7kw13po.cloudfront.net",
   "https://final-project-smart-restaurant.vercel.app",
@@ -16,8 +16,23 @@ const setUpMiddleWare = (app) => {
    app.use(
   cors({
     origin: (origin, cb) => {
-      // Tạm thời cho phép tất cả các domain/IP để không bị chặn CORS
-      return cb(null, true);
+      // cho phép Postman/cURL (origin = undefined)
+      if (!origin) return cb(null, true);
+
+      // Lấy danh sách origin từ biến môi trường, kết hợp với danh sách mặc định
+      const envOrigins = process.env.ALLOWED_ORIGINS 
+        ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
+        : [];
+      
+      const allAllowedOrigins = [...defaultAllowedOrigins, ...envOrigins];
+
+      if (allAllowedOrigins.includes(origin)) return cb(null, true);
+
+      // allow vercel preview domains
+      if (origin.endsWith(".vercel.app")) return cb(null, true);
+
+      console.error(`Blocked by CORS: ${origin}`);
+      return cb(new Error("Not allowed by CORS"));
     },
     credentials: true,
   })
