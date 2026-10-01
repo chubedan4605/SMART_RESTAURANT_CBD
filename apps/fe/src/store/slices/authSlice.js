@@ -55,7 +55,7 @@ export const loginThunk = createAsyncThunk(
         localStorage.setItem("tableNumber", userLastInfor?.data.sessions?.tableNumber || "");
         localStorage.setItem("tableSessionId", userLastInfor?.data.sessions?.id || "");
         localStorage.setItem("tableSession", JSON.stringify(userLastInfor?.data.sessions));
-        localStorage.setItem("qrToken", userLastInfor?.data.sessions?.qr_Token || "");
+        localStorage.setItem("qrToken", userLastInfor?.data.sessions?.qrToken || "");
       }
 
       return { accessToken, user };
