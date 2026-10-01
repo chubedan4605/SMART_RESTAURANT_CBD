@@ -16,17 +16,8 @@ const setUpMiddleWare = (app) => {
    app.use(
   cors({
     origin: (origin, cb) => {
-      // cho phép Postman/cURL (origin = undefined)
-      if (!origin) return cb(null, true);
-
-      // allow exact matches
-      if (allowedOrigins.includes(origin)) return cb(null, true);
-
-      // allow vercel preview domains
-      if (origin.endsWith(".vercel.app")) return cb(null, true);
-
-      console.error(`Blocked by CORS: ${origin}`);
-      return cb(new Error("Not allowed by CORS"));
+      // Tạm thời cho phép tất cả các domain/IP để không bị chặn CORS
+      return cb(null, true);
     },
     credentials: true,
   })
