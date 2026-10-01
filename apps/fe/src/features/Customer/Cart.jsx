@@ -284,10 +284,10 @@ const Cart = () => {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1 border border-bistro-charcoal/10 dark:border-white/10">
+                    <div className="flex items-center gap-2 bg-gray-100 dark:bg-neutral-900 rounded-full p-1 border border-bistro-charcoal/10 dark:border-white/10">
                       <button
                         onClick={(e) => handleDecrement(e, item)}
-                        className="w-8 h-8 rounded-full bg-white dark:bg-neutral-950 hover:bg-bistro-wine text-bistro-charcoal dark:text-gray-100 hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
+                        className="w-8 h-8 rounded-full bg-white dark:bg-neutral-800 hover:bg-bistro-wine text-bistro-charcoal dark:text-gray-100 hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
                       >
                         <Minus size={16} />
                       </button>
