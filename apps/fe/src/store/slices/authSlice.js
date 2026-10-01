@@ -37,15 +37,24 @@ export const loginThunk = createAsyncThunk(
 
       console.log("loginThunk received user:", user);
 
-      const userLastInfor = await tableApi.getUserCurrentSession();
-      console.log("User last information:>>>>>>>>>>>>>>>>>>>>>", userLastInfor.data);
+      let userLastInfor = null;
+      try {
+        if (accessToken) {
+          userLastInfor = await axiosClient.get("/tables/find-session-active", {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+        }
+      } catch (err) {
+        console.error("Fetch current session error:", err);
+      }
+      console.log("User last information:>>>>>>>>>>>>>>>>>>>>>", userLastInfor?.data);
 
-      if(userLastInfor.success && userLastInfor?.data?.sessions) {
+      if(userLastInfor?.success && userLastInfor?.data?.sessions) {
         localStorage.setItem("sessionToken", userLastInfor?.data.sessions?.sessionToken || "");
         localStorage.setItem("tableCode", userLastInfor?.data.sessions?.tableId || "");
         localStorage.setItem("tableNumber", userLastInfor?.data.sessions?.tableNumber || "");
         localStorage.setItem("tableSessionId", userLastInfor?.data.sessions?.id || "");
-        localStorage.setItem("tableSession", userLastInfor?.data.sessions || "");
+        localStorage.setItem("tableSession", JSON.stringify(userLastInfor?.data.sessions));
         localStorage.setItem("qrToken", userLastInfor?.data.sessions?.qr_Token || "");
       }
 
@@ -126,14 +135,6 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.error = null;
 
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("user");
-      localStorage.removeItem("qrToken");
-      localStorage.removeItem("sessionToken");
-      localStorage.removeItem("tableCode");
-      localStorage.removeItem("tableNumber");
-      localStorage.removeItem("tableSession");
-      localStorage.removeItem("tableSessionId");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user");
     },

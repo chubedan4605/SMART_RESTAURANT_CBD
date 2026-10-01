@@ -398,8 +398,27 @@ class TableSessionService {
       await tableSessionRepository.findActiveByUserAndTable(userId);
     console.log("DB session for user:", dbSession);
     if (dbSession) {
-      await tableSessionRepository.endSession(dbSession.id);
-      await tableRepository.clearSession(dbSession.table_id);
+      const reinit = await saveSession({
+        id: dbSession.id,
+        sessionToken: dbSession.session_token,
+        qrToken: dbSession.qr_token || null,
+        tableId: dbSession.table_id,
+        tableNumber: dbSession.table_number,
+        userId: dbSession.user_id,
+        startedAt: dbSession.started_at,
+      });
+
+      return {
+        hasSession: true,
+        sessions: {
+          id: reinit.id,
+          sessionToken: reinit.sessionToken,
+          qrToken: reinit.qrToken,
+          tableId: reinit.tableId,
+          tableNumber: reinit.tableNumber,
+          startedAt: reinit.startedAt,
+        },
+      };
     }
 
     return { hasSession: false };
