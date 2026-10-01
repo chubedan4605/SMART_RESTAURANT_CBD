@@ -5,6 +5,10 @@ const modifierRepo = require("../repositories/modifierRepository"); // Cần rep
 const tableRepo = require("../repositories/tableRepository"); // Cần repo này để check bàn
 const socketService = require("./socketService"); // Import
 const socketDestination = require("../config/socketDestionation"); // Import destination map
+const {
+  acquireMultipleItemLocks,
+  releaseMultipleItemLocks,
+} = require("../utils/itemLock");
 
 const mapItemUiStatus = (status) => {
   switch (status) {
@@ -41,8 +45,20 @@ exports.createOrder = async (data, io) => {
     throw err;
   }
 
-  // B. Bắt đầu Transaction
-  const client = await db.pool.connect();
+  // B. Chiếm Redis Distributed Lock cho toàn bộ các món trong đơn (chống Race Condition / Overselling)
+  const itemIds = items.map((it) => it.menu_item_id);
+  const lockResult = await acquireMultipleItemLocks(itemIds);
+  if (!lockResult.acquired) {
+    const err = new Error(
+      "Món ăn đang có khách khác đặt cùng lúc, vui lòng thử lại sau giây lát!"
+    );
+    err.status = 409;
+    throw err;
+  }
+
+  try {
+    // C. Bắt đầu Transaction
+    const client = await db.pool.connect();
   try {
     await client.query("BEGIN");
 
@@ -60,6 +76,18 @@ exports.createOrder = async (data, io) => {
         throw new Error(`Món ăn ID ${item.menu_item_id} không tồn tại`);
       if (menuItemDB.is_deleted || menuItemDB.status !== "available") {
         throw new Error(`Món '${menuItemDB.name}' hiện không phục vụ`);
+      }
+
+      // Kiểm tra tồn kho nếu hệ thống có quản lý stock_quantity
+      if (
+        menuItemDB.stock_quantity !== undefined &&
+        menuItemDB.stock_quantity !== null
+      ) {
+        if (Number(menuItemDB.stock_quantity) < item.quantity) {
+          throw new Error(
+            `Món '${menuItemDB.name}' chỉ còn ${menuItemDB.stock_quantity} phần, không đủ số lượng!`
+          );
+        }
       }
 
       let itemUnitPrice = Number(menuItemDB.price);
@@ -89,6 +117,20 @@ exports.createOrder = async (data, io) => {
 
       const subtotal = itemUnitPrice * item.quantity;
       grandTotal += subtotal;
+
+      // Trừ số lượng tồn kho trong DB nếu có cột stock_quantity
+      if (
+        menuItemDB.stock_quantity !== undefined &&
+        menuItemDB.stock_quantity !== null
+      ) {
+        await client.query(
+          `UPDATE menu_items 
+           SET stock_quantity = stock_quantity - $1,
+               status = CASE WHEN stock_quantity - $1 <= 0 THEN 'sold_out' ELSE status END
+           WHERE id = $2`,
+          [item.quantity, item.menu_item_id]
+        );
+      }
 
       processedItems.push({
         ...item,
@@ -142,6 +184,9 @@ exports.createOrder = async (data, io) => {
   } finally {
     client.release();
   }
+} finally {
+  await releaseMultipleItemLocks(lockResult.locks);
+}
 };
 
 // --- 2. Lấy danh sách ---
