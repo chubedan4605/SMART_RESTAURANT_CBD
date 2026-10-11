@@ -19,7 +19,7 @@
 /* Enable class-based dark mode in Tailwind v4 */
 @custom-variant dark (&:is(.dark *));
 
-/* Fix Chrome/Edge autofill background */
+/* Fix Chrome/Edge autofill background and text color in light/dark mode */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -29,11 +29,24 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  -webkit-text-fill-color: #fff !important; /* chữ trắng */
-  caret-color: #fff !important;
-  transition: background-color 9999s ease-in-out 0s; /* trick để xóa nền autofill */
-  box-shadow: 0 0 0px 1000px rgba(0, 0, 0, 0) inset !important; /* nền trong suốt */
+  -webkit-text-fill-color: #1f2937 !important;
+  caret-color: #1f2937 !important;
+  transition: background-color 9999s ease-in-out 0s;
+  box-shadow: 0 0 0px 1000px rgba(0, 0, 0, 0) inset !important;
   -webkit-box-shadow: 0 0 0px 1000px rgba(0, 0, 0, 0) inset !important;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:hover,
+.dark textarea:-webkit-autofill:focus,
+.dark select:-webkit-autofill,
+.dark select:-webkit-autofill:hover,
+.dark select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff !important;
 }
 
 /* ===== Custom transparent scrollbar ===== */

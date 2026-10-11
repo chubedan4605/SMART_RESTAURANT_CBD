@@ -33,19 +33,19 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
 
   return (
     <div
-      className={`rounded-2xl bg-neutral-900/60 border shadow-2xl overflow-hidden h-full flex flex-col transition-all ${
+      className={`rounded-2xl bg-white dark:bg-neutral-900/80 border shadow-xs dark:shadow-2xl overflow-hidden h-full flex flex-col transition-all ${
         isUrgent && showTimer
           ? "border-red-500/50 ring-2 ring-red-500/20"
           : isWarning && showTimer
-            ? "border-yellow-500/30"
-            : "border-white/10"
+            ? "border-yellow-500/40"
+            : "border-gray-200 dark:border-white/10"
       }`}
     >
       {/* Urgent Banner */}
       {isUrgent && showTimer && (
-        <div className="px-4 py-2 bg-red-500/20 border-b border-red-500/30 flex items-center gap-2">
-          <AlertTriangle size={16} className="text-red-400 animate-bounce" />
-          <span className="text-red-400 text-xs font-bold uppercase tracking-wide">
+        <div className="px-4 py-2 bg-red-500/15 border-b border-red-500/30 flex items-center gap-2">
+          <AlertTriangle size={16} className="text-red-500 dark:text-red-400 animate-bounce" />
+          <span className="text-red-600 dark:text-red-400 text-xs font-bold uppercase tracking-wide">
             Đơn trễ - Cần xử lý ngay!
           </span>
         </div>
@@ -55,14 +55,14 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-3">
-              <div className="text-white font-black text-lg">#{order.id.slice(0, 8)}</div>
+              <div className="text-gray-900 dark:text-white font-black text-lg">#{order.id.slice(0, 8)}</div>
               <StatusBadge status={order.status} />
             </div>
 
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-300">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
               <div className="inline-flex items-center gap-2">
                 <Table2 size={16} className="text-orange-500" />
-                <span className="font-semibold text-gray-200">
+                <span className="font-semibold text-gray-800 dark:text-gray-200">
                   {order.table_number || "—"}
                 </span>
               </div>
@@ -81,7 +81,7 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
               )}
             </div>
 
-            <div className="mt-3 text-gray-400 text-sm">
+            <div className="mt-3 text-gray-600 dark:text-gray-400 text-sm">
               {order.items.slice(0, 2).map((it, idx) => (
                 <div
                   key={idx}
@@ -90,13 +90,13 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
                   <span className="truncate">
                     {it.qty}× {it.name}
                   </span>
-                  <span className="text-gray-300">
+                  <span className="text-gray-800 dark:text-gray-300 font-medium">
                     {formatMoneyVND(it.qty * it.price)}
                   </span>
                 </div>
               ))}
               {order.items.length > 2 && (
-                <div className="text-xs text-gray-500 mt-1">
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   +{order.items.length - 2} món khác
                 </div>
               )}
@@ -104,15 +104,15 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
           </div>
 
           <div className="text-right">
-            <div className="text-gray-400 text-xs">Tổng</div>
-            <div className="text-white font-black text-xl">
+            <div className="text-gray-500 dark:text-gray-400 text-xs">Tổng</div>
+            <div className="text-gray-900 dark:text-white font-black text-xl">
               {formatMoneyVND(total)}
             </div>
           </div>
         </div>
 
         {order.note ? (
-          <div className="mt-4 p-3 rounded-xl bg-black/30 border border-white/5 text-sm text-gray-300">
+          <div className="mt-4 p-3 rounded-xl bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/5 text-sm text-gray-700 dark:text-gray-300">
             <span className="text-gray-500">Ghi chú: </span>
             {order.note}
           </div>
@@ -121,7 +121,7 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
         <div className="mt-auto pt-5 flex flex-col sm:flex-row gap-2">
           <button
             onClick={onView}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 font-medium transition-all active:scale-95 inline-flex items-center justify-center gap-2"
           >
             <Eye size={18} />
             Xem chi tiết
@@ -131,7 +131,7 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
             <>
               <button
                 onClick={onReject}
-                className="px-4 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/15 border border-red-500/20 text-red-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+                className="px-4 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/15 border border-red-500/20 text-red-600 dark:text-red-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2 font-medium"
               >
                 <XCircle size={18} />
                 Từ chối
@@ -149,7 +149,7 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
               </button>
             </>
           ) : (
-            <div className="sm:ml-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black/30 border border-white/5 text-gray-300">
+            <div className="sm:ml-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-300">
               <Bell size={18} className="text-orange-500" />
               <span className="text-sm">Đơn đã xử lý</span>
             </div>

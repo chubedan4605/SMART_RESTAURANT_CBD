@@ -70,19 +70,19 @@ export default function KitchenOrderCard({
 
   return (
     <div
-      className={`rounded-2xl bg-neutral-900/60 border shadow-2xl overflow-hidden h-full flex flex-col transition-all ${
+      className={`rounded-2xl bg-white dark:bg-neutral-900/80 border shadow-md dark:shadow-2xl overflow-hidden h-full flex flex-col transition-all ${
         isUrgent
           ? "border-red-500/50 ring-2 ring-red-500/20"
           : isWarning
             ? "border-yellow-500/30"
-            : "border-white/10"
+            : "border-gray-200 dark:border-white/10"
       }`}
     >
       {/* Urgent Banner */}
       {isUrgent && (
-        <div className="px-4 py-2 bg-red-500/20 border-b border-red-500/30 flex items-center gap-2">
-          <AlertTriangle size={16} className="text-red-400 animate-bounce" />
-          <span className="text-red-400 text-xs font-bold uppercase tracking-wide">
+        <div className="px-4 py-2 bg-red-50 dark:bg-red-500/20 border-b border-red-200 dark:border-red-500/30 flex items-center gap-2">
+          <AlertTriangle size={16} className="text-red-500 dark:text-red-400 animate-bounce" />
+          <span className="text-red-600 dark:text-red-400 text-xs font-bold uppercase tracking-wide">
             Đơn trễ - Cần ưu tiên!
           </span>
         </div>
@@ -91,12 +91,12 @@ export default function KitchenOrderCard({
       <div className="p-5 flex flex-col h-full">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-white font-black text-lg">#{order.id.slice(0, 8)}</div>
+            <div className="text-gray-900 dark:text-white font-black text-lg">#{order.id.slice(0, 8)}</div>
 
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-300">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
               <div className="inline-flex items-center gap-2">
                 <Table2 size={16} className="text-orange-500" />
-                <span className="font-semibold text-gray-200">
+                <span className="font-semibold text-gray-800 dark:text-gray-200">
                   {order.table_number || "Mang về"}
                 </span>
               </div>
@@ -115,7 +115,7 @@ export default function KitchenOrderCard({
               size="default"
             />
 
-            <div className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs font-bold">
+            <div className="px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-300 text-xs font-bold">
               {completedItems}/{items.length} món xong
             </div>
           </div>
@@ -135,36 +135,36 @@ export default function KitchenOrderCard({
                 key={it.id || idx}
                 className={`flex items-center justify-between gap-3 p-2 rounded-lg transition-all ${
                   isItemReady
-                    ? "bg-green-500/10 border border-green-500/20"
+                    ? "bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20"
                     : isItemRejected
-                      ? "bg-red-500/10 border border-red-500/20 opacity-50"
+                      ? "bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 opacity-50"
                       : itemOverdue
-                        ? "bg-red-500/10 border border-red-500/20"
-                        : "bg-white dark:bg-neutral-950/5"
+                        ? "bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20"
+                        : "bg-gray-50 dark:bg-white/5"
                 }`}
               >
                 <div className="min-w-0 flex items-center gap-2">
                   {isItemReady && (
-                    <Check size={14} className="text-green-400 shrink-0" />
+                    <Check size={14} className="text-green-600 dark:text-green-400 shrink-0" />
                   )}
                   {isItemRejected && (
-                    <XCircle size={14} className="text-red-400 shrink-0" />
+                    <XCircle size={14} className="text-red-500 dark:text-red-400 shrink-0" />
                   )}
                   {isItemPending && itemOverdue && (
                     <AlertTriangle
                       size={14}
-                      className="text-red-400 shrink-0"
+                      className="text-red-500 dark:text-red-400 shrink-0"
                     />
                   )}
                   <div
                     className={`font-semibold truncate ${
                       isItemReady
-                        ? "text-green-300 line-through"
+                        ? "text-green-600 dark:text-green-300 line-through"
                         : isItemRejected
-                          ? "text-red-300 line-through"
+                          ? "text-red-500 dark:text-red-300 line-through"
                           : itemOverdue
-                            ? "text-red-300"
-                            : "text-white"
+                            ? "text-red-600 dark:text-red-300"
+                            : "text-gray-900 dark:text-white"
                     }`}
                   >
                     {it.item_name || it.name}
@@ -172,11 +172,11 @@ export default function KitchenOrderCard({
                 </div>
                 <div className="flex items-center gap-2">
                   {isItemPending && itemOverdue && (
-                    <span className="text-[10px] text-red-400 font-mono">
+                    <span className="text-[10px] text-red-500 dark:text-red-400 font-mono">
                       +{elapsed - itemPrepTime}m
                     </span>
                   )}
-                  <div className="px-2 py-1 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 text-sm font-bold">
+                  <div className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 text-sm font-bold">
                     x{it.qty}
                   </div>
                   {/* Nút hoàn thành từng item */}
@@ -186,7 +186,7 @@ export default function KitchenOrderCard({
                         e.stopPropagation();
                         onUpdateItemStatus(order.id, it.id, "ready");
                       }}
-                      className="p-1.5 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 transition-colors"
+                      className="p-1.5 rounded-lg bg-green-500/20 border border-green-500/30 text-green-600 dark:text-green-400 hover:bg-green-500/30 transition-colors"
                       title="Đánh dấu hoàn thành"
                     >
                       <Check size={14} />
@@ -204,8 +204,8 @@ export default function KitchenOrderCard({
         </div>
 
         {order.note ? (
-          <div className="mt-4 p-3 rounded-xl bg-black/30 border border-white/5 text-sm text-gray-300">
-            <span className="text-gray-500">Ghi chú: </span>
+          <div className="mt-4 p-3 rounded-xl bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/5 text-sm text-gray-700 dark:text-gray-300">
+            <span className="text-gray-500 font-medium">Ghi chú: </span>
             {order.note}
           </div>
         ) : null}
@@ -214,7 +214,7 @@ export default function KitchenOrderCard({
         <div className="mt-auto pt-5 flex flex-col sm:flex-row gap-2">
           <button
             onClick={onView}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
           >
             <Eye size={18} />
             Xem chi tiết

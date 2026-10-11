@@ -65,21 +65,21 @@ export default function OrderDetailModal({
       />
 
       {/* Modal Content */}
-      <div className="relative w-full max-w-2xl bg-neutral-950 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-2xl bg-white dark:bg-neutral-950 border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 border-b border-white/10 flex items-start justify-between gap-4 bg-white dark:bg-neutral-950/5">
+        <div className="p-5 border-b border-gray-200 dark:border-white/10 flex items-start justify-between gap-4 bg-gray-50/70 dark:bg-white/5">
           <div>
             <div className="flex items-center gap-3">
-              <div className="text-white font-black text-xl">
+              <div className="text-gray-900 dark:text-white font-black text-xl">
                 #{order.id.slice(0, 8)}
               </div>
               <StatusBadge status={order.status} />
             </div>
 
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-300">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
               <div className="inline-flex items-center gap-2">
                 <Table2 size={16} className="text-orange-500" />
-                <span className="font-semibold text-gray-200">
+                <span className="font-semibold text-gray-800 dark:text-gray-200">
                   {order.table_number || "Mang về"}
                 </span>
               </div>
@@ -92,7 +92,7 @@ export default function OrderDetailModal({
 
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white dark:bg-neutral-950/10 text-gray-400 hover:text-white transition-colors"
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors"
           >
             <X size={24} />
           </button>
@@ -102,7 +102,7 @@ export default function OrderDetailModal({
         <div className="p-5 overflow-y-auto custom-scrollbar flex-1">
           {/* Note chung */}
           {order.note && (
-            <div className="mb-6 p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-200 text-sm flex gap-3">
+            <div className="mb-6 p-4 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-orange-800 dark:text-orange-200 text-sm flex gap-3">
               <AlertCircle size={20} className="shrink-0" />
               <div>
                 <span className="font-bold uppercase text-xs block mb-1 opacity-70">
@@ -115,7 +115,7 @@ export default function OrderDetailModal({
 
           {/* List Items */}
           <div className="space-y-3">
-            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
+            <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
               Chi tiết món ăn
             </h4>
 
@@ -124,21 +124,21 @@ export default function OrderDetailModal({
                 key={item.id}
                 className={`flex justify-between items-start p-4 rounded-xl border transition-all ${
                   item.status === "rejected"
-                    ? "bg-red-900/10 border-red-500/20 opacity-60" // Style cho món bị từ chối
+                    ? "bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-500/20 opacity-60" // Style cho món bị từ chối
                     : item.status === "preparing"
-                      ? "bg-green-900/10 border-green-500/20" // Style cho món đã nhận
+                      ? "bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-500/20" // Style cho món đã nhận
                       : item.status === "ready"
-                      ? "bg-green-900/10 border-green-500/20" // Style ready
-                      : "bg-white dark:bg-neutral-950/5 border-white/10 hover:bg-white dark:bg-neutral-950/10 hover:border-white/20"
+                      ? "bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-500/20" // Style ready
+                      : "bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 hover:border-gray-300 dark:hover:border-white/20"
                 }`}
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
-                    <span className="bg-white dark:bg-neutral-950/10 text-white px-2 py-1 rounded text-sm font-bold">
+                    <span className="bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-white px-2 py-1 rounded text-sm font-bold">
                       {item.qty}x
                     </span>
                     <span
-                      className={`font-semibold text-lg ${item.status === "rejected" ? "line-through text-gray-500" : "text-gray-200"}`}
+                      className={`font-semibold text-lg ${item.status === "rejected" ? "line-through text-gray-400 dark:text-gray-500" : "text-gray-800 dark:text-gray-200"}`}
                     >
                       {item.name}
                     </span>
@@ -146,14 +146,14 @@ export default function OrderDetailModal({
 
                   {/* Modifiers */}
                   {item.modifiers && item.modifiers.length > 0 && (
-                    <div className="mt-1 ml-10 text-sm text-gray-400">
+                    <div className="mt-1 ml-10 text-sm text-gray-500 dark:text-gray-400">
                       + {item.modifiers.map((m) => m.name).join(", ")}
                     </div>
                   )}
 
                   {/* Item Note */}
                   {item.note && (
-                    <div className="mt-1 ml-10 text-sm text-orange-400 italic">
+                    <div className="mt-1 ml-10 text-sm text-orange-600 dark:text-orange-400 italic">
                       "{item.note}"
                     </div>
                   )}
@@ -161,17 +161,17 @@ export default function OrderDetailModal({
                   {/* Item Status Badge */}
                   <div className="ml-10 mt-2">
                     {item.status === "preparing" && (
-                      <span className="text-xs text-green-400 font-bold flex items-center gap-1">
+                      <span className="text-xs text-green-600 dark:text-green-400 font-bold flex items-center gap-1">
                         <CheckCircle2 size={12} /> Đã nhận
                       </span>
                     )}
                     {item.status === "ready" && (
-                      <span className="text-xs text-green-400 font-bold flex items-center gap-1">
+                      <span className="text-xs text-green-600 dark:text-green-400 font-bold flex items-center gap-1">
                         <CheckCircle2 size={12} /> Đã hoàn thành
                       </span>
                     )}
                     {item.status === "rejected" && (
-                      <span className="text-xs text-red-400 font-bold flex items-center gap-1">
+                      <span className="text-xs text-red-600 dark:text-red-400 font-bold flex items-center gap-1">
                         <XCircle size={12} /> Đã từ chối
                       </span>
                     )}
@@ -181,7 +181,7 @@ export default function OrderDetailModal({
                 {/* Right Side: Price or Actions */}
                 <div className="flex flex-col items-end gap-2">
                   <div
-                    className={`font-bold ${item.status === "rejected" ? "text-gray-600 line-through" : "text-white"}`}
+                    className={`font-bold ${item.status === "rejected" ? "text-gray-400 dark:text-gray-600 line-through" : "text-gray-900 dark:text-white"}`}
                   >
                     {formatMoneyVND(Number(item.subtotal))}
                   </div>
@@ -194,14 +194,14 @@ export default function OrderDetailModal({
                       <div className="flex gap-2 mt-1">
                         <button
                           onClick={() => handleItemAction(item.id, "rejected")}
-                          className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg border border-red-500/20 transition-colors"
+                          className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 dark:text-red-400 rounded-lg border border-red-500/20 transition-colors"
                           title="Từ chối món này (Hết hàng...)"
                         >
                           <Ban size={16} />
                         </button>
                         <button
                           onClick={() => handleItemAction(item.id, "preparing")}
-                          className="p-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg border border-green-500/20 transition-colors"
+                          className="p-2 bg-green-500/10 hover:bg-green-500/20 text-green-600 dark:text-green-400 rounded-lg border border-green-500/20 transition-colors"
                           title="Nhận món này"
                         >
                           <Check size={16} />
@@ -215,9 +215,9 @@ export default function OrderDetailModal({
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-white/10 bg-black/40">
+        <div className="p-5 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/40">
           <div className="flex justify-between items-center mb-6">
-            <span className="text-gray-400">Tổng cộng (Đã duyệt)</span>
+            <span className="text-gray-600 dark:text-gray-400 font-medium">Tổng cộng (Đã duyệt)</span>
             <span className="text-3xl font-black text-orange-500">
               {formatMoneyVND(Number(calcTotal(order)))}
             </span>
@@ -228,7 +228,7 @@ export default function OrderDetailModal({
               <>
                 <button
                   onClick={onReject}
-                  className="flex-1 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-200 rounded-xl font-bold flex items-center justify-center gap-2 transition-all"
+                  className="flex-1 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-600 dark:text-red-200 rounded-xl font-bold flex items-center justify-center gap-2 transition-all"
                 >
                   <XCircle size={18} />
                   Hủy cả đơn
@@ -244,7 +244,7 @@ export default function OrderDetailModal({
             ) : (
               <button
                 onClick={onClose}
-                className="w-full py-3 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-xl font-bold transition-all"
+                className="w-full py-3 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-800 dark:text-white rounded-xl font-bold transition-all"
               >
                 Đóng
               </button>

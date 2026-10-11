@@ -54,10 +54,10 @@ export default function OrderTimer({
   };
 
   const statusStyles = {
-    normal: "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-300",
+    normal: "bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300",
     warning:
-      "bg-yellow-500/10 border-yellow-500/30 text-yellow-400 animate-pulse",
-    overdue: "bg-red-500/15 border-red-500/40 text-red-400",
+      "bg-amber-50 dark:bg-yellow-500/10 border-amber-300 dark:border-yellow-500/30 text-amber-700 dark:text-yellow-400 animate-pulse",
+    overdue: "bg-red-50 dark:bg-red-500/15 border-red-200 dark:border-red-500/40 text-red-600 dark:text-red-400",
   };
 
   return (
@@ -112,7 +112,7 @@ export function OrderItemsTimerSummary({ items = [], createdAt }) {
   if (overdueCount === 0) return null;
 
   return (
-    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold animate-pulse">
+    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 text-xs font-bold animate-pulse">
       <AlertTriangle size={12} />
       <span>{overdueCount} món trễ</span>
     </div>

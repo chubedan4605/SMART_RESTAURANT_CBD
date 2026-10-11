@@ -210,9 +210,9 @@ export default function KitchenPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white" style={{ scrollbarGutter: "stable" }}>
+    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-white transition-colors" style={{ scrollbarGutter: "stable" }}>
       {/* Header */}
-      <div className="top-0 z-30 border-b border-white/10 bg-neutral-950/95 backdrop-blur-md">
+      <div className="top-0 z-30 border-b border-gray-200 dark:border-white/10 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-md">
         <div className="container mx-auto max-w-6xl px-4 py-5">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
@@ -223,7 +223,7 @@ export default function KitchenPage() {
                 </span>
               </div>
 
-              <h1 className="text-2xl md:text-3xl font-black mt-3">
+              <h1 className="text-2xl md:text-3xl font-black mt-3 text-gray-900 dark:text-white">
                 Danh sách Đơn cần làm
               </h1>
             </div>
@@ -235,7 +235,7 @@ export default function KitchenPage() {
                 className={`p-2 rounded-xl border transition-all ${
                   soundEnabled
                     ? "bg-orange-500/10 border-orange-500/30 text-orange-500"
-                    : "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-500"
+                    : "bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 }`}
                 title={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
               >
@@ -244,7 +244,7 @@ export default function KitchenPage() {
 
               {/* Urgent Counter */}
               {urgentCount > 0 && (
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 animate-pulse">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/15 border border-red-500/30 text-red-500 dark:text-red-400 animate-pulse">
                   <AlertTriangle size={18} className="animate-bounce" />
                   <span className="text-sm font-bold">
                     {urgentCount} đơn trễ
@@ -252,11 +252,11 @@ export default function KitchenPage() {
                 </div>
               )}
 
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200">
                 <Flame size={18} className="text-orange-500" />
                 <span className="text-sm">
                   Đang chờ:{" "}
-                  <span className="font-bold text-white">{orders.length}</span>
+                  <span className="font-bold text-gray-900 dark:text-white">{orders.length}</span>
                 </span>
               </div>
             </div>
@@ -265,14 +265,14 @@ export default function KitchenPage() {
           <div className="mt-5 flex items-center gap-3">
             <div className="flex-1 relative">
               <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
                 size={18}
               />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Tìm đơn..."
-                className="w-full bg-neutral-900 border border-neutral-800 rounded-full pl-11 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500/50"
+                className="w-full bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-full pl-11 pr-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-orange-500/50 shadow-xs"
               />
             </div>
           </div>

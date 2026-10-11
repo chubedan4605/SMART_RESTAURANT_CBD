@@ -616,18 +616,18 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
 
   return (
     <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-neutral-900 w-full max-w-lg rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white dark:bg-neutral-900 w-full max-w-lg rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 border-b border-white/10 flex justify-between items-center bg-white dark:bg-neutral-950/5">
+        <div className="p-5 border-b border-gray-200 dark:border-white/10 flex justify-between items-center bg-gray-50/70 dark:bg-white/5">
           <div>
-            <h3 className="text-white font-bold text-lg">
+            <h3 className="text-gray-900 dark:text-white font-bold text-lg">
               {t("bill.paymentFor")}: {tableName}
             </h3>
-            <p className="text-gray-400 text-xs">{t("bill.checkBefore")}</p>
+            <p className="text-gray-500 dark:text-gray-400 text-xs">{t("bill.checkBefore")}</p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-gray-700 dark:hover:text-white transition-colors"
           >
             <X size={24} />
           </button>
@@ -646,23 +646,23 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
               </span>
             </div>
 
-            <div className="bg-white dark:bg-neutral-950/5 rounded-2xl border border-white/10 overflow-hidden shadow-inner">
+            <div className="bg-gray-50/50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-inner">
               {billData.items.map((item, idx) => (
                 <div
                   key={idx}
-                  className="group p-4 border-b border-white/5 last:border-0 hover:bg-white dark:bg-neutral-950/2 transition-colors"
+                  className="group p-4 border-b border-gray-100 dark:border-white/5 last:border-0 hover:bg-gray-100/50 dark:hover:bg-white/2 transition-colors"
                 >
                   {/* HÀNG TRÊN: Thông tin chính món ăn */}
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex gap-3">
                       {/* Badge Số lượng */}
-                      <div className="  shrink-0 w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-bold text-sm">
+                      <div className="shrink-0 w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-bold text-sm">
                         {item.qty}
                       </div>
 
                       {/* Tên món & Đơn giá */}
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-gray-200 leading-tight">
+                        <span className="text-sm font-bold text-gray-800 dark:text-gray-200 leading-tight">
                           {item.name}
                         </span>
                         <span className="text-[11px] text-gray-500 font-medium mt-0.5">
@@ -673,7 +673,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                     </div>
 
                     {/* Thành tiền (Tổng dòng) */}
-                    <div className="text-sm font-bold text-white whitespace-nowrap">
+                    <div className="text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap">
                       {formatMoneyVND(item.subtotal)}
                     </div>
                   </div>
@@ -687,15 +687,15 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                           {item.modifiers.map((mod, i) => (
                             <div
                               key={i}
-                              className="flex items-center justify-between text-xs text-gray-400 group/mod"
+                              className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 group/mod"
                             >
                               <div className="flex items-center gap-2 overflow-hidden">
-                                <span className="w-1 h-1 rounded-full bg-gray-600 shrink-0" />
+                                <span className="w-1 h-1 rounded-full bg-gray-400 dark:bg-gray-600 shrink-0" />
                                 <span className="truncate">{mod.name}</span>
                               </div>
                               {/* Dòng kẻ nối mờ */}
-                              <div className="flex-1 border-b border-dashed border-white/10 mx-2 relative top-px opacity-30"></div>
-                              <span className="font-medium text-gray-300">
+                              <div className="flex-1 border-b border-dashed border-gray-300 dark:border-white/10 mx-2 relative top-px opacity-50"></div>
+                              <span className="font-medium text-gray-700 dark:text-gray-300">
                                 +{formatMoneyVND(mod.price)}
                               </span>
                             </div>
@@ -705,7 +705,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
 
                       {/* Note riêng của món */}
                       {item.note && (
-                        <div className="text-[11px] text-orange-400/90 italic bg-orange-500/5 px-2 py-1.5 rounded border border-orange-500/10 inline-block max-w-full truncate">
+                        <div className="text-[11px] text-orange-600 dark:text-orange-400/90 italic bg-orange-50 dark:bg-orange-500/5 px-2 py-1.5 rounded border border-orange-200 dark:border-orange-500/10 inline-block max-w-full truncate">
                           📝 {item.note}
                         </div>
                       )}
@@ -719,8 +719,8 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
           {/* Coupon Code Input */}
           <div className="bg-gradient-to-r from-purple-500/10 to-indigo-500/10 p-4 rounded-xl border border-purple-500/20">
             <div className="flex items-center gap-2 mb-3">
-              <Tag size={16} className="text-purple-400" />
-              <label className="text-sm font-bold text-purple-300">
+              <Tag size={16} className="text-purple-500 dark:text-purple-400" />
+              <label className="text-sm font-bold text-purple-700 dark:text-purple-300">
                 {t("bill.couponCode")}
               </label>
             </div>
@@ -767,10 +767,10 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                       if (e.key === "Enter") handleApplyCoupon();
                     }}
                     placeholder={t("bill.enterCoupon")}
-                    className={`flex-1 bg-black/40 text-white border rounded-lg px-3 py-2.5 text-sm outline-none transition-colors ${
+                    className={`flex-1 bg-white dark:bg-black/40 text-gray-900 dark:text-white border rounded-lg px-3 py-2.5 text-sm outline-none transition-colors ${
                       couponError
                         ? "border-red-500/50 focus:border-red-500"
-                        : "border-white/10 focus:border-purple-500"
+                        : "border-gray-300 dark:border-white/10 focus:border-purple-500"
                     }`}
                   />
                   <button
@@ -786,7 +786,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                   </button>
                 </div>
                 {couponError && (
-                  <p className="text-red-400 text-xs flex items-center gap-1">
+                  <p className="text-red-500 dark:text-red-400 text-xs flex items-center gap-1">
                     <XCircle size={12} />
                     {couponError}
                   </p>
@@ -799,16 +799,16 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Manual Discount - Disabled when coupon applied */}
             <div
-              className={`bg-white dark:bg-neutral-950/5 p-3 rounded-xl border border-white/5 space-y-2 ${appliedCoupon ? "opacity-50" : ""}`}
+              className={`bg-gray-50/70 dark:bg-white/5 p-3 rounded-xl border border-gray-200 dark:border-white/5 space-y-2 ${appliedCoupon ? "opacity-50" : ""}`}
             >
-              <label className="text-xs font-bold text-gray-400 uppercase">
+              <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">
                 {t("bill.manualDiscount")}{" "}
                 {appliedCoupon && t("bill.usingCoupon")}
               </label>
               {/* Thêm min-w-0 để tránh lỗi tràn layout trên grid */}
               <div className="flex gap-2 min-w-0">
                 <select
-                  className="bg-black/40 text-white border border-white/10 rounded-lg px-2 py-1.5 text-xs outline-none w-20 cursor-pointer disabled:cursor-not-allowed"
+                  className="bg-white dark:bg-black/40 text-gray-900 dark:text-white border border-gray-300 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs outline-none w-20 cursor-pointer disabled:cursor-not-allowed"
                   value={discountType}
                   onChange={(e) => {
                     setDiscountType(e.target.value);
@@ -822,7 +822,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                 </select>
                 <input
                   type="number"
-                  className="flex-1 min-w-0 bg-black/40 text-white border border-white/10 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-orange-500 transition-colors disabled:cursor-not-allowed"
+                  className="flex-1 min-w-0 bg-white dark:bg-black/40 text-gray-900 dark:text-white border border-gray-300 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-orange-500 transition-colors disabled:cursor-not-allowed"
                   placeholder="0"
                   value={discountValue}
                   onChange={(e) => setDiscountValue(e.target.value)}
@@ -832,8 +832,8 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
             </div>
 
             {/* Payment Method - Đã thêm background để cân đối với bên trái */}
-            <div className="bg-white dark:bg-neutral-950/5 p-3 rounded-xl border border-white/5 space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase block">
+            <div className="bg-gray-50/70 dark:bg-white/5 p-3 rounded-xl border border-gray-200 dark:border-white/5 space-y-2">
+              <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase block">
                 {t("bill.paymentBy")}
               </label>
               <div className="flex gap-2 flex-wrap">
@@ -870,7 +870,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                     className={`flex-1 min-w-15 flex flex-col items-center justify-center p-2 rounded-lg border transition-all ${
                       paymentMethod === m.id
                         ? "bg-orange-600 text-white border-orange-500"
-                        : "bg-white dark:bg-neutral-950/5 text-gray-400 border-white/5 hover:bg-white dark:bg-neutral-950/10"
+                        : "bg-white dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/10"
                     }`}
                   >
                     {m.icon}
@@ -962,15 +962,15 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
 
           {/* Stripe QR Code Display */}
           {paymentMethod === "stripe" && showStripeQR && stripePaymentUrl && (
-            <div className="flex flex-col items-center animate-in zoom-in-95 duration-300 p-6 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 rounded-xl border border-purple-500/30">
-              <h4 className="text-white font-bold mb-2 text-lg">
+            <div className="flex flex-col items-center animate-in zoom-in-95 duration-300 p-6 bg-gradient-to-br from-purple-900/10 to-indigo-900/10 rounded-xl border border-purple-500/30">
+              <h4 className="text-gray-900 dark:text-white font-bold mb-2 text-lg">
                 {t("bill.scanStripeQR")}
               </h4>
-              <p className="text-gray-300 text-sm text-center mb-4">
+              <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-4">
                 {t("bill.scanStripeDesc")}
               </p>
 
-              <div className="bg-white dark:bg-neutral-950 p-4 rounded-xl shadow-lg">
+              <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-200">
                 <QRCodeReact
                   value={stripePaymentUrl}
                   size={200}
@@ -980,21 +980,21 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
               </div>
 
               <div className="mt-4 text-center space-y-2">
-                <p className="text-purple-400 font-bold text-xl">
+                <p className="text-purple-600 dark:text-purple-400 font-bold text-xl">
                   {formatMoneyVND(billData.final_amount)}
                 </p>
                 {paymentStatus === "pending" && (
-                  <p className="text-yellow-400 text-xs animate-pulse">
+                  <p className="text-amber-600 dark:text-yellow-400 text-xs animate-pulse">
                     {t("bill.waitingPayment")}
                   </p>
                 )}
                 {paymentStatus === "complete" && (
-                  <p className="text-green-400 text-xs">
+                  <p className="text-green-600 dark:text-green-400 text-xs">
                     {t("bill.paidSuccess")}
                   </p>
                 )}
                 {!paymentStatus && (
-                  <p className="text-gray-400 text-xs">
+                  <p className="text-gray-500 dark:text-gray-400 text-xs">
                     {t("bill.securePayment")}
                   </p>
                 )}
@@ -1003,7 +1003,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
               <div className="mt-4 flex gap-2 w-full">
                 <button
                   onClick={() => window.open(stripePaymentUrl, "_blank")}
-                  className="flex-1 px-4 py-2 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-lg transition-all flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-800 dark:text-white rounded-lg transition-all flex items-center justify-center gap-2"
                 >
                   <ExternalLink size={16} />
                   {t("bill.openLink")}
@@ -1014,7 +1014,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                     setStripePaymentUrl("");
                     setPaymentStatus(null);
                   }}
-                  className="flex-1 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all"
+                  className="flex-1 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition-all"
                 >
                   {t("bill.cancel")}
                 </button>
@@ -1079,17 +1079,17 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
             )}
 
           {/* Totals */}
-          <div className="space-y-2 bg-black/40 p-4 rounded-xl border border-white/5">
-            <div className="flex justify-between text-sm text-gray-400">
+          <div className="space-y-2 bg-gray-50 dark:bg-black/40 p-4 rounded-xl border border-gray-200 dark:border-white/5">
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
               <span>{t("bill.subtotal")}</span>{" "}
               <span>{formatMoneyVND(billData.subtotal)}</span>
             </div>
             {billData.discount_amount > 0 && (
-              <div className="flex justify-between text-sm text-green-400">
+              <div className="flex justify-between text-sm text-green-600 dark:text-green-400">
                 <span className="flex items-center gap-1">
                   {t("bill.discount")}
                   {appliedCoupon && (
-                    <span className="text-[10px] bg-green-500/20 text-green-300 px-1.5 py-0.5 rounded">
+                    <span className="text-[10px] bg-green-500/20 text-green-600 dark:text-green-300 px-1.5 py-0.5 rounded font-bold">
                       {appliedCoupon.coupon.code}
                     </span>
                   )}
@@ -1097,11 +1097,11 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
                 <span>-{formatMoneyVND(billData.discount_amount)}</span>
               </div>
             )}
-            <div className="flex justify-between text-sm text-gray-400">
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
               <span>{t("bill.vat")}</span>
               <span>{formatMoneyVND(billData.tax_amount)}</span>
             </div>
-            <div className="flex justify-between text-2xl font-black text-orange-500 pt-2 border-t border-white/10">
+            <div className="flex justify-between text-2xl font-black text-orange-500 pt-2 border-t border-gray-200 dark:border-white/10">
               <span>{t("bill.grandTotal")}</span>
               <span>{formatMoneyVND(billData.final_amount)}</span>
             </div>
@@ -1109,10 +1109,10 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
         </div>
 
         {/* Footer Actions */}
-        <div className="p-5 border-t border-white/10 bg-black/40 flex gap-3">
+        <div className="p-5 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/40 flex gap-3">
           <button
             onClick={handleDownload}
-            className="px-4 py-3 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-xl transition-all"
+            className="px-4 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-white/10 dark:hover:bg-white/20 text-gray-800 dark:text-white rounded-xl transition-all"
             title={t("bill.downloadPDF")}
           >
             <FileDown size={20} />
@@ -1120,7 +1120,7 @@ const BillModal = ({ tableId, tableName, onClose, onPaymentSuccess }) => {
 
           <button
             onClick={handlePrint}
-            className="px-4 py-3 bg-white dark:bg-neutral-950/10 hover:bg-white dark:bg-neutral-950/20 text-white rounded-xl transition-all"
+            className="px-4 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-white/10 dark:hover:bg-white/20 text-gray-800 dark:text-white rounded-xl transition-all"
             title={t("bill.printBill")}
           >
             <Printer size={20} />

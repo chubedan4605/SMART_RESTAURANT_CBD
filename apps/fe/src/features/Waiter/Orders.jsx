@@ -278,11 +278,11 @@ export default function WaiterOrdersPage() {
 
   return (
     <div
-      className=" bg-neutral-950 text-white font-sans"
+      className="min-h-screen bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-white font-sans transition-colors"
       style={{ scrollbarGutter: "stable" }}
     >
       {/* Header */}
-      <div className="top-0 z-30 border-b border-white/10 bg-neutral-950/95 backdrop-blur-md">
+      <div className="top-0 z-30 border-b border-gray-200 dark:border-white/10 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-md transition-colors">
         <div className="container mx-auto max-w-6xl px-4 py-5">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
@@ -292,7 +292,7 @@ export default function WaiterOrdersPage() {
                   Waiter Console
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-black mt-3 text-white">
+              <h1 className="text-2xl md:text-3xl font-black mt-3 text-gray-900 dark:text-white">
                 Quản lý Đơn Hàng
               </h1>
             </div>
@@ -304,7 +304,7 @@ export default function WaiterOrdersPage() {
                 className={`p-2 rounded-xl border transition-all ${
                   soundEnabled
                     ? "bg-orange-500/10 border-orange-500/30 text-orange-500"
-                    : "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-500"
+                    : "bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400"
                 }`}
                 title={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
               >
@@ -313,7 +313,7 @@ export default function WaiterOrdersPage() {
 
               <button
                 onClick={fetchAllData}
-                className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all inline-flex items-center gap-2"
+                className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 transition-all inline-flex items-center gap-2 font-medium"
               >
                 <RefreshCw size={18} /> Làm mới
               </button>
@@ -324,19 +324,19 @@ export default function WaiterOrdersPage() {
           <div className="mt-5 flex flex-col md:flex-row md:items-center gap-3">
             <div className="flex-1 relative">
               <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
                 size={18}
               />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Tìm theo mã đơn, số bàn, tên món..."
-                className="w-full bg-neutral-900 border border-neutral-800 rounded-full pl-11 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500/50"
+                className="w-full bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-800 rounded-full pl-11 pr-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-orange-500/50 shadow-xs dark:shadow-none"
               />
               {search && (
                 <button
                   onClick={() => setSearch("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-500 hover:text-white hover:bg-white dark:bg-neutral-950/10 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                   title="Xóa tìm kiếm"
                 >
                   <X size={16} />
@@ -344,12 +344,12 @@ export default function WaiterOrdersPage() {
               )}
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10">
-              <Filter size={16} className="text-gray-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">
+              <Filter size={16} className="text-gray-500 dark:text-gray-400" />
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-transparent text-sm text-gray-200 outline-none cursor-pointer [&>option]:bg-neutral-900"
+                className="bg-transparent text-sm text-gray-700 dark:text-gray-200 outline-none cursor-pointer [&>option]:bg-white dark:[&>option]:bg-neutral-900 [&>option]:text-gray-900 dark:[&>option]:text-white"
               >
                 <option value="received">
                   ⏳ Chờ xử lý (
@@ -371,13 +371,13 @@ export default function WaiterOrdersPage() {
           </div>
 
           {/* TABS NAVIGATION */}
-          <div className="flex gap-6 mt-6 border-b border-white/5">
+          <div className="flex gap-6 mt-6 border-b border-gray-200 dark:border-white/10">
             <button
               onClick={() => setActiveTab("orders")}
               className={`pb-3 text-sm font-bold border-b-2 transition-all ${
                 activeTab === "orders"
                   ? "border-orange-500 text-orange-500"
-                  : "border-transparent text-gray-400 hover:text-white"
+                  : "border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               }`}
             >
               Đơn Hàng
@@ -387,7 +387,7 @@ export default function WaiterOrdersPage() {
               className={`pb-3 text-sm font-bold border-b-2 transition-all ${
                 activeTab === "my-tables"
                   ? "border-orange-500 text-orange-500"
-                  : "border-transparent text-gray-400 hover:text-white"
+                  : "border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               }`}
             >
               Bàn Của Tôi ({myTables.length})
@@ -421,8 +421,8 @@ export default function WaiterOrdersPage() {
               }
             >
               {filteredOrders.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-neutral-950/5 rounded-2xl border border-white/5">
-                  <p className="text-gray-400">
+                <div className="text-center py-20 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5 text-gray-500 dark:text-gray-400 shadow-xs">
+                  <p>
                     Không tìm thấy đơn hàng nào ở trạng thái này.
                   </p>
                 </div>
@@ -450,7 +450,7 @@ export default function WaiterOrdersPage() {
               }
             >
               {myTables.length === 0 ? (
-                <div className="text-center py-20 text-gray-500 bg-white dark:bg-neutral-950/5 rounded-2xl border border-white/5">
+                <div className="text-center py-20 text-gray-500 dark:text-gray-400 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-xs">
                   Bạn chưa được phân công bàn nào.
                 </div>
               ) : (
@@ -458,28 +458,28 @@ export default function WaiterOrdersPage() {
                   {myTables.map((table) => (
                     <div
                       key={table.id}
-                      className="bg-neutral-900 border border-white/10 p-5 rounded-xl shadow-lg relative hover:border-orange-500/30 transition-all"
+                      className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 p-5 rounded-xl shadow-xs dark:shadow-lg relative hover:border-orange-500/30 transition-all"
                     >
                       <div className="flex justify-between items-start mb-2">
-                        <span className="text-2xl font-black text-white">
+                        <span className="text-2xl font-black text-gray-900 dark:text-white">
                           {table.table_number}
                         </span>
                         <span
                           className={`text-[10px] px-2 py-1 rounded uppercase font-bold ${
                             table.status === "active"
-                              ? "bg-green-500/20 text-green-400"
-                              : "bg-red-500/20 text-red-400"
+                              ? "bg-green-500/20 text-green-500 dark:text-green-400"
+                              : "bg-red-500/20 text-red-500 dark:text-red-400"
                           }`}
                         >
                           {table.status}
                         </span>
                       </div>
 
-                      <div className="text-sm text-gray-400 flex items-center gap-2 mb-1">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2 mb-1">
                         <MapPin size={14} className="text-orange-500" />{" "}
                         {table.location}
                       </div>
-                      <div className="text-sm text-gray-400 flex items-center gap-2">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
                         <User size={14} className="text-orange-500" />{" "}
                         {table.capacity} Khách
                       </div>
@@ -489,14 +489,14 @@ export default function WaiterOrdersPage() {
                           setSearch(table.table_number);
                           setActiveTab("orders");
                         }}
-                        className="w-full mt-4 py-2 bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 rounded-lg text-xs font-bold text-gray-300 hover:text-white transition-all active:scale-95"
+                        className="w-full mt-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all active:scale-95"
                       >
                         Xem đơn bàn này
                       </button>
 
                       <button
                         onClick={() => setSelectedTableForBill(table)} // Mở BillModal
-                        className="w-full mt-4 py-2 bg-green-600 hover:bg-green-700 border border-white/10 rounded-lg text-xs font-bold text-gray-300 hover:text-white transition-all active:scale-95"
+                        className="w-full mt-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all active:scale-95 shadow-xs"
                       >
                         💰 Tính tiền
                       </button>

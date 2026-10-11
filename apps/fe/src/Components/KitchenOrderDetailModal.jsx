@@ -80,21 +80,21 @@ export default function KitchenOrderDetailModal({
       {/* Modal Container */}
       <div className="absolute left-1/2 top-1/2 w-[95%] max-w-2xl -translate-x-1/2 -translate-y-1/2">
         <div
-          className={`rounded-2xl bg-neutral-950 border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${
+          className={`rounded-2xl bg-white dark:bg-neutral-950 border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${
             isUrgent
               ? "border-red-500/50 ring-2 ring-red-500/20"
-              : "border-white/10"
+              : "border-gray-200 dark:border-white/10"
           }`}
         >
           {/* Urgent Banner */}
           {isUrgent && (
-            <div className="px-5 py-3 bg-red-500/20 border-b border-red-500/30 flex items-center justify-between">
+            <div className="px-5 py-3 bg-red-50 dark:bg-red-500/20 border-b border-red-200 dark:border-red-500/30 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <AlertTriangle
                   size={18}
-                  className="text-red-400 animate-bounce"
+                  className="text-red-500 dark:text-red-400 animate-bounce"
                 />
-                <span className="text-red-400 text-sm font-bold uppercase tracking-wide">
+                <span className="text-red-600 dark:text-red-400 text-sm font-bold uppercase tracking-wide">
                   Đơn trễ - {overdueItems.length} món vượt thời gian!
                 </span>
               </div>
@@ -108,15 +108,15 @@ export default function KitchenOrderDetailModal({
           )}
 
           {/* Header */}
-          <div className="p-5 border-b border-white/10 flex items-start justify-between gap-4 bg-white dark:bg-neutral-950/5">
+          <div className="p-5 border-b border-gray-200 dark:border-white/10 flex items-start justify-between gap-4 bg-gray-50/70 dark:bg-white/5">
             <div>
-              <div className="text-white font-black text-2xl flex items-center gap-2">
+              <div className="text-gray-900 dark:text-white font-black text-2xl flex items-center gap-2">
                 {order.table_number || "Mang về"}
-                <span className="text-sm font-normal text-gray-400 bg-white dark:bg-neutral-950/10 px-2 py-0.5 rounded-md">
+                <span className="text-sm font-normal text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-white/10 px-2 py-0.5 rounded-md">
                   #{order.id.slice(0, 6)}
                 </span>
               </div>
-              <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-300">
+              <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
                 <div className="inline-flex items-center gap-2">
                   <Clock size={16} className="text-orange-500" />
                   <span>Thời gian đặt: {formatTime(order.created_at)}</span>
@@ -135,7 +135,7 @@ export default function KitchenOrderDetailModal({
 
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-white dark:bg-neutral-950/10 text-gray-400 hover:text-white transition-colors"
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors"
             >
               <X size={24} />
             </button>
@@ -143,9 +143,9 @@ export default function KitchenOrderDetailModal({
 
           {/* Body (Scrollable) */}
           <div className="p-5 overflow-y-auto custom-scrollbar flex-1">
-            <div className="rounded-2xl bg-neutral-900/60 border border-white/10 overflow-hidden">
-              <div className="p-4 flex items-center justify-between bg-white dark:bg-neutral-950/5">
-                <div className="font-bold text-white uppercase tracking-wider text-sm">
+            <div className="rounded-2xl bg-gray-50/50 dark:bg-neutral-900/60 border border-gray-200 dark:border-white/10 overflow-hidden">
+              <div className="p-4 flex items-center justify-between bg-gray-100/70 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
+                <div className="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-sm">
                   Chi tiết món ăn
                 </div>
                 <div className="text-orange-500 font-bold text-sm">
@@ -153,7 +153,7 @@ export default function KitchenOrderDetailModal({
                 </div>
               </div>
 
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-gray-200 dark:divide-white/5">
                 {items.map((it, idx) => {
                   const itemPrepTime = it.prep_time_minutes || 15;
                   const itemOverdue = elapsed >= itemPrepTime;
@@ -167,12 +167,12 @@ export default function KitchenOrderDetailModal({
                       key={it.id || idx}
                       className={`p-4 transition-colors ${
                         isItemReady
-                          ? "bg-green-500/10"
+                          ? "bg-green-50 dark:bg-green-500/10"
                           : isItemRejected
-                          ? "bg-red-500/10 opacity-50"
+                          ? "bg-red-50 dark:bg-red-500/10 opacity-50"
                           : itemOverdue
-                          ? "bg-red-500/10"
-                          : "hover:bg-white dark:bg-neutral-950/5"
+                          ? "bg-red-50 dark:bg-red-500/10"
+                          : "hover:bg-gray-100/60 dark:hover:bg-white/5"
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -180,12 +180,12 @@ export default function KitchenOrderDetailModal({
                         <div
                           className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-lg font-black border ${
                             isItemReady
-                              ? "bg-green-500/20 border-green-500/30 text-green-300"
+                              ? "bg-green-500/20 border-green-500/30 text-green-600 dark:text-green-300"
                               : isItemRejected
-                              ? "bg-red-500/20 border-red-500/30 text-red-300"
+                              ? "bg-red-500/20 border-red-500/30 text-red-600 dark:text-red-300"
                               : itemOverdue
-                              ? "bg-red-500/20 border-red-500/30 text-red-300"
-                              : "bg-white dark:bg-neutral-950/10 border-white/10 text-white"
+                              ? "bg-red-500/20 border-red-500/30 text-red-600 dark:text-red-300"
+                              : "bg-white dark:bg-white/10 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white"
                           }`}
                         >
                           {it.qty}
@@ -197,12 +197,12 @@ export default function KitchenOrderDetailModal({
                             <div
                               className={`text-lg font-bold leading-tight ${
                                 isItemReady
-                                  ? "text-green-300 line-through"
+                                  ? "text-green-600 dark:text-green-300 line-through"
                                   : isItemRejected
-                                  ? "text-red-300 line-through"
+                                  ? "text-red-500 dark:text-red-300 line-through"
                                   : itemOverdue
-                                  ? "text-red-300"
-                                  : "text-gray-100"
+                                  ? "text-red-600 dark:text-red-300"
+                                  : "text-gray-900 dark:text-gray-100"
                               }`}
                             >
                               {it.item_name || it.name}
@@ -210,17 +210,17 @@ export default function KitchenOrderDetailModal({
 
                             {/* Status badge */}
                             {isItemReady && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 text-xs font-bold">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-600 dark:text-green-400 text-xs font-bold">
                                 <Check size={10} /> Xong
                               </span>
                             )}
                             {isItemRejected && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-500 dark:text-red-400 text-xs font-bold">
                                 <XCircle size={10} /> Từ chối
                               </span>
                             )}
                             {isItemPending && itemOverdue && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-500 dark:text-red-400 text-xs font-bold">
                                 <AlertTriangle size={10} />+{overtimeMinutes}m
                               </span>
                             )}
@@ -237,9 +237,9 @@ export default function KitchenOrderDetailModal({
                               {it.modifiers.map((mod, mIdx) => (
                                 <div
                                   key={mIdx}
-                                  className="text-sm text-gray-400 flex items-center gap-2"
+                                  className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2"
                                 >
-                                  <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                                  <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-600"></span>
                                   {mod.name || mod.modifier_name}
                                 </div>
                               ))}
@@ -248,7 +248,7 @@ export default function KitchenOrderDetailModal({
 
                           {/* Ghi chú món (Item Note) */}
                           {it.note && (
-                            <div className="mt-2 text-sm text-orange-400 italic bg-orange-500/10 px-2 py-1 rounded border border-orange-500/20 inline-block">
+                            <div className="mt-2 text-sm text-orange-600 dark:text-orange-400 italic bg-orange-50 dark:bg-orange-500/10 px-2 py-1 rounded border border-orange-200 dark:border-orange-500/20 inline-block">
                               Note: {it.note}
                             </div>
                           )}
@@ -260,7 +260,7 @@ export default function KitchenOrderDetailModal({
                             onClick={() =>
                               onUpdateItemStatus(order.id, it.id, "ready")
                             }
-                            className="shrink-0 p-3 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 transition-colors"
+                            className="shrink-0 p-3 rounded-xl bg-green-500/20 border border-green-500/30 text-green-600 dark:text-green-400 hover:bg-green-500/30 transition-colors"
                             title="Đánh dấu hoàn thành món này"
                           >
                             <Check size={20} />
@@ -275,7 +275,7 @@ export default function KitchenOrderDetailModal({
 
             {/* Ghi chú chung cho cả đơn (Order Note) */}
             {order.note && (
-              <div className="mt-4 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-200">
+              <div className="mt-4 p-4 rounded-xl bg-amber-50 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-amber-800 dark:text-yellow-200">
                 <div className="text-xs font-bold uppercase mb-1 opacity-70">
                   Ghi chú toàn đơn
                 </div>
@@ -285,10 +285,10 @@ export default function KitchenOrderDetailModal({
           </div>
 
           {/* Footer Actions */}
-          <div className="p-5 border-t border-white/10 bg-black/40 flex gap-3">
+          <div className="p-5 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/40 flex gap-3">
             <button
               onClick={onClose}
-              className="px-6 py-3 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-300 font-bold transition-all"
+              className="px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-300 font-bold transition-all"
             >
               Đóng
             </button>

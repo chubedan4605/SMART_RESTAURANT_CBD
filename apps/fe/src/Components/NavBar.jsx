@@ -290,7 +290,7 @@ const Navbar = () => {
               <Link
                 to="/signin"
                 onClick={closeMenu}
-                className="py-2.5 text-center rounded-lg border border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100 hover:bg-bistro-cream dark:bg-neutral-900 text-sm font-medium transition-colors"
+                className="py-2.5 text-center rounded-lg border border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100 hover:bg-bistro-cream dark:hover:bg-neutral-900 text-sm font-medium transition-colors"
               >
                 {t("navbar.login")}
               </Link>
@@ -415,7 +415,7 @@ const MobileLink = ({ to, label, onClick }) => (
   <Link
     to={to}
     onClick={onClick}
-    className="block py-3 px-4 rounded-xl text-base font-semibold text-bistro-charcoal dark:text-gray-100/80 hover:bg-bistro-cream dark:bg-neutral-900 hover:text-bistro-wine transition-colors active:scale-95"
+    className="block py-3 px-4 rounded-xl text-base font-semibold text-bistro-charcoal dark:text-gray-100/80 hover:bg-bistro-cream dark:hover:bg-neutral-900 hover:text-bistro-wine transition-colors active:scale-95"
   >
     {label}
   </Link>

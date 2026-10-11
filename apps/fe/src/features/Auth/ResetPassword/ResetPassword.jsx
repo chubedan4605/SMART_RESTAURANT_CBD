@@ -46,15 +46,15 @@ export default function ResetPassword() {
 
   if (!tokenOk) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center px-4">
-        <div className="w-full max-w-md bg-white dark:bg-neutral-950/3 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
-          <h1 className="text-2xl font-black">{t("auth.invalidLink")}</h1>
-          <p className="text-sm text-white/60 mt-2">
+      <div className="min-h-screen bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 flex items-center justify-center px-4 font-sans">
+        <div className="w-full max-w-md bg-white dark:bg-neutral-950 border border-bistro-wine/10 dark:border-white/10 rounded-2xl p-8 shadow-2xl">
+          <h1 className="text-2xl font-black text-bistro-charcoal dark:text-white">{t("auth.invalidLink")}</h1>
+          <p className="text-sm text-gray-600 dark:text-white/60 mt-2">
             {t("auth.invalidLinkDesc")}
           </p>
           <Link
             to="/forgot"
-            className="inline-block mt-6 text-orange-400 font-bold"
+            className="inline-block mt-6 text-orange-500 font-bold"
           >
             {t("auth.resendResetLink")}
           </Link>
@@ -64,10 +64,10 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white dark:bg-neutral-950/3 border border-white/10 rounded-3xl p-8 backdrop-blur-xl">
-        <h1 className="text-2xl font-black">{t("auth.resetPassword")}</h1>
-        <p className="text-sm text-white/60 mt-2">
+    <div className="min-h-screen bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 flex items-center justify-center px-4 font-sans">
+      <div className="w-full max-w-md bg-white dark:bg-neutral-950 border border-bistro-wine/10 dark:border-white/10 rounded-2xl p-8 shadow-2xl">
+        <h1 className="text-2xl font-black text-bistro-charcoal dark:text-white">{t("auth.resetPassword")}</h1>
+        <p className="text-sm text-gray-600 dark:text-white/60 mt-2">
           {t("auth.resetPasswordDesc")}
         </p>
 
