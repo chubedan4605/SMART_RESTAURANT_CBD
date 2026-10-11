@@ -6,6 +6,7 @@ const {
   modifiersKey,
 } = require("../utils/normalizeModifiers");
 const socketService = require("./socketService");
+const redisStockService = require("./redisStockService");
 
 // Lưu ý: bạn cần bảng `tables` có cột `code` (tableCode) như bạn đang dùng useParams tableCode ở FE.
 function isUuid(v) {
@@ -427,6 +428,7 @@ async function syncCartByTableId(
   io,
 ) {
   const client = await pool.connect();
+  const deductedStockItems = [];
   try {
     await client.query("begin");
 
@@ -485,18 +487,63 @@ async function syncCartByTableId(
       }
       // Lấy thông tin menu item từ DB
       const menuRes = await client.query(
-        `select id, name, price from public.menu_items where id = $1 limit 1`,
+        `select id, name, price, status, is_deleted, track_inventory, stock_quantity from public.menu_items where id = $1 limit 1`,
         [it.menuItemId],
       );
 
       const menuItem = menuRes.rows[0];
       if (!menuItem) throw new Error("MENU_ITEM_NOT_FOUND");
+      if (menuItem.is_deleted || menuItem.status !== "available") {
+        const err = new Error(`Món "${menuItem.name}" hiện đã hết hàng hoặc ngưng phục vụ.`);
+        err.status = 400;
+        err.code = "ITEM_SOLD_OUT";
+        throw err;
+      }
+
+      const orderQty = Math.max(1, Number(it.quantity) || 1);
+
+      // Trừ tồn kho Redis nguyên tử
+      const stockCheck = await redisStockService.deductStock(menuItem.id, orderQty);
+      if (!stockCheck.success) {
+        const remaining =
+          stockCheck.remaining !== undefined && stockCheck.remaining !== null
+            ? Number(stockCheck.remaining)
+            : 0;
+        const msg =
+          remaining <= 0
+            ? `Món "${menuItem.name}" hiện tại đã hết hàng (số lượng còn lại: 0)!`
+            : `Món "${menuItem.name}" chỉ còn lại ${remaining} phần, không đủ số lượng bạn đặt (${orderQty})!`;
+        const err = new Error(msg);
+        err.status = 400;
+        err.code = "INSUFFICIENT_STOCK";
+        throw err;
+      }
+      if (!stockCheck.unlimited) {
+        deductedStockItems.push({ itemId: menuItem.id, quantity: orderQty });
+        if (stockCheck.soldOutNow) {
+          await client.query("UPDATE menu_items SET status = 'sold_out' WHERE id = $1", [menuItem.id]);
+          socketService.notifyItemSoldOut(menuItem.id, menuItem.name);
+        } else if (stockCheck.lowStockNow) {
+          socketService.notifyItemLowStock(menuItem.id, menuItem.name, stockCheck.remaining);
+        }
+      }
+
+      // Trừ số lượng tồn kho trong DB nếu có bật track_inventory hoặc có stock_quantity
+      if (menuItem.track_inventory || (menuItem.stock_quantity !== null && menuItem.stock_quantity !== undefined)) {
+        await client.query(
+          `UPDATE menu_items 
+           SET stock_quantity = GREATEST(0, stock_quantity - $1),
+               status = CASE WHEN stock_quantity - $1 <= 0 THEN 'sold_out' ELSE status END
+           WHERE id = $2`,
+          [orderQty, menuItem.id]
+        );
+      }
 
       // Insert order item
       const orderItem = await insertOrderItemTx(client, {
         orderId: order.id,
         menuItem,
-        quantity: it.quantity ?? 1,
+        quantity: orderQty,
         note: it.note || null,
       });
 
@@ -577,6 +624,9 @@ async function syncCartByTableId(
     };
   } catch (e) {
     await client.query("rollback");
+    for (const d of deductedStockItems) {
+      await redisStockService.rollbackStock(d.itemId, d.quantity);
+    }
     throw e;
   } finally {
     client.release();

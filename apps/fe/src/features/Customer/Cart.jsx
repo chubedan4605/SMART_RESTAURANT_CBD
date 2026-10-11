@@ -128,7 +128,12 @@ const Cart = () => {
       toast.success(t("cart.orderSuccess"));
       navigate("/menu");
     } catch (e) {
-      toast.error(e?.message || t("cart.orderFailed"));
+      const errorMsg =
+        (typeof e === "string" ? e : null) ||
+        e?.message ||
+        e?.response?.data?.message ||
+        t("cart.orderFailed");
+      toast.error(errorMsg);
     }
   };
 

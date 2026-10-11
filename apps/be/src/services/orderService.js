@@ -78,7 +78,10 @@ exports.createOrder = async (data, io) => {
         if (!menuItemDB)
           throw new Error(`Món ăn ID ${item.menu_item_id} không tồn tại`);
         if (menuItemDB.is_deleted || menuItemDB.status !== "available") {
-          throw new Error(`Món '${menuItemDB.name}' hiện không phục vụ`);
+          const err = new Error(`Món "${menuItemDB.name}" hiện đã hết hàng hoặc ngưng phục vụ.`);
+          err.status = 400;
+          err.code = "ITEM_SOLD_OUT";
+          throw err;
         }
 
         // 1. Kiểm tra và trừ tồn kho In-Memory trên Redis
@@ -87,9 +90,18 @@ exports.createOrder = async (data, io) => {
           item.quantity
         );
         if (!stockCheck.success) {
-          throw new Error(
-            `Món '${menuItemDB.name}' chỉ còn ${stockCheck.remaining} phần, không đủ số lượng!`
-          );
+          const remaining =
+            stockCheck.remaining !== undefined && stockCheck.remaining !== null
+              ? Number(stockCheck.remaining)
+              : 0;
+          const msg =
+            remaining <= 0
+              ? `Món "${menuItemDB.name}" hiện tại đã hết hàng (số lượng còn lại: 0)!`
+              : `Món "${menuItemDB.name}" chỉ còn lại ${remaining} phần, không đủ số lượng bạn đặt (${item.quantity})!`;
+          const err = new Error(msg);
+          err.status = 400;
+          err.code = "INSUFFICIENT_STOCK";
+          throw err;
         }
         if (!stockCheck.unlimited) {
           deductedStockItems.push({

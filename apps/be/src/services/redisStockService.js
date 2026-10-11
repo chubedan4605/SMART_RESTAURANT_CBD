@@ -241,13 +241,49 @@ async function setInventory(menuItemId, { track_inventory, stock_quantity, low_s
 async function deductStock(menuItemId, quantity) {
   const client = getRedis();
   if (!client) {
-    return {
-      success: true,
-      unlimited: true,
-      remaining: null,
-      soldOutNow: false,
-      lowStockNow: false,
-    };
+    try {
+      const dbRes = await db.query(
+        "SELECT track_inventory, stock_quantity, low_stock_threshold FROM menu_items WHERE id = $1",
+        [menuItemId]
+      );
+      const item = dbRes.rows[0];
+      if (!item || !item.track_inventory || item.stock_quantity === null) {
+        return {
+          success: true,
+          unlimited: true,
+          remaining: null,
+          soldOutNow: false,
+          lowStockNow: false,
+        };
+      }
+      const currentStock = Number(item.stock_quantity);
+      if (currentStock < quantity) {
+        return {
+          success: false,
+          unlimited: false,
+          remaining: currentStock,
+          soldOutNow: currentStock <= 0,
+          lowStockNow: false,
+        };
+      }
+      const remaining = currentStock - quantity;
+      return {
+        success: true,
+        unlimited: false,
+        remaining,
+        soldOutNow: remaining <= 0,
+        lowStockNow: remaining <= (item.low_stock_threshold || 3),
+      };
+    } catch (err) {
+      console.warn("DB fallback in deductStock failed:", err.message);
+      return {
+        success: true,
+        unlimited: true,
+        remaining: null,
+        soldOutNow: false,
+        lowStockNow: false,
+      };
+    }
   }
 
   try {

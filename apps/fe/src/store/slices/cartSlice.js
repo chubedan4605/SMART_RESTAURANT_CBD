@@ -128,7 +128,17 @@ export const syncCartToDb = createAsyncThunk(
       const res = await cartApi.sync(payload, qrToken);
       return res;
     } catch (err) {
-      return rejectWithValue(err?.response?.data || { message: err.message });
+      const errorData = err?.response?.data;
+      const message =
+        errorData?.message ||
+        (typeof errorData === "string" ? errorData : null) ||
+        err?.message ||
+        "Đặt món thất bại";
+      return rejectWithValue(
+        typeof errorData === "object" && errorData !== null
+          ? { ...errorData, message }
+          : { message }
+      );
     }
   },
 );

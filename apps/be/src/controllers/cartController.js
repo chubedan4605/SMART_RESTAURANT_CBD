@@ -92,6 +92,11 @@ exports.syncCart = async (req, res, next) => {
 
     return res.json(result);
   } catch (e) {
-    return next(e);
+    console.warn("syncCart failed:", e.message);
+    const status = e.status || 400;
+    return res.status(status).json({
+      message: e.message || "Đặt món thất bại",
+      code: e.code || "ORDER_FAILED",
+    });
   }
 };
