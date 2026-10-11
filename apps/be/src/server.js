@@ -7,6 +7,7 @@ const setUpSocket = require("./config/socket");
 const setUpMiddleWare = require("./config/middleWare");
 const passport = require("passport");
 const { connectRedis, closeRedis } = require("./config/redis");
+const { runMigrations } = require("./database/migrate");
 
 const app = express();
 const server = http.createServer(app); // Tạo HTTP Server từ Express App
@@ -23,6 +24,14 @@ setUpRoutes(app);
 const PORT = process.env.PORT || 3030;
 
 async function bootstrap() {
+  // Tự động kiểm tra và chạy database migrations khi khởi động
+  try {
+    await runMigrations();
+  } catch (err) {
+    console.error("❌ [Server] Migration thất bại, dừng khởi động server:", err);
+    process.exit(1);
+  }
+
   await connectRedis();
 
   server.listen(PORT, () => {

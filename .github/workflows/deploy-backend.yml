@@ -84,6 +84,13 @@ jobs:
             # Kéo image mới nhất từ Docker Hub
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest
             
+            # Chạy Database Migrations trước khi khởi chạy container chính
+            echo "🚀 [CI/CD] Đang thực thi Database Migrations..."
+            docker run --rm \
+              --env-file /home/${{ secrets.EC2_USERNAME }}/SMART_RESTAURANT_CBD/apps/be/.env \
+              ${{ secrets.DOCKERHUB_USERNAME }}/smart-restaurant-backend:latest \
+              node src/database/migrate.js
+            
             # Dừng và xóa container backend cũ (nếu có)
             docker stop smart-restaurant-backend || true
             docker rm smart-restaurant-backend || true
