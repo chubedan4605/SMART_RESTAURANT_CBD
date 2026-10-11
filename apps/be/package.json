@@ -9,6 +9,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node prisma/seed.js",
+    "migrate:inventory": "node src/database/migrate_inventory.js",
     "build": "prisma generate"
   },
   "keywords": [],

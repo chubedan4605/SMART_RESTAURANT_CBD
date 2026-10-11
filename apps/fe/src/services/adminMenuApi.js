@@ -88,4 +88,13 @@ export const adminMenuApi = {
       `/admin/menu/menu-items/${menuItemId}/photos/${photoId}`,
     );
   },
+
+  // Quản lý tồn kho F&B (track_inventory)
+  getItemInventory(id) {
+    return axiosClient.get(`/admin/menu/items/${id}/inventory`);
+  },
+
+  setItemInventory(id, payload) {
+    return axiosClient.put(`/admin/menu/items/${id}/inventory`, payload);
+  },
 };

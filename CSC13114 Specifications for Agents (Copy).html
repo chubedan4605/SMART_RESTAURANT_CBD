@@ -1,0 +1,291 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>CSC13114 Specifications for Agents (Copy)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@600&display=swap">
+<style>
+:root{
+  --paper:#f6f8fa; --surround:#101f28; --ink:#0c1a24; --ink-soft:#3c5462;
+  --muted:#5a7080; --line:#d5e0e6; --accent:#12607f; --accent-weak:#e2eef3;
+  --signal:#b4571a; --signal-weak:#f7ece2; --panel:#eef3f6;
+  --shadow:0 24px 70px rgba(6,20,28,.45);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#12212a; --surround:#070f14; --ink:#e8f0f4; --ink-soft:#b6c8d2;
+    --muted:#8aa3b0; --line:#2b4049; --accent:#5fb6d4; --accent-weak:#16323e;
+    --signal:#e08a45; --signal-weak:#2e2015; --panel:#0e1b23;
+    --shadow:0 24px 70px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12212a; --surround:#070f14; --ink:#e8f0f4; --ink-soft:#b6c8d2;
+  --muted:#8aa3b0; --line:#2b4049; --accent:#5fb6d4; --accent-weak:#16323e;
+  --signal:#e08a45; --signal-weak:#2e2015; --panel:#0e1b23;
+  --shadow:0 24px 70px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surround);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  overflow:hidden;height:100vh}
+#stage{position:fixed;inset:0;display:grid;place-items:center}
+#deck{width:1280px;height:720px;transform-origin:center center;position:relative}
+.slide{position:absolute;inset:0;background:var(--paper);display:none;
+  grid-template-rows:auto 1fr auto;padding:58px 72px 26px;box-shadow:var(--shadow)}
+.slide::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:var(--accent)}
+.slide.on{display:grid}
+h2{margin:0;font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;
+  font-size:43px;line-height:1.14;letter-spacing:-.015em;color:var(--ink);
+  text-wrap:balance}
+h2::after{content:"";display:block;width:62px;height:3px;margin-top:15px;
+  background:var(--accent)}
+.body{margin-top:24px;min-height:0;font-size:26px;line-height:1.5;
+  color:var(--ink-soft);overflow:hidden}
+.body>*:first-child{margin-top:0}
+.body ul,.body ol{margin:0 0 14px;padding-left:1.35em;list-style:none}
+.body ol{counter-reset:n}
+.body li{margin:0 0 12px;position:relative}
+.body ul>li::before{content:"";position:absolute;left:-1.1em;top:.62em;
+  width:9px;height:9px;background:var(--accent);border-radius:1px}
+.body ol>li{counter-increment:n}
+.body ol>li::before{content:counter(n);position:absolute;left:-1.5em;top:.06em;
+  font-family:"IBM Plex Mono",monospace;font-size:.72em;color:var(--accent);
+  font-weight:600}
+.body p{margin:0 0 14px}
+.body strong{color:var(--ink);font-weight:600}
+.body code{font-family:"IBM Plex Mono",monospace;font-size:.85em;
+  background:var(--panel);padding:.1em .34em;border-radius:3px;color:var(--ink)}
+pre.code{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);
+  padding:16px 20px;margin:0 0 14px;overflow:hidden;color:var(--ink);
+  font-family:"IBM Plex Mono",monospace;font-size:20px;line-height:1.45}
+pre.code code{background:none;padding:0;font-size:inherit}
+blockquote{margin:0 0 14px;padding:16px 22px;background:var(--signal-weak);
+  border-left:4px solid var(--signal);color:var(--ink);font-size:.97em}
+table{border-collapse:collapse;width:100%;margin:0 0 14px;font-size:.78em;
+  font-variant-numeric:tabular-nums}
+th{font-family:"IBM Plex Mono",monospace;font-size:.82em;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--accent);font-weight:600;
+  border-bottom:2px solid var(--accent);padding:8px 12px;text-align:left}
+td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;
+  vertical-align:top}
+.foot{display:flex;justify-content:space-between;align-items:baseline;
+  font-family:"IBM Plex Mono",monospace;font-size:14px;color:var(--muted);
+  padding-top:14px;border-top:1px solid var(--line)}
+.foot .n{font-variant-numeric:tabular-nums}
+/* sơ đồ */
+.fig{margin:0 0 10px}
+.fig svg{display:block;width:100%;height:auto;color:var(--ink);font-size:19px}
+.fig + p{font-size:.78em;line-height:1.4;color:var(--muted)}
+.fig .ln{stroke:currentColor;stroke-width:2;fill:none}
+.fig .life{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 6}
+.fig .box{fill:var(--panel);stroke:var(--line);stroke-width:1.5}
+.fig .acc{stroke:var(--accent);stroke-width:3;fill:none}
+.fig .accf{fill:var(--accent)}
+.fig .soft{fill:var(--accent-weak)}
+.fig text{fill:currentColor}
+.fig .t-acc{fill:var(--accent);font-weight:600}
+.fig .t-mut{fill:var(--muted)}
+.fig .b{font-weight:650}
+.fig .mono{font-family:"IBM Plex Mono",monospace;font-size:17px}
+/* slide phân đoạn */
+.slide.sect{grid-template-rows:auto auto 1fr;align-content:center;
+  background:var(--accent-weak)}
+.slide.sect h2{font-size:54px;max-width:20ch}
+.slide.sect .body{font-size:23px;color:var(--muted);max-width:52ch;margin-top:28px}
+.slide.sect .body li{margin-bottom:8px}
+.slide.sect .foot{display:none}
+/* bìa */
+.slide.cover{grid-template-rows:auto 1fr auto;align-content:center;padding:72px}
+.slide.cover .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:16px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.slide.cover h1{margin:22px 0 0;font-family:"IBM Plex Serif",Georgia,serif;
+  font-weight:600;font-size:62px;line-height:1.08;letter-spacing:-.02em;
+  max-width:20ch;color:var(--ink);text-wrap:balance}
+.slide.cover .sub{margin-top:24px;font-size:24px;color:var(--muted);
+  max-width:46ch;line-height:1.45}
+#bar{position:fixed;left:0;bottom:0;height:3px;background:var(--accent);z-index:5;
+  transition:width .2s ease}
+#hint{position:fixed;right:16px;top:14px;z-index:6;font-family:"IBM Plex Mono",monospace;
+  font-size:12px;letter-spacing:.04em;color:#9fb6c2;background:rgba(0,0,0,.4);
+  padding:7px 11px;border-radius:5px;opacity:0;transition:opacity .3s;
+  pointer-events:none}
+#hint.show{opacity:1}
+#idx{position:fixed;inset:0;z-index:10;background:var(--surround);display:none;
+  padding:42px 48px;overflow:auto}
+#idx.show{display:block}
+#idx h3{margin:0 0 22px;font-family:"IBM Plex Mono",monospace;font-size:13px;
+  letter-spacing:.14em;text-transform:uppercase;color:#7f9aa8;font-weight:600}
+#idx ol{list-style:none;margin:0;padding:0;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:9px}
+#idx button{width:100%;text-align:left;display:flex;gap:12px;align-items:baseline;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:#dceaf1;padding:11px 14px;border-radius:5px;cursor:pointer;
+  font:inherit;font-size:15px;line-height:1.3}
+#idx button:hover,#idx button:focus-visible{background:var(--accent);color:#fff;
+  border-color:var(--accent);outline:none}
+#idx button .k{font-family:"IBM Plex Mono",monospace;font-size:12px;opacity:.65;
+  font-variant-numeric:tabular-nums;min-width:2.2em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<div id="hint">→ ← slide · o index · f fullscreen · d dark · ? keys</div>
+<div id="stage"><div id="deck"><section class="slide cover on"><div class="eyebrow">CSC13114 · Session 02 · 24 Sep 2026</div><h1>AWAD02 - Specifications for Agents - HK1 2627</h1><div class="sub">CSC13114 — Advanced Web Application Development · CQ2023/3 · 24/09/2026 · cs2:G202</div></section>
+<section class="slide"><h2>Advanced Web Application Development</h2><div class="body"><ul><li>Session 2 of 15 · Thursday, periods 2–5 · cs2:G202</li><li>Today: writing a specification someone else — or something else — can implement</li><li>Nguyễn Huy Khánh — nhkhanh@fit.hcmus.edu.vn</li><li>Classroom <code>2609-AWAD-23/3</code> — join code <strong>i63ft334</strong></li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">2 / 24</span></div></section>
+<section class="slide"><h2>Today</h2><div class="body"><ul><li>Why the specification is now a graded artifact</li><li>What a user story leaves out, every time</li><li>The anatomy of a spec an agent can execute</li><li>Acceptance criteria that can actually fail</li><li>You write one, another team implements it — as homework, before the next lab</li><li><code>IA#1</code> and <code>GA#1</code></li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">3 / 24</span></div></section>
+<section class="slide"><h2>Where you are starting from</h2><div class="body"><ul><li>Last year you shipped <code>smart-restaurant</code>: React, Express, JWT, Socket.IO, payments</li><li>Be honest about one thing: <strong>the spec was written after the code</strong>, if at all</li><li>That worked because you were both the author and the implementer</li><li>It stops working the moment someone else builds it — a teammate, or an agent</li><li>This semester the spec is not paperwork. It is the thing being graded</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">4 / 24</span></div></section>
+<section class="slide sect"><h2>Part 1: what a specification is for</h2><div class="body"><ul><li>One sentence, read by three different implementers, becomes three products</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">5 / 24</span></div></section>
+<section class="slide"><h2>The handoff problem</h2><div class="body"><figure class="fig"><svg viewBox="0 0 1128 300" role="img" aria-label="One user story read by three implementers produces three different results: a teammate builds an equal split, an agent builds a per-item split with a new dependency, and you three weeks later forget that discounts exist.">
+  <defs>
+    <marker id="s2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+  </defs>
+  <rect class="acc" x="10" y="100" width="330" height="100" rx="8"/>
+  <text class="t-acc b" x="34" y="142">“Let customers split</text>
+  <text class="t-acc b" x="34" y="176">the bill at a table”</text>
+  <rect class="box" x="640" y="6" width="478" height="80" rx="8"/>
+  <text class="b" x="664" y="40">a teammate</text>
+  <text class="t-mut" x="664" y="70">splits the total equally, ignores who ate what</text>
+  <rect class="box" x="640" y="110" width="478" height="80" rx="8"/>
+  <text class="b" x="664" y="144">an agent</text>
+  <text class="t-mut" x="664" y="174">per-item split, new payment library, no refunds</text>
+  <rect class="box" x="640" y="214" width="478" height="80" rx="8"/>
+  <text class="b" x="664" y="248">you, three weeks later</text>
+  <text class="t-mut" x="664" y="278">forgets that discounts exist</text>
+  <line class="ln" x1="340" y1="140" x2="636" y2="46" marker-end="url(#s2a)"/>
+  <line class="ln" x1="340" y1="150" x2="636" y2="150" marker-end="url(#s2a)"/>
+  <line class="ln" x1="340" y1="160" x2="636" y2="254" marker-end="url(#s2a)"/>
+</svg></figure>
+<p>All three are defensible readings of the same sentence. The sentence is the defect.</p></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">6 / 24</span></div></section>
+<section class="slide"><h2>A user story is not a specification</h2><div class="body"><ul><li>A story says <strong>who wants what, and why</strong> — it is an intention</li><li>A spec says <strong>what the system does</strong>, including when things go wrong</li><li>&quot;As a customer I want to split the bill so we can pay separately&quot; says nothing</li></ul>
+<p>about partial payments, rounding, or two people paying at the same second</p>
+<ul><li>Stories stay. They are the input to the spec, not a replacement for it</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">7 / 24</span></div></section>
+<section class="slide"><h2>What a spec has to pin down</h2><div class="body"><table><thead><tr><th>Section</th><th>Answers</th></tr></thead><tbody><tr><td>Scope</td><td>what is in, and <strong>what is deliberately out</strong></td></tr><tr><td>Contract</td><td>endpoints, payloads, status codes, events</td></tr><tr><td>Data</td><td>what is stored, what changes, what must never change</td></tr><tr><td>Errors</td><td>every failure the user can cause, and what they see</td></tr><tr><td>Acceptance</td><td>criteria that can be run, and can fail</td></tr><tr><td>Constraints</td><td>no new dependencies, budget, deadline, compatibility</td></tr></tbody></table></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">8 / 24</span></div></section>
+<section class="slide"><h2>The five places every spec is thin</h2><div class="body"><ol><li><strong>Empty and first-run states</strong> — no items, no orders, a brand-new table</li><li><strong>Partial failure</strong> — the payment succeeded, the update did not</li><li><strong>Permissions</strong> — who may do this, to whose data</li><li><strong>Concurrency and duplicates</strong> — two people tap Pay in the same second</li><li><strong>Limits</strong> — page size, upload size, rate; and what happens at the limit</li></ol>
+<p>Whatever you leave out, the assistant decides for you — confidently.</p></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">9 / 24</span></div></section>
+<section class="slide sect"><h2>Part 2: writing one</h2><div class="body"><ul><li>One page is enough, if it is the right page</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">10 / 24</span></div></section>
+<section class="slide"><h2>The shape of a feature spec</h2><div class="body"><pre class="code" data-lang="md"><code># Split the bill
+Status: draft · Owner: &lt;name&gt; · Feature of: smart-restaurant
+
+## Goal          one sentence
+## Out of scope  what this deliberately does NOT do
+## Flow          numbered steps, happy path only
+## Contract      endpoints, payloads, status codes
+## Data          tables touched, fields added, invariants
+## Errors        condition → what the user sees → what the system does
+## Acceptance    AC1..ACn, each one runnable
+## Constraints   no new dependencies · works on the current schema</code></pre></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">11 / 24</span></div></section>
+<section class="slide"><h2>Acceptance criteria that can fail</h2><div class="body"><pre class="code" data-lang="md"><code>✗ AC1: splitting the bill works correctly
+
+✓ AC1: a 405000đ order split 3 ways produces three shares of 135000đ;
+       the sum of the shares always equals the order total
+✓ AC2: if one share fails to pay, the order stays open and the other two
+       shares stay paid — nothing is refunded automatically
+✓ AC3: two simultaneous pay requests for one share produce one payment;
+       the second returns 409 with the existing payment id</code></pre>
+<ul><li>If you cannot imagine the test, it is a wish, not a criterion</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">12 / 24</span></div></section>
+<section class="slide"><h2>The contract, written down</h2><div class="body"><pre class="code" data-lang="json"><code>POST /api/tables/:id/bill/split
+{ &quot;mode&quot;: &quot;equal&quot;, &quot;ways&quot;: 3, &quot;idempotencyKey&quot;: &quot;uuid&quot; }
+
+201 { &quot;shares&quot;: [ { &quot;id&quot;: 1, &quot;amount&quot;: 135000, &quot;status&quot;: &quot;unpaid&quot; } ] }
+409 { &quot;error&quot;: &quot;split_exists&quot;, &quot;splitId&quot;: 42 }
+422 { &quot;error&quot;: &quot;order_empty&quot; }</code></pre>
+<ul><li>Status codes are part of the contract — &quot;it returns an error&quot; is not a contract</li><li>The idempotency key is your answer to line 4 of the previous list</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">13 / 24</span></div></section>
+<section class="slide"><h2>Non-goals are the cheapest lines you will ever write</h2><div class="body"><ul><li>&quot;This feature does <strong>not</strong> support splitting by item&quot; — one line, saves a week</li><li>&quot;Refunds are out of scope: a failed share is retried, never reversed&quot;</li><li>&quot;No new dependency. No schema change beyond <code>bill_shares</code>&quot;</li><li>Every non-goal is an invention you have pre-empted</li><li>Students skip this section. Reviewers read it first</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">14 / 24</span></div></section>
+<section class="slide"><h2>The spec is the test plan</h2><div class="body"><pre class="code" data-lang="js"><code>test(&#x27;AC1 — shares sum to the order total&#x27;, ...)
+test(&#x27;AC2 — one failed share leaves the others paid&#x27;, ...)
+test(&#x27;AC3 — duplicate pay request returns 409 with the same id&#x27;, ...)</code></pre>
+<ul><li>Acceptance criteria become test names, one for one</li><li>The assistant may write the tests; the criteria are still yours</li><li>A spec with no runnable criteria produces code nobody can verify — including you</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">15 / 24</span></div></section>
+<section class="slide"><h2>Where a defect gets caught, and what it costs</h2><div class="body"><figure class="fig"><svg viewBox="0 0 1128 250" role="img" aria-label="The same defect costs more the later it is caught: a question during spec review costs minutes, a code review comment costs hours, a CI failure or a broken demo costs half a day, and a production incident costs a day and an apology.">
+  <defs>
+    <marker id="s2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+  </defs>
+  <text class="t-mut" x="20" y="30">the same defect: “what happens when two people pay at once?”</text>
+  <rect class="acc" x="26" y="60" width="234" height="64" rx="8"/>
+  <text class="t-acc b" x="143" y="99" text-anchor="middle">spec review</text>
+  <text class="t-acc" x="143" y="196" text-anchor="middle">minutes</text>
+  <rect class="box" x="306" y="60" width="234" height="64" rx="8"/>
+  <text class="b" x="423" y="99" text-anchor="middle">code review</text>
+  <text class="t-mut" x="423" y="196" text-anchor="middle">hours</text>
+  <rect class="box" x="586" y="60" width="234" height="64" rx="8"/>
+  <text class="b" x="703" y="99" text-anchor="middle">CI, or the demo</text>
+  <text class="t-mut" x="703" y="196" text-anchor="middle">half a day</text>
+  <rect class="box" x="866" y="60" width="236" height="64" rx="8"/>
+  <text class="b" x="984" y="99" text-anchor="middle">production</text>
+  <text class="t-mut" x="984" y="196" text-anchor="middle">a day, and an apology</text>
+  <line class="ln" x1="20" y1="152" x2="1104" y2="152" marker-end="url(#s2b)"/>
+  <line class="life" x1="143" y1="124" x2="143" y2="170"/>
+  <line class="life" x1="423" y1="124" x2="423" y2="170"/>
+  <line class="life" x1="703" y1="124" x2="703" y2="170"/>
+  <line class="life" x1="984" y1="124" x2="984" y2="170"/>
+</svg></figure>
+<p>A question asked while writing the spec is the cheapest bug fix available to you.</p></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">16 / 24</span></div></section>
+<section class="slide sect"><h2>Part 3: what you hand in</h2><div class="body"><ul><li>You write a spec · another team builds from it · nobody explains anything out loud</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">17 / 24</span></div></section>
+<section class="slide"><h2><code>IA#1</code> — write this spec · 3%</h2><div class="body"><p><strong>Split the bill at a table</strong>, in <code>smart-restaurant</code> — the system you already built.</p>
+<ul><li>A table has one open order with several items, priced, VAT included</li><li>The customers want to pay separately, each from their own phone</li><li>The kitchen is not affected; the order stays open until every share is paid</li><li>Same feature for everyone, so the specs can be compared</li></ul>
+<p><strong>One page.</strong> Use the template from slide 8. Deadline on Classroom.</p></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">18 / 24</span></div></section>
+<section class="slide"><h2><code>IA#1</code> — then we swap</h2><div class="body"><ul><li>Your spec goes to another team; you receive theirs, in the next lab</li><li>They implement it with an assistant. <strong>Your spec is their brief — nothing else</strong></li><li><strong>They may not ask you anything.</strong> Every question they would have asked, they write down</li><li>That question list comes back to you, and you <strong>revise the spec</strong></li></ul>
+<p>Hand in three files: the spec, the question list you received, the revised spec.</p></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">19 / 24</span></div></section>
+<section class="slide"><h2>How a spec is scored</h2><div class="body"><table><thead><tr><th>Signal</th><th>What it tells us</th></tr></thead><tbody><tr><td>Questions the implementer had to write down</td><td>the real defect count of the spec</td></tr><tr><td>Decisions the implementer had to invent</td><td>scope you left open</td></tr><tr><td>Acceptance criteria that could not be run</td><td>wishes, not criteria</td></tr><tr><td>A non-goals section</td><td>its presence is itself a signal</td></tr></tbody></table>
+<p>The mark is in the revision: what you changed once you saw the questions.</p></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">20 / 24</span></div></section>
+<section class="slide"><h2>What we expect to find</h2><div class="body"><ul><li>Rounding: <code>405000 / 3</code> is exact, <code>400000 / 3</code> is not — who pays the extra đồng?</li><li>Who may split the bill: anyone at the table, or whoever opened it?</li><li>A share is paid, then an item is added to the order. Now what?</li><li>Two people paying the same share in the same second</li><li>Discounts and VAT: split before, or after?</li></ul>
+<p>Every one of these is a sentence you could have written in advance.</p></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">21 / 24</span></div></section>
+<section class="slide"><h2><code>GA#1</code> — proposal and planning · 4%</h2><div class="body"><p><strong>No specification in this one.</strong> The spec comes later, once the idea holds up.</p>
+<ul><li>The product: who it is for, and the one problem it solves</li><li>The LLM feature you intend to build — and why being wrong there costs something</li><li>Scope for the semester: what is in, and what you are deliberately leaving out</li><li>Plan: the six checkpoints, who does what, what is due when</li><li>Risks: the two things most likely to sink this, and what you will do about each</li><li>Technology choices, one line of justification each</li></ul>
+<p>Two pages, plus your repository link. Teams of up to 3, named on the submission.</p></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">22 / 24</span></div></section>
+<section class="slide"><h2>Before next week</h2><div class="body"><ul><li>Session 3: <strong>the harness</strong> — project rules file, tools, MCP, least privilege</li><li>Bring the repository you will use this semester, with CI already running</li><li>The syllabus changed this week: read sections 5 and 7 on Classroom — note the</li></ul>
+<p>assignment codes there are still <code>BTVN#</code>/<code>DAMH#</code>; on Classroom they are <code>IA#</code>/<code>GA#</code></p>
+<ul><li>Your seminar topic list is in section 5 — pick one with your team</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">23 / 24</span></div></section>
+<section class="slide"><h2>Questions</h2><div class="body"><ul><li>Google Classroom — join code: <strong>i63ft334</strong></li><li>nhkhanh@fit.hcmus.edu.vn</li><li>Ask now, or on the Classroom Stream</li></ul></div><div class="foot"><span>AWAD02 - Specifications for Agents - HK1 2627</span><span class="n">24 / 24</span></div></section></div></div>
+<div id="bar"></div>
+<div id="idx"><h3>AWAD02 - Specifications for Agents - HK1 2627 — slide index</h3><ol><li><button data-i="1"><span class="k">2</span><span>Advanced Web Application Development</span></button></li><li><button data-i="2"><span class="k">3</span><span>Today</span></button></li><li><button data-i="3"><span class="k">4</span><span>Where you are starting from</span></button></li><li><button data-i="4"><span class="k">5</span><span>▸ Part 1: what a specification is for</span></button></li><li><button data-i="5"><span class="k">6</span><span>The handoff problem</span></button></li><li><button data-i="6"><span class="k">7</span><span>A user story is not a specification</span></button></li><li><button data-i="7"><span class="k">8</span><span>What a spec has to pin down</span></button></li><li><button data-i="8"><span class="k">9</span><span>The five places every spec is thin</span></button></li><li><button data-i="9"><span class="k">10</span><span>▸ Part 2: writing one</span></button></li><li><button data-i="10"><span class="k">11</span><span>The shape of a feature spec</span></button></li><li><button data-i="11"><span class="k">12</span><span>Acceptance criteria that can fail</span></button></li><li><button data-i="12"><span class="k">13</span><span>The contract, written down</span></button></li><li><button data-i="13"><span class="k">14</span><span>Non-goals are the cheapest lines you will ever write</span></button></li><li><button data-i="14"><span class="k">15</span><span>The spec is the test plan</span></button></li><li><button data-i="15"><span class="k">16</span><span>Where a defect gets caught, and what it costs</span></button></li><li><button data-i="16"><span class="k">17</span><span>▸ Part 3: what you hand in</span></button></li><li><button data-i="17"><span class="k">18</span><span><code>IA#1</code> — write this spec · 3%</span></button></li><li><button data-i="18"><span class="k">19</span><span><code>IA#1</code> — then we swap</span></button></li><li><button data-i="19"><span class="k">20</span><span>How a spec is scored</span></button></li><li><button data-i="20"><span class="k">21</span><span>What we expect to find</span></button></li><li><button data-i="21"><span class="k">22</span><span><code>GA#1</code> — proposal and planning · 4%</span></button></li><li><button data-i="22"><span class="k">23</span><span>Before next week</span></button></li><li><button data-i="23"><span class="k">24</span><span>Questions</span></button></li></ol></div>
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var i=0,deck=document.getElementById('deck'),bar=document.getElementById('bar');
+  var hint=document.getElementById('hint'),idx=document.getElementById('idx');
+  function fit(){
+    var s=Math.min(innerWidth/1280,innerHeight/720)*0.95;
+    deck.style.transform='scale('+s+')';
+  }
+  function shrink(el){
+    var b=el.querySelector('.body'); if(!b) return;
+    var size=26; b.style.fontSize=size+'px';
+    while(b.scrollHeight>b.clientHeight&&size>14){size--;b.style.fontSize=size+'px';}
+  }
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,k){s.classList.toggle('on',k===i);});
+    shrink(slides[i]);
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    try{history.replaceState(null,'','#'+(i+1));}catch(e){}
+  }
+  function toggleIdx(){idx.classList.toggle('show');}
+  addEventListener('resize',fit);
+  addEventListener('keydown',function(e){
+    if(e.key==='Escape'){idx.classList.remove('show');return;}
+    if(idx.classList.contains('show')&&e.key!=='o')return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();show(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(slides.length-1);}
+    else if(e.key==='o'){toggleIdx();}
+    else if(e.key==='f'){document.fullscreenElement?document.exitFullscreen():
+      document.documentElement.requestFullscreen();}
+    else if(e.key==='d'){var r=document.documentElement;
+      r.dataset.theme=r.dataset.theme==='dark'?'light':'dark';}
+    else if(e.key==='?'){hint.classList.toggle('show');}
+  });
+  idx.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    show(+b.dataset.i); idx.classList.remove('show');
+  });
+  addEventListener('click',function(e){
+    if(idx.classList.contains('show'))return;
+    if(e.target.closest('#idx'))return;
+    show(e.clientX>innerWidth*0.35?i+1:i-1);
+  });
+  fit();
+  var start=parseInt((location.hash||'#1').slice(1),10);
+  show(isNaN(start)?0:start-1);
+  hint.classList.add('show');
+  setTimeout(function(){hint.classList.remove('show');},3800);
+})();
+</script>
+</body></html>

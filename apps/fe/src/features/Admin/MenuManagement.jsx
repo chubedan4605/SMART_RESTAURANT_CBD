@@ -56,7 +56,24 @@ function MenuItemCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-white font-bold truncate">{it.name}</div>
+          <div className="text-white font-bold truncate flex items-center gap-2">
+            <span>{it.name}</span>
+            {Boolean(it.trackInventory || it.track_inventory) && (
+              Number(it.stockQuantity ?? it.stock_quantity ?? 0) === 0 ? (
+                <span className="text-[10px] bg-red-500/20 text-red-300 border border-red-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
+                  Hết hàng (0)
+                </span>
+              ) : Number(it.stockQuantity ?? it.stock_quantity ?? 0) <= Number(it.lowStockThreshold ?? it.low_stock_threshold ?? 3) ? (
+                <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
+                  ⚠️ Còn {it.stockQuantity ?? it.stock_quantity}
+                </span>
+              ) : (
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
+                  📦 Còn {it.stockQuantity ?? it.stock_quantity}
+                </span>
+              )
+            )}
+          </div>
           <div className="text-xs text-gray-400 mt-1 truncate">{it.categoryName || "—"}</div>
           <div className="text-[11px] text-gray-500 mt-1">
             Ngày tạo: {formatDate(it.createdAt || it.created_at)}
@@ -477,7 +494,24 @@ export default function MenuManagement() {
                     className="border-b border-white/5 hover:bg-white dark:bg-neutral-950/5 transition cursor-pointer"
                   >
                     <td className="py-3 pr-3 pl-4 align-top">
-                      <div className="text-white font-bold">{it.name}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-bold">{it.name}</span>
+                        {Boolean(it.trackInventory || it.track_inventory) && (
+                          Number(it.stockQuantity ?? it.stock_quantity ?? 0) === 0 ? (
+                            <span className="text-[10px] bg-red-500/20 text-red-300 border border-red-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
+                              Hết hàng (0)
+                            </span>
+                          ) : Number(it.stockQuantity ?? it.stock_quantity ?? 0) <= Number(it.lowStockThreshold ?? it.low_stock_threshold ?? 3) ? (
+                            <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
+                              ⚠️ Còn {it.stockQuantity ?? it.stock_quantity}
+                            </span>
+                          ) : (
+                            <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
+                              📦 Còn {it.stockQuantity ?? it.stock_quantity}
+                            </span>
+                          )
+                        )}
+                      </div>
                       <div className="text-xs text-gray-400 mt-1">{it.categoryName || "—"}</div>
                     </td>
 

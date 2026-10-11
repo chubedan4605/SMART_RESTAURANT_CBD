@@ -34,6 +34,11 @@ export default function EditMenuItemModal({
   const [uploadingImage, setUploadingImage] = useState(false);
   const [photos, setPhotos] = useState([]); // [{id,url,isPrimary,createdAt}]
   const [loadingPhotos, setLoadingPhotos] = useState(false);
+  const [inventory, setInventory] = useState({
+    track_inventory: false,
+    stock_quantity: "",
+    low_stock_threshold: 3,
+  });
 
   const modifierGroupOptions = useMemo(() => {
     return (modifierGroups || []).map((g) => ({
@@ -66,10 +71,11 @@ export default function EditMenuItemModal({
         setLoadingGroups(true);
         setLoadingPhotos(true);
 
-        const [groupsRes, detailRes, photosRes] = await Promise.all([
+        const [groupsRes, detailRes, photosRes, invRes] = await Promise.all([
           adminMenuApi.getModifierGroups({ status: "active" }),
           adminMenuApi.getMenuItemDetail(item.id),
           adminMenuApi.getMenuItemPhotos(item.id),
+          adminMenuApi.getItemInventory(item.id).catch(() => null),
         ]);
 
         if (cancelled) return;
@@ -91,6 +97,18 @@ export default function EditMenuItemModal({
         setSelectedGroupIds(
           Array.isArray(full?.modifierGroupIds) ? full.modifierGroupIds : []
         );
+
+        const inv = invRes?.data || invRes;
+        if (inv) {
+          setInventory({
+            track_inventory: Boolean(inv.track_inventory),
+            stock_quantity:
+              inv.stock_quantity !== null && inv.stock_quantity !== undefined
+                ? inv.stock_quantity
+                : "",
+            low_stock_threshold: inv.low_stock_threshold || 3,
+          });
+        }
       } catch (e) {
         if (!cancelled) {
           setError(e?.response?.data?.message || "Không tải được chi tiết món");
@@ -187,6 +205,13 @@ export default function EditMenuItemModal({
 
       await adminMenuApi.updateMenuItem(item.id, payload);
       await adminMenuApi.setMenuItemModifierGroups(item.id, selectedGroupIds);
+      await adminMenuApi.setItemInventory(item.id, {
+        track_inventory: inventory.track_inventory,
+        stock_quantity: inventory.track_inventory
+          ? Number(inventory.stock_quantity) || 0
+          : null,
+        low_stock_threshold: Number(inventory.low_stock_threshold) || 3,
+      });
 
       onUpdated?.({
         ...item,
@@ -408,6 +433,83 @@ export default function EditMenuItemModal({
                     disabled={loadingGroups || disabledAll}
                   />
                 </div>
+              </div>
+
+              {/* Quản lý Tồn kho F&B (track_inventory) */}
+              <div className="rounded-2xl border border-white/10 bg-neutral-900/60 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-white font-bold flex items-center gap-2">
+                      <span>📦 Quản lý tồn kho (Track Inventory)</span>
+                      {inventory.track_inventory && (
+                        <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
+                          Đang bật
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      Bật cho món định lượng theo miếng/chai/lon (Wagyu, tôm hùm, nước ngọt, bia...)
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={inventory.track_inventory}
+                      onChange={(e) =>
+                        setInventory((prev) => ({
+                          ...prev,
+                          track_inventory: e.target.checked,
+                        }))
+                      }
+                      disabled={disabledAll}
+                    />
+                    <div className="w-11 h-6 bg-neutral-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500" />
+                  </label>
+                </div>
+
+                {inventory.track_inventory && (
+                  <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-white/10">
+                    <div>
+                      <label className="text-xs text-gray-300 font-medium">
+                        Số lượng còn lại (Suất/Phần) <span className="text-red-400">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:border-orange-500 focus:outline-none"
+                        placeholder="VD: 5"
+                        value={inventory.stock_quantity}
+                        onChange={(e) =>
+                          setInventory((prev) => ({
+                            ...prev,
+                            stock_quantity: e.target.value,
+                          }))
+                        }
+                        disabled={disabledAll}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-300 font-medium">
+                        Cảnh báo khi còn lại (Low Stock)
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:border-orange-500 focus:outline-none"
+                        placeholder="Mặc định: 3"
+                        value={inventory.low_stock_threshold}
+                        onChange={(e) =>
+                          setInventory((prev) => ({
+                            ...prev,
+                            low_stock_threshold: e.target.value,
+                          }))
+                        }
+                        disabled={disabledAll}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div>

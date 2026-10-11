@@ -64,6 +64,29 @@ class SocketService {
     console.log("📡 Đã thông báo đơn mới cho admin & kitchen:", order.id);
   }
 
+  // Thông báo món ăn đã hết hàng cho toàn bộ khách, bếp, admin
+  notifyItemSoldOut(menuItemId, itemName) {
+    if (!this.io) return;
+    this.io.emit("item_sold_out", {
+      menu_item_id: menuItemId,
+      name: itemName,
+      status: "sold_out",
+    });
+    console.log(`📡 Broadcasted sold out for item ${itemName} (${menuItemId})`);
+  }
+
+  // Thông báo cảnh báo món ăn sắp hết hàng (Low Stock) cho Bếp, Phục vụ, Admin
+  notifyItemLowStock(menuItemId, itemName, remaining) {
+    if (!this.io) return;
+    this.io.to("kitchen_room").to("waiter_room").to("admin_room").emit("item_low_stock", {
+      menu_item_id: menuItemId,
+      name: itemName,
+      remaining,
+      message: `Cảnh báo: Món '${itemName}' chỉ còn lại ${remaining} phần!`,
+    });
+    console.log(`⚠️ Low stock alert for ${itemName}: ${remaining} left`);
+  }
+
   // 2. Thông báo cập nhật đơn hàng (Status thay đổi)
 
   notifyToKitchen(order) {

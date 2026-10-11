@@ -58,6 +58,37 @@ router.patch(
   adminMenuController.deleteMenuItem,
 );
 
+// Quản lý tồn kho chuẩn F&B (track_inventory)
+router.get(
+  "/items/:id/inventory",
+  protect,
+  staffOnly,
+  adminMenuController.getInventory,
+);
+
+router.put(
+  "/items/:id/inventory",
+  protect,
+  staffOnly,
+  adminMenuController.setInventory,
+);
+
+// Quản lý tồn kho giới hạn In-Memory trên Redis (tương thích ngược)
+router.get(
+  "/items/:id/stock",
+  protect,
+  staffOnly,
+  adminMenuController.getItemStock,
+);
+
+router.put(
+  "/items/:id/stock",
+  protect,
+  staffOnly,
+  adminMenuController.setItemStock,
+);
+
+
 // Categories
 router.post(
   "/categories",

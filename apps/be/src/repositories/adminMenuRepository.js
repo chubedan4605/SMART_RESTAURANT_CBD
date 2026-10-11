@@ -132,6 +132,9 @@ async function listItems(
         p.url AS image_url,
         mi.is_chef_recommended,
         mi.is_deleted,
+        mi.track_inventory,
+        mi.stock_quantity,
+        mi.low_stock_threshold,
         mi.created_at,
         mi.updated_at,
         COALESCE(SUM(oi.quantity), 0)::int AS sold_count
@@ -160,6 +163,9 @@ async function listItems(
         p.url AS image_url,
         mi.is_chef_recommended,
         mi.is_deleted,
+        mi.track_inventory,
+        mi.stock_quantity,
+        mi.low_stock_threshold,
         mi.created_at,
         mi.updated_at,
         0::int AS sold_count
@@ -174,7 +180,6 @@ async function listItems(
     `;
 
   const result = await db.query(sql, [...params, limit, offset]);
-  console.log(result);
   return result.rows;
 }
 
@@ -195,6 +200,9 @@ async function getItemById(id) {
 
       mi.is_chef_recommended,
       mi.is_deleted,
+      mi.track_inventory,
+      mi.stock_quantity,
+      mi.low_stock_threshold,
       mi.created_at,
       mi.updated_at
     FROM menu_items mi
@@ -279,6 +287,18 @@ async function updateItem(id, payload) {
   if (payload.isChefRecommended != null)
     set("is_chef_recommended", payload.isChefRecommended);
   if (payload.isDeleted != null) set("is_deleted", payload.isDeleted);
+  if (payload.trackInventory !== undefined)
+    set("track_inventory", payload.trackInventory);
+  if (payload.stockQuantity !== undefined)
+    set("stock_quantity", payload.stockQuantity);
+  if (payload.lowStockThreshold !== undefined)
+    set("low_stock_threshold", payload.lowStockThreshold);
+  if (payload.track_inventory !== undefined)
+    set("track_inventory", payload.track_inventory);
+  if (payload.stock_quantity !== undefined)
+    set("stock_quantity", payload.stock_quantity);
+  if (payload.low_stock_threshold !== undefined)
+    set("low_stock_threshold", payload.low_stock_threshold);
 
   // always touch updated_at
   fields.push(`updated_at = NOW()`);

@@ -37,6 +37,11 @@ export default function CreateMenuItemModal({
 
   const [isLoading, setLoading] = useState(false);
 
+  // 📦 Quản lý tồn kho chuẩn F&B
+  const [trackInventory, setTrackInventory] = useState(false);
+  const [stockQuantity, setStockQuantity] = useState("");
+  const [lowStockThreshold, setLowStockThreshold] = useState("3");
+
   const modifierGroupOptions = useMemo(() => {
     return (modifierGroups || []).map((g) => ({
       value: g.id,
@@ -93,6 +98,10 @@ export default function CreateMenuItemModal({
     setImageFile(null);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl("");
+
+    setTrackInventory(false);
+    setStockQuantity("");
+    setLowStockThreshold("3");
   };
 
   const handleClose = () => {
@@ -154,6 +163,15 @@ export default function CreateMenuItemModal({
       // 3) set modifier groups (nếu có)
       if (selectedGroupIds?.length) {
         await adminMenuApi.setMenuItemModifierGroups(newId, selectedGroupIds);
+      }
+
+      // 4) Quản lý tồn kho chuẩn F&B (nếu bật)
+      if (trackInventory) {
+        await adminMenuApi.setItemInventory(newId, {
+          track_inventory: true,
+          stock_quantity: Number(stockQuantity) || 0,
+          low_stock_threshold: Number(lowStockThreshold) || 3,
+        });
       }
 
       toast.success("Thêm món thành công");
@@ -348,6 +366,68 @@ export default function CreateMenuItemModal({
                     </span>
                   </div>
                 ) : null}
+              </div>
+
+              {/* Quản lý Tồn kho F&B (track_inventory) */}
+              <div className="rounded-2xl border border-white/10 bg-neutral-900/60 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-white font-bold flex items-center gap-2">
+                      <span>📦 Quản lý tồn kho (Track Inventory)</span>
+                      {trackInventory && (
+                        <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
+                          Đang bật
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      Bật cho món định lượng theo miếng/chai/lon (Wagyu, tôm hùm, nước ngọt, bia...)
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={trackInventory}
+                      onChange={(e) => setTrackInventory(e.target.checked)}
+                      disabled={isLoading}
+                    />
+                    <div className="w-11 h-6 bg-neutral-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500" />
+                  </label>
+                </div>
+
+                {trackInventory && (
+                  <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-white/10">
+                    <div>
+                      <label className="text-xs text-gray-300 font-medium">
+                        Số lượng ban đầu (Suất/Phần) <span className="text-red-400">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:border-orange-500 focus:outline-none"
+                        placeholder="VD: 10"
+                        value={stockQuantity}
+                        onChange={(e) => setStockQuantity(e.target.value)}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-300 font-medium">
+                        Cảnh báo khi còn lại (Low Stock)
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:border-orange-500 focus:outline-none"
+                        placeholder="Mặc định: 3"
+                        value={lowStockThreshold}
+                        onChange={(e) => setLowStockThreshold(e.target.value)}
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* ✅ Ảnh: chọn file + preview */}

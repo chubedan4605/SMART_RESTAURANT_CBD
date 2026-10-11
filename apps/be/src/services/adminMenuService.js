@@ -24,6 +24,24 @@ function normalizeItemRow(r) {
     imageUrl: r.image_url,
     isChefRecommended: !!r.is_chef_recommended,
     isDeleted: !!r.is_deleted,
+    trackInventory: !!r.track_inventory,
+    stockQuantity:
+      r.stock_quantity !== null && r.stock_quantity !== undefined
+        ? Number(r.stock_quantity)
+        : null,
+    lowStockThreshold:
+      r.low_stock_threshold !== null && r.low_stock_threshold !== undefined
+        ? Number(r.low_stock_threshold)
+        : 3,
+    track_inventory: !!r.track_inventory,
+    stock_quantity:
+      r.stock_quantity !== null && r.stock_quantity !== undefined
+        ? Number(r.stock_quantity)
+        : null,
+    low_stock_threshold:
+      r.low_stock_threshold !== null && r.low_stock_threshold !== undefined
+        ? Number(r.low_stock_threshold)
+        : 3,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };

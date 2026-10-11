@@ -9,6 +9,7 @@ const {
   acquireMultipleItemLocks,
   releaseMultipleItemLocks,
 } = require("../utils/itemLock");
+const redisStockService = require("./redisStockService");
 
 const mapItemUiStatus = (status) => {
   switch (status) {
@@ -56,134 +57,173 @@ exports.createOrder = async (data, io) => {
     throw err;
   }
 
+  const deductedStockItems = [];
+
   try {
     // C. Bắt đầu Transaction
     const client = await db.pool.connect();
-  try {
-    await client.query("BEGIN");
+    try {
+      await client.query("BEGIN");
 
-    // C. Tính toán tiền
-    let grandTotal = 0;
-    const processedItems = [];
+      // C. Tính toán tiền
+      let grandTotal = 0;
+      const processedItems = [];
 
-    for (const item of items) {
-      // Lấy thông tin món từ DB (để tránh hack giá từ frontend)
-      // Giả sử menuRepo có hàm findById trả về row
-      // Nếu chưa có repo chuẩn, tạm thời query trực tiếp ở đây hoặc dùng helper
-      const menuItemDB = await menuRepo.getItemById(item.menu_item_id);
+      for (const item of items) {
+        // Lấy thông tin món từ DB (để tránh hack giá từ frontend)
+        // Giả sử menuRepo có hàm findById trả về row
+        // Nếu chưa có repo chuẩn, tạm thời query trực tiếp ở đây hoặc dùng helper
+        const menuItemDB = await menuRepo.getItemById(item.menu_item_id);
 
-      if (!menuItemDB)
-        throw new Error(`Món ăn ID ${item.menu_item_id} không tồn tại`);
-      if (menuItemDB.is_deleted || menuItemDB.status !== "available") {
-        throw new Error(`Món '${menuItemDB.name}' hiện không phục vụ`);
-      }
+        if (!menuItemDB)
+          throw new Error(`Món ăn ID ${item.menu_item_id} không tồn tại`);
+        if (menuItemDB.is_deleted || menuItemDB.status !== "available") {
+          throw new Error(`Món '${menuItemDB.name}' hiện không phục vụ`);
+        }
 
-      // Kiểm tra tồn kho nếu hệ thống có quản lý stock_quantity
-      if (
-        menuItemDB.stock_quantity !== undefined &&
-        menuItemDB.stock_quantity !== null
-      ) {
-        if (Number(menuItemDB.stock_quantity) < item.quantity) {
+        // 1. Kiểm tra và trừ tồn kho In-Memory trên Redis
+        const stockCheck = await redisStockService.deductStock(
+          item.menu_item_id,
+          item.quantity
+        );
+        if (!stockCheck.success) {
           throw new Error(
-            `Món '${menuItemDB.name}' chỉ còn ${menuItemDB.stock_quantity} phần, không đủ số lượng!`
+            `Món '${menuItemDB.name}' chỉ còn ${stockCheck.remaining} phần, không đủ số lượng!`
           );
         }
-      }
+        if (!stockCheck.unlimited) {
+          deductedStockItems.push({
+            itemId: item.menu_item_id,
+            quantity: item.quantity,
+          });
 
-      let itemUnitPrice = Number(menuItemDB.price);
-      const processedModifiers = [];
-
-      // Tính tiền Topping
-      if (item.modifiers && item.modifiers.length > 0) {
-        for (const modOptionId of item.modifiers) {
-          // Tương tự, cần modifierRepo để lấy giá
-          const modResult = await client.query(
-            "SELECT * FROM modifier_options WHERE id = $1",
-            [modOptionId],
-          );
-          // Hoặc dùng modifierRepo.findOptionById(modOptionId) nếu đã viết
-
-          if (modResult.rows.length > 0) {
-            const modDB = modResult.rows[0];
-            itemUnitPrice += Number(modDB.price_adjustment);
-            processedModifiers.push({
-              id: modDB.id,
-              name: modDB.name,
-              price: Number(modDB.price_adjustment),
-            });
+          // Nếu trừ về 0: Món vừa hết hàng -> Tự động chuyển status DB sang 'sold_out' & Bắn Socket
+          if (stockCheck.soldOutNow) {
+            await client.query(
+              "UPDATE menu_items SET status = 'sold_out' WHERE id = $1",
+              [item.menu_item_id]
+            );
+            socketService.notifyItemSoldOut(item.menu_item_id, menuItemDB.name);
+          } else if (stockCheck.lowStockNow) {
+            // Món chạm ngưỡng sắp hết (Low Stock) -> Bắn socket cảnh báo cho Bếp & Phục vụ
+            socketService.notifyItemLowStock(
+              item.menu_item_id,
+              menuItemDB.name,
+              stockCheck.remaining
+            );
           }
         }
-      }
 
-      const subtotal = itemUnitPrice * item.quantity;
-      grandTotal += subtotal;
+        // 2. Kiểm tra tồn kho nếu hệ thống có quản lý cột stock_quantity trong DB
+        if (
+          menuItemDB.stock_quantity !== undefined &&
+          menuItemDB.stock_quantity !== null
+        ) {
+          if (Number(menuItemDB.stock_quantity) < item.quantity) {
+            throw new Error(
+              `Món '${menuItemDB.name}' chỉ còn ${menuItemDB.stock_quantity} phần, không đủ số lượng!`
+            );
+          }
+        }
 
-      // Trừ số lượng tồn kho trong DB nếu có cột stock_quantity
-      if (
-        menuItemDB.stock_quantity !== undefined &&
-        menuItemDB.stock_quantity !== null
-      ) {
-        await client.query(
-          `UPDATE menu_items 
-           SET stock_quantity = stock_quantity - $1,
-               status = CASE WHEN stock_quantity - $1 <= 0 THEN 'sold_out' ELSE status END
-           WHERE id = $2`,
-          [item.quantity, item.menu_item_id]
-        );
-      }
+        let itemUnitPrice = Number(menuItemDB.price);
+        const processedModifiers = [];
 
-      processedItems.push({
-        ...item,
-        dbName: menuItemDB.name,
-        finalUnitPrice: itemUnitPrice,
-        subtotal: subtotal,
-        modifiersDetails: processedModifiers,
-      });
-    }
+        // Tính tiền Topping
+        if (item.modifiers && item.modifiers.length > 0) {
+          for (const modOptionId of item.modifiers) {
+            // Tương tự, cần modifierRepo để lấy giá
+            const modResult = await client.query(
+              "SELECT * FROM modifier_options WHERE id = $1",
+              [modOptionId],
+            );
+            // Hoặc dùng modifierRepo.findOptionById(modOptionId) nếu đã viết
 
-    // D. Insert vào DB (Gọi Repo truyền client)
-    const newOrder = await orderRepo.createOrder(client, {
-      table_id,
-      guest_name,
-      total_amount: grandTotal,
-      note,
-    });
+            if (modResult.rows.length > 0) {
+              const modDB = modResult.rows[0];
+              itemUnitPrice += Number(modDB.price_adjustment);
+              processedModifiers.push({
+                id: modDB.id,
+                name: modDB.name,
+                price: Number(modDB.price_adjustment),
+              });
+            }
+          }
+        }
 
-    for (const pItem of processedItems) {
-      const newItem = await orderRepo.createOrderItem(client, {
-        order_id: newOrder.id,
-        menu_item_id: pItem.menu_item_id,
-        item_name: pItem.dbName,
-        price: pItem.finalUnitPrice,
-        quantity: pItem.quantity,
-        subtotal: pItem.subtotal,
-        note: pItem.note,
-      });
+        const subtotal = itemUnitPrice * item.quantity;
+        grandTotal += subtotal;
 
-      for (const mod of pItem.modifiersDetails) {
-        await orderRepo.createOrderItemModifier(client, {
-          order_item_id: newItem.id,
-          modifier_option_id: mod.id,
-          modifier_name: mod.name,
-          price: mod.price,
+        // Trừ số lượng tồn kho trong DB nếu có cột stock_quantity
+        if (
+          menuItemDB.stock_quantity !== undefined &&
+          menuItemDB.stock_quantity !== null
+        ) {
+          await client.query(
+            `UPDATE menu_items 
+             SET stock_quantity = stock_quantity - $1,
+                 status = CASE WHEN stock_quantity - $1 <= 0 THEN 'sold_out' ELSE status END
+             WHERE id = $2`,
+            [item.quantity, item.menu_item_id]
+          );
+        }
+
+        processedItems.push({
+          ...item,
+          dbName: menuItemDB.name,
+          finalUnitPrice: itemUnitPrice,
+          subtotal: subtotal,
+          modifiersDetails: processedModifiers,
         });
       }
+
+      // D. Insert vào DB (Gọi Repo truyền client)
+      const newOrder = await orderRepo.createOrder(client, {
+        table_id,
+        guest_name,
+        total_amount: grandTotal,
+        note,
+      });
+
+      for (const pItem of processedItems) {
+        const newItem = await orderRepo.createOrderItem(client, {
+          order_id: newOrder.id,
+          menu_item_id: pItem.menu_item_id,
+          item_name: pItem.dbName,
+          price: pItem.finalUnitPrice,
+          quantity: pItem.quantity,
+          subtotal: pItem.subtotal,
+          note: pItem.note,
+        });
+
+        for (const mod of pItem.modifiersDetails) {
+          await orderRepo.createOrderItemModifier(client, {
+            order_item_id: newItem.id,
+            modifier_option_id: mod.id,
+            modifier_name: mod.name,
+            price: mod.price,
+          });
+        }
+      }
+
+      await client.query("COMMIT");
+
+      // E. Socket Realtime - Thông báo cho kitchen VÀ admin
+      // Lấy full order data để gửi socket (bao gồm table_number)
+      const fullOrder = await orderRepo.getById(newOrder.id);
+      socketService.notifyNewOrder(fullOrder);
+
+      return newOrder;
+    } catch (err) {
+      await client.query("ROLLBACK");
+      // Hoàn trả lại số lượng trên Redis nếu DB transaction thất bại
+      for (const d of deductedStockItems) {
+        await redisStockService.rollbackStock(d.itemId, d.quantity);
+      }
+      throw err;
+    } finally {
+      client.release();
     }
-
-    await client.query("COMMIT");
-
-    // E. Socket Realtime - Thông báo cho kitchen VÀ admin
-    // Lấy full order data để gửi socket (bao gồm table_number)
-    const fullOrder = await orderRepo.getById(newOrder.id);
-    socketService.notifyNewOrder(fullOrder);
-
-    return newOrder;
-  } catch (err) {
-    await client.query("ROLLBACK");
-    throw err;
-  } finally {
-    client.release();
-  }
 } finally {
   await releaseMultipleItemLocks(lockResult.locks);
 }

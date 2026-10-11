@@ -156,3 +156,80 @@ exports.deletePhoto = async (req, res, next) => {
     return next(e);
   }
 };
+
+const redisStockService = require("../services/redisStockService");
+
+// GET /admin/items/:id/inventory (chuẩn F&B track_inventory)
+exports.getInventory = async (req, res) => {
+  try {
+    const data = await redisStockService.getInventory(req.params.id);
+    return res.json(data);
+  } catch (e) {
+    return sendError(res, e, "Không thể lấy thông tin tồn kho");
+  }
+};
+
+// PUT /admin/items/:id/inventory
+exports.setInventory = async (req, res) => {
+  try {
+    const { track_inventory, stock_quantity, low_stock_threshold } = req.body;
+    const result = await redisStockService.setInventory(req.params.id, {
+      track_inventory: Boolean(track_inventory),
+      stock_quantity,
+      low_stock_threshold,
+    });
+    if (!result) {
+      return res.status(500).json({ message: "Không thể lưu cấu hình tồn kho" });
+    }
+    return res.json({
+      message: "Đã cập nhật cấu hình quản lý tồn kho thành công",
+      inventory: result,
+    });
+  } catch (e) {
+    return sendError(res, e, "Không thể cập nhật cấu hình tồn kho");
+  }
+};
+
+// GET /admin/items/:id/stock (tương thích ngược)
+exports.getItemStock = async (req, res) => {
+  try {
+    const inv = await redisStockService.getInventory(req.params.id);
+    return res.json({
+      menu_item_id: req.params.id,
+      stock: inv.stock_quantity,
+      is_limited: inv.track_inventory,
+      low_stock_threshold: inv.low_stock_threshold,
+      is_low_stock: inv.is_low_stock,
+    });
+  } catch (e) {
+    return sendError(res, e, "Không thể lấy thông tin tồn kho");
+  }
+};
+
+// PUT /admin/items/:id/stock (tương thích ngược)
+exports.setItemStock = async (req, res) => {
+  try {
+    const { quantity } = req.body;
+    if (quantity === null || quantity === undefined) {
+      await redisStockService.setInventory(req.params.id, { track_inventory: false });
+      return res.json({ message: "Đã gỡ bỏ giới hạn số lượng món ăn", stock: null });
+    }
+    const qtyNum = Number(quantity);
+    if (Number.isNaN(qtyNum) || qtyNum < 0) {
+      return res.status(400).json({ message: "Số lượng phải là số nguyên không âm" });
+    }
+    await redisStockService.setInventory(req.params.id, {
+      track_inventory: true,
+      stock_quantity: qtyNum,
+    });
+    return res.json({
+      message: "Đã cập nhật số lượng tồn kho thành công",
+      menu_item_id: req.params.id,
+      stock: qtyNum,
+    });
+  } catch (e) {
+    return sendError(res, e, "Không thể cập nhật tồn kho");
+  }
+};
+
+

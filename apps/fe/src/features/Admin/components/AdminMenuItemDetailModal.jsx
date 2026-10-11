@@ -212,6 +212,18 @@ export default function AdminMenuItemDetailModal({ open, item, onClose }) {
                       label="Chef recommend"
                       value={view?.isChefRecommended ? "Yes" : "No"}
                     />
+                    <InfoRow
+                      label="Quản lý tồn kho"
+                      value={
+                        view?.trackInventory || view?.track_inventory ? (
+                          <span className="text-emerald-400 font-medium">
+                            Đang bật ({view?.stockQuantity ?? view?.stock_quantity ?? 0} phần)
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">Không quản lý</span>
+                        )
+                      }
+                    />
                   </div>
 
                   <div className="mt-4 pt-4 border-t border-white/10">
