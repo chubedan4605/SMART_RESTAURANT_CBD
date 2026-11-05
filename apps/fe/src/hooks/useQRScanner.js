@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 // Giả sử bạn có action để lưu thông tin bàn vào Redux
-// import { setTableInfo } from '../store/slices/tableSlice';
+// setTableInfo from tableSlice
 
 const useQRScanner = () => {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { menuApi } from "../../services/menuApi";
-import { formatMoneyVND } from "../../utils/orders";
+import { menuApi } from "../../../services/menuApi";
+import { formatMoneyVND } from "../../../utils/orders";
 
 const REVIEWS_PAGE_SIZE = 5;
 
