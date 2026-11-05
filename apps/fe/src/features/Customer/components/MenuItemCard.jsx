@@ -28,24 +28,24 @@ export default function MenuItemCard({ item, onSelect }) {
       <div className="flex-1 flex flex-col justify-between py-1">
         <div>
           <div className="flex justify-between items-start gap-2">
-            <h3 className="text-lg sm:text-xl font-serif text-foreground group-hover:text-gold transition-colors line-clamp-2 leading-tight font-medium">
+            <h3 className="text-base sm:text-lg font-sans font-semibold text-foreground group-hover:text-gold transition-colors line-clamp-2 leading-snug">
               {item.name}
             </h3>
             {item.is_chef_recommended && (
               <Flame
                 size={16}
-                className="text-gold fill-gold shrink-0 mt-1"
+                className="text-gold fill-gold shrink-0 mt-0.5"
                 aria-label="Chef's Recommended"
               />
             )}
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mt-2 font-sans leading-relaxed font-light">
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mt-1.5 font-sans leading-relaxed font-light">
             {item.description}
           </p>
         </div>
 
         <div className="flex justify-between items-end mt-3 pt-2 border-t border-border/50">
-          <span className="text-lg sm:text-xl font-serif font-normal text-gold tracking-wide">
+          <span className="text-base sm:text-lg font-sans font-bold text-gold tracking-tight tabular-nums">
             {formatMoneyVND(Number(item.price))}
           </span>
           <span className="text-[10px] font-sans tracking-luxe uppercase text-muted-foreground group-hover:text-gold transition-colors font-medium">

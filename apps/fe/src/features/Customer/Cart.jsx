@@ -222,7 +222,7 @@ const Cart = () => {
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-lg font-serif text-foreground group-hover:text-gold transition-colors line-clamp-1 font-medium">
+                      <h3 className="text-base sm:text-lg font-sans font-semibold text-foreground group-hover:text-gold transition-colors line-clamp-1">
                         {item.name}
                       </h3>
 
@@ -249,7 +249,7 @@ const Cart = () => {
                                 {m.name}
                               </span>
                             </span>
-                            <span className="text-gold font-serif">
+                            <span className="text-gold font-sans font-medium tabular-nums">
                               {Number(m.price || 0) > 0
                                 ? `+${formatMoneyVND(m.price)}`
                                 : "+0₫"}
@@ -272,10 +272,10 @@ const Cart = () => {
 
                   <div className="flex justify-between items-end mt-4 pt-2 border-t border-border/40">
                     <div className="flex flex-col">
-                      <span className="text-xl font-serif text-gold font-normal">
+                      <span className="text-lg sm:text-xl font-sans font-bold text-gold tabular-nums">
                         {formatMoneyVND(item.lineTotal)}
                       </span>
-                      <span className="text-[11px] text-muted-foreground font-sans mt-0.5">
+                      <span className="text-[11px] text-muted-foreground font-sans mt-0.5 tabular-nums">
                         {formatMoneyVND(item.unit)} × {item.quantity}
                       </span>
                     </div>
@@ -289,7 +289,7 @@ const Cart = () => {
                         <Minus size={14} />
                       </button>
 
-                      <span className="text-xs font-serif font-medium w-7 text-center text-foreground">
+                      <span className="text-sm font-sans font-semibold w-7 text-center text-foreground tabular-nums">
                         {item.quantity}
                       </span>
 
@@ -316,19 +316,19 @@ const Cart = () => {
 
           <div className="flex justify-between text-muted-foreground font-sans text-sm mb-3">
             <span>{t("cart.itemsTotal", { count: totalItems })}</span>
-            <span className="font-serif text-foreground text-base">{formatMoneyVND(subtotal)}</span>
+            <span className="font-sans font-semibold text-foreground text-sm sm:text-base tabular-nums">{formatMoneyVND(subtotal)}</span>
           </div>
 
           <div className="flex justify-between text-muted-foreground font-sans text-sm">
             <span>{t("cart.serviceFee")} (10%)</span>
-            <span className="font-serif text-foreground text-base">{formatMoneyVND(serviceFee)}</span>
+            <span className="font-sans font-semibold text-foreground text-sm sm:text-base tabular-nums">{formatMoneyVND(serviceFee)}</span>
           </div>
 
           <div className="hairline my-6" />
 
           <div className="flex justify-between items-end">
             <span className="text-foreground text-xs uppercase tracking-luxe font-medium">{t("cart.total")}</span>
-            <span className="text-3xl font-serif text-gold font-normal">
+            <span className="text-2xl sm:text-3xl font-sans font-bold text-gold tabular-nums tracking-tight">
               {formatMoneyVND(grandTotal)}
             </span>
           </div>

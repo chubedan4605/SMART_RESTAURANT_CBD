@@ -39,7 +39,7 @@ function InfoRow({ label, value, isPrice = false }) {
       <div className="text-xs text-muted-foreground">{label}</div>
       <div
         className={`text-sm font-semibold text-right ${
-          isPrice ? "font-serif text-gold text-base" : "text-foreground"
+          isPrice ? "font-sans font-bold text-gold text-base tabular-nums" : "text-foreground"
         }`}
       >
         {value ?? "—"}
@@ -242,7 +242,7 @@ export default function AdminMenuItemDetailModal({ open, item, onClose }) {
                                     >
                                       <span>{o.name}</span>
                                       {Number(o.priceAdjustment) > 0 ? (
-                                        <span className="font-serif text-gold font-semibold ml-1">
+                                        <span className="font-sans text-gold font-medium ml-1 tabular-nums">
                                           +{formatVND(Number(o.priceAdjustment))}
                                         </span>
                                       ) : null}

@@ -67,8 +67,8 @@ const OrderItemStatus = ({ item }) => {
       {/* Item Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-2">
-          <h4 className="font-serif text-base text-foreground font-medium truncate">{item.name}</h4>
-          <span className="text-xs font-serif text-gold ml-2">x{item.quantity}</span>
+          <h4 className="font-sans text-sm sm:text-base font-semibold text-foreground truncate">{item.name}</h4>
+          <span className="text-xs font-sans font-bold text-gold ml-2 tabular-nums">x{item.quantity}</span>
         </div>
 
         {/* Progress Bar */}

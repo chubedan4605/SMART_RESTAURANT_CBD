@@ -141,7 +141,7 @@ export default function KitchenOrderCard({
                     />
                   )}
                   <div
-                    className={`font-serif text-sm truncate font-medium ${
+                    className={`font-sans text-sm truncate font-semibold ${
                       isItemReady
                         ? "text-emerald-500 line-through"
                         : isItemRejected
@@ -161,7 +161,7 @@ export default function KitchenOrderCard({
                       +{elapsed - itemPrepTime}m
                     </span>
                   )}
-                  <div className="px-2 py-0.5 rounded-none bg-muted border border-border text-foreground font-serif text-xs font-semibold">
+                  <div className="px-2 py-0.5 rounded-none bg-muted border border-border text-foreground font-sans text-xs font-bold tabular-nums">
                     x{it.qty}
                   </div>
                   {isItemPending && onUpdateItemStatus && (

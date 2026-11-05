@@ -89,7 +89,7 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
                   <span className="truncate">
                     {it.qty}× {it.name}
                   </span>
-                  <span className="text-foreground font-serif">
+                  <span className="text-foreground font-sans font-semibold tabular-nums">
                     {formatMoneyVND(it.qty * it.price)}
                   </span>
                 </div>
@@ -104,7 +104,7 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
 
           <div className="text-right">
             <div className="text-muted-foreground text-[10px] uppercase tracking-luxe">Tổng tiền</div>
-            <div className="text-gold font-serif text-2xl font-normal mt-0.5">
+            <div className="text-gold font-sans text-xl sm:text-2xl font-bold tabular-nums mt-0.5">
               {formatMoneyVND(total)}
             </div>
           </div>

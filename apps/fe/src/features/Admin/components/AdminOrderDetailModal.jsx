@@ -86,7 +86,7 @@ function InfoRow({ label, value, isPrice = false }) {
   return (
     <div className="flex items-start justify-between gap-4 py-2.5">
       <div className="text-xs text-muted-foreground">{label}</div>
-      <div className={`text-sm font-semibold text-right ${isPrice ? "font-serif text-gold text-base" : "text-foreground"}`}>
+      <div className={`text-sm font-semibold text-right ${isPrice ? "font-sans font-bold text-gold text-base tabular-nums" : "text-foreground"}`}>
         {value ?? "—"}
       </div>
     </div>
@@ -304,7 +304,7 @@ export default function OrderDetailModal({
                                                   >
                                                     <span>{modName}</span>
                                                     {price > 0 ? (
-                                                      <span className="font-serif text-gold font-semibold">
+                                                      <span className="font-sans text-gold font-medium tabular-nums">
                                                         +{formatVND(price)}
                                                       </span>
                                                     ) : null}
@@ -317,10 +317,10 @@ export default function OrderDetailModal({
                                       </td>
 
                                       <td className="py-3 px-3 align-top text-right">
-                                        <div className="text-foreground font-serif font-bold text-base">
+                                        <div className="text-foreground font-sans font-bold text-sm sm:text-base tabular-nums">
                                           x{it.quantity ?? 1}
                                         </div>
-                                        <div className="text-xs font-serif font-medium text-gold mt-1">
+                                        <div className="text-xs font-sans font-bold text-gold tabular-nums mt-1">
                                           {typeof total === "number" ? formatVND(total) : "—"}
                                         </div>
                                       </td>

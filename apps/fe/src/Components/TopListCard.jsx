@@ -50,20 +50,20 @@ export default function TopListCard({
             >
               {/* Rank */}
               <div className="col-span-1">
-                <div className="w-7 h-7 rounded-none bg-gold/15 border border-gold/30 text-gold font-serif font-bold text-xs flex items-center justify-center">
+                <div className="w-7 h-7 rounded-none bg-gold/15 border border-gold/30 text-gold font-sans font-bold text-xs flex items-center justify-center tabular-nums">
                   {i + 1}
                 </div>
               </div>
 
               {/* Main */}
               <div className="col-span-7 min-w-0 pl-3">
-                <div className="text-foreground font-serif text-sm font-medium truncate">{r.title}</div>
-                {r.subtitle ? <div className="text-muted-foreground text-xs truncate font-light">{r.subtitle}</div> : null}
+                <div className="text-foreground font-sans text-sm font-semibold truncate">{r.title}</div>
+                {r.subtitle ? <div className="text-muted-foreground text-xs truncate font-light font-sans">{r.subtitle}</div> : null}
               </div>
 
               {/* Value */}
               <div className="col-span-4 text-right">
-                <div className="text-gold font-serif text-sm font-semibold">{r.value}</div>
+                <div className="text-gold font-sans text-sm font-bold tabular-nums">{r.value}</div>
                 {r.valueHint ? <div className="text-muted-foreground text-[10px] uppercase tracking-wider">{r.valueHint}</div> : null}
               </div>
             </div>

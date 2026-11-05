@@ -93,7 +93,7 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
 
                     {/* Content */}
                     <div className="p-6 flex flex-col flex-1 bg-card">
-                      <h3 className="font-serif text-2xl text-foreground mb-2 group-hover:text-gold transition-colors line-clamp-1 font-medium">
+                      <h3 className="font-sans text-xl md:text-2xl font-semibold text-foreground mb-2 group-hover:text-gold transition-colors line-clamp-1">
                         {dish.name}
                       </h3>
 
@@ -105,7 +105,7 @@ const SignatureDishes = ({ signatureDishes = [] }) => {
 
                       <div className="flex items-center justify-between mt-auto">
                         {/* Price */}
-                        <span className="font-serif text-2xl font-normal text-gold">
+                        <span className="font-sans text-xl md:text-2xl font-bold text-gold tabular-nums">
                           {formatPrice(dish.price)}
                         </span>
 

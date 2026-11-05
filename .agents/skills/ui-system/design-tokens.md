@@ -60,12 +60,12 @@
 | H1 (hero) | Cormorant | `font-serif` | `text-5xl md:text-7xl lg:text-[5.5rem]` | `font-light` | `tracking-tight` |
 | H2 (section) | Cormorant | `font-serif` | `text-3xl md:text-5xl` | `font-light` | `tracking-tight` |
 | H3 (subsection) | Cormorant | `font-serif` | `text-xl md:text-2xl` | `font-medium` | `tracking-tight` |
-| H4 (item) | Cormorant | `font-serif` | `text-lg` | `font-medium` | `tracking-tight` |
+| H4 (dish / item name) | Inter | `font-sans` | `text-base md:text-lg` | `font-semibold` | normal |
 | Body large | Inter | `font-sans` | `text-base md:text-lg` | `font-normal` | normal |
 | Body | Inter | `font-sans` | `text-sm` | `font-normal` | normal |
 | Eyebrow | Inter | `font-sans` | `text-[0.7rem]` | `font-medium` | `tracking-luxe` (0.32em) |
 | Label | Inter | `font-sans` | `text-[0.62rem]` | `font-normal` | `tracking-wide-sm` (0.18em) |
-| Price | Cormorant | `font-serif` | `text-lg md:text-xl` | `font-medium` | `tabular-nums` |
+| Price / Numbers | Inter | `font-sans` | `text-base md:text-xl` | `font-bold` | `tabular-nums tracking-tight` |
 
 **Font setup** (trong `layout.tsx`):
 ```tsx

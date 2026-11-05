@@ -623,12 +623,12 @@ export default function FoodDetailPopup({
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-card via-card/80 to-transparent">
-            <h2 className="text-2xl md:text-3xl font-serif text-foreground leading-tight font-medium">
+            <h2 className="text-2xl md:text-3xl font-sans font-bold text-foreground leading-tight tracking-tight">
               {detail?.name ?? food?.name}
             </h2>
 
             <div className="flex items-center gap-2 mt-2 flex-wrap">
-              <span className="text-2xl font-serif text-gold font-normal">
+              <span className="text-2xl font-sans font-bold text-gold tabular-nums tracking-tight">
                 {formatMoneyVND(Number(detail?.price ?? food?.price ?? 0))}
               </span>
               <div className="h-4 w-px bg-border mx-2" />
@@ -749,7 +749,7 @@ export default function FoodDetailPopup({
                                     />
                                   ) : null}
                                 </div>
-                                <div className="text-[11px] mt-1 font-serif text-gold font-normal">
+                                <div className="text-[11px] mt-1 font-sans font-medium text-gold tabular-nums">
                                   {price > 0
                                     ? `+ ${formatMoneyVND(price)}`
                                     : "+ 0₫"}
@@ -791,7 +791,7 @@ export default function FoodDetailPopup({
                   >
                     <Minus size={16} />
                   </button>
-                  <span className="w-8 text-center font-serif text-base text-foreground font-medium">{qty}</span>
+                  <span className="w-8 text-center font-sans font-semibold text-base text-foreground tabular-nums">{qty}</span>
                   <button
                     type="button"
                     onClick={() => setQty((q) => q + 1)}
@@ -805,7 +805,7 @@ export default function FoodDetailPopup({
                   <div className="text-[10px] text-muted-foreground font-sans uppercase tracking-luxe font-medium">
                     {t("foodDetail.unitPrice")}
                   </div>
-                  <div className="text-xl font-serif text-gold font-normal mt-0.5">
+                  <div className="text-xl font-sans font-bold text-gold tabular-nums mt-0.5">
                     {formatMoneyVND(unitPrice)}
                   </div>
                 </div>
@@ -815,7 +815,7 @@ export default function FoodDetailPopup({
                 type="button"
                 onClick={handleConfirm}
                 disabled={!canOrder}
-                className="w-full mt-4 min-h-11 px-6 py-3.5 rounded-none font-sans font-semibold text-xs uppercase tracking-luxe text-ink bg-gold hover:bg-gold-soft disabled:opacity-50 transition-all duration-300 shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full mt-4 min-h-11 px-6 py-3.5 rounded-none font-sans font-semibold text-xs uppercase tracking-luxe text-ink bg-gold hover:bg-gold-soft disabled:opacity-50 transition-all duration-300 shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer tabular-nums"
               >
                 {mode === "edit"
                   ? t("foodDetail.update")
@@ -856,10 +856,10 @@ export default function FoodDetailPopup({
                         />
                       </div>
                       <div className="p-3">
-                        <div className="text-xs font-serif font-medium text-foreground line-clamp-1 group-hover:text-gold transition-colors">
+                        <div className="text-xs font-sans font-semibold text-foreground line-clamp-1 group-hover:text-gold transition-colors">
                           {it.name}
                         </div>
-                        <div className="text-xs text-gold font-serif mt-1">
+                        <div className="text-xs text-gold font-sans font-bold tabular-nums mt-1">
                           {formatMoneyVND(Number(it.price || 0))}
                         </div>
                       </div>

@@ -127,11 +127,11 @@ export default function OrderDetailModal({
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
-                    <span className="bg-muted text-foreground px-2 py-0.5 rounded-none text-xs font-serif font-bold">
+                    <span className="bg-muted text-foreground px-2 py-0.5 rounded-none text-xs font-sans font-bold tabular-nums">
                       {item.qty}x
                     </span>
                     <span
-                      className={`font-serif text-lg font-medium ${item.status === "rejected" ? "line-through text-muted-foreground" : "text-foreground"}`}
+                      className={`font-sans text-base font-semibold ${item.status === "rejected" ? "line-through text-muted-foreground" : "text-foreground"}`}
                     >
                       {item.name}
                     </span>
@@ -170,7 +170,7 @@ export default function OrderDetailModal({
 
                 <div className="flex flex-col items-end gap-2">
                   <div
-                    className={`font-serif text-base font-medium ${item.status === "rejected" ? "text-muted-foreground line-through" : "text-gold"}`}
+                    className={`font-sans text-base font-bold tabular-nums ${item.status === "rejected" ? "text-muted-foreground line-through" : "text-gold"}`}
                   >
                     {formatMoneyVND(Number(item.subtotal))}
                   </div>
@@ -210,7 +210,7 @@ export default function OrderDetailModal({
         <div className="p-5 border-t border-border bg-card">
           <div className="flex justify-between items-center mb-5">
             <span className="text-muted-foreground text-xs uppercase tracking-luxe">Tổng cộng duyệt</span>
-            <span className="text-3xl font-serif text-gold font-normal">
+            <span className="text-2xl sm:text-3xl font-sans font-bold text-gold tabular-nums tracking-tight">
               {formatMoneyVND(Number(calcTotal(order)))}
             </span>
           </div>

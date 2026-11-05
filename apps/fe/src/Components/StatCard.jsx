@@ -9,7 +9,7 @@ export default function StatCard({ icon: Icon, label, value, hint }) {
             <div className="text-[10px] uppercase tracking-luxe text-gold font-medium font-sans">
               {label}
             </div>
-            <div className="mt-2 text-foreground font-serif text-3xl font-medium">{value}</div>
+            <div className="mt-2 text-foreground font-sans text-2xl sm:text-3xl font-bold tabular-nums tracking-tight">{value}</div>
             {hint ? <div className="mt-1 text-xs text-muted-foreground font-light">{hint}</div> : null}
           </div>
 

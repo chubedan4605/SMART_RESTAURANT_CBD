@@ -255,7 +255,7 @@ const OrderTrackingPage = () => {
                   <p className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium">
                     {t("order.orderCode")}
                   </p>
-                  <p className="font-serif text-lg font-medium text-foreground">
+                  <p className="font-sans text-base sm:text-lg font-bold text-foreground tabular-nums">
                     {selectedOrder.code}
                   </p>
                 </div>
@@ -263,7 +263,7 @@ const OrderTrackingPage = () => {
                   <p className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium">
                     {t("order.tableNumber")}
                   </p>
-                  <p className="font-serif text-lg font-medium text-gold">
+                  <p className="font-sans text-base sm:text-lg font-bold text-gold tabular-nums">
                     {selectedOrder.tableNumber}
                   </p>
                 </div>
@@ -273,7 +273,7 @@ const OrderTrackingPage = () => {
               {allReady ? (
                 <div className="flex items-center gap-3 p-3 bg-emerald-500/10 border border-emerald-500/25 rounded-none">
                   <CheckCircle2 className="text-emerald-500 shrink-0" size={20} />
-                  <span className="font-serif text-sm font-medium text-emerald-400">
+                  <span className="font-sans text-sm font-semibold text-emerald-400">
                     {t("order.tracking.allReady")}
                   </span>
                 </div>
@@ -281,7 +281,7 @@ const OrderTrackingPage = () => {
                 <div className="flex items-center gap-3 p-3 bg-gold/10 border border-gold/25 rounded-none">
                   <Clock className="text-gold shrink-0" size={20} />
                   <div>
-                    <p className="font-serif text-sm font-medium text-gold">
+                    <p className="font-sans text-sm font-semibold text-gold">
                       {t("order.tracking.preparing")} (
                       {t("order.tracking.itemsReady", {
                         ready: summary.ready,
@@ -302,7 +302,7 @@ const OrderTrackingPage = () => {
             {/* Status Summary Metrics */}
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-card border border-border rounded-none p-3 text-center">
-                <p className="text-2xl font-serif font-medium text-muted-foreground">
+                <p className="text-2xl font-sans font-bold text-muted-foreground tabular-nums">
                   {summary.queued}
                 </p>
                 <p className="text-[10px] font-sans uppercase tracking-luxe text-muted-foreground mt-1">
@@ -310,7 +310,7 @@ const OrderTrackingPage = () => {
                 </p>
               </div>
               <div className="bg-card border border-border rounded-none p-3 text-center">
-                <p className="text-2xl font-serif font-medium text-gold">
+                <p className="text-2xl font-sans font-bold text-gold tabular-nums">
                   {summary.cooking}
                 </p>
                 <p className="text-[10px] font-sans uppercase tracking-luxe text-gold mt-1">
@@ -318,7 +318,7 @@ const OrderTrackingPage = () => {
                 </p>
               </div>
               <div className="bg-card border border-border rounded-none p-3 text-center">
-                <p className="text-2xl font-serif font-medium text-emerald-400">
+                <p className="text-2xl font-sans font-bold text-emerald-400 tabular-nums">
                   {summary.ready}
                 </p>
                 <p className="text-[10px] font-sans uppercase tracking-luxe text-emerald-400 mt-1">

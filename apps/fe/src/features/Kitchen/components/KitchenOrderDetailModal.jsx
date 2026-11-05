@@ -148,7 +148,7 @@ export default function KitchenOrderDetailModal({
                       <div className="flex items-start gap-3">
                         {/* Quantity Badge */}
                         <div
-                          className={`shrink-0 w-10 h-10 rounded-none flex items-center justify-center font-serif text-lg font-bold border ${
+                          className={`shrink-0 w-10 h-10 rounded-none flex items-center justify-center font-sans text-base font-bold tabular-nums border ${
                             isItemReady
                               ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400"
                               : isItemRejected
@@ -164,7 +164,7 @@ export default function KitchenOrderDetailModal({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <div
-                              className={`font-serif text-lg font-medium leading-tight ${
+                              className={`font-sans text-base sm:text-lg font-semibold leading-tight ${
                                 isItemReady
                                   ? "text-emerald-500 line-through"
                                   : isItemRejected
