@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../Components/NavBar";
 import FloatingBillRequest from "../Components/FloatingBillRequest";
+import AiDiningAssistant from "../Components/customer/AiDiningAssistant";
 import useCustomerSocket from "../hooks/useCustomerSocket";
 
 const CustomerLayout = () => {
@@ -45,6 +46,9 @@ const CustomerLayout = () => {
       {tableId && (
         <FloatingBillRequest tableId={tableId} sessionId={sessionId} />
       )}
+
+      {/* AI Sommelier & Smart Dining Assistant */}
+      <AiDiningAssistant />
     </div>
   );
 };

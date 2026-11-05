@@ -1,10 +1,16 @@
 const { Resend } = require("resend");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Khởi tạo an toàn: nếu chưa cấu hình RESEND_API_KEY trong môi trường dev/local thì dùng placeholder để không crash server
+const resendApiKey = process.env.RESEND_API_KEY || "re_placeholder_local_key";
+const resend = new Resend(resendApiKey);
 
 async function sendEmail({ to, subject, html }) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn(`[mailer] Mock send email to ${to} (chưa cấu hình RESEND_API_KEY)`);
+    return { id: "mock_email_id" };
+  }
   return resend.emails.send({
-    from: process.env.MAIL_FROM,
+    from: process.env.MAIL_FROM || "onboarding@resend.dev",
     to,
     subject,
     html,
