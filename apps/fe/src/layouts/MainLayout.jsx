@@ -1,34 +1,21 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from "../Components/NavBar";
-import FloatingBillRequest from "../Components/FloatingBillRequest";
-import useCustomerSocket from "../hooks/useCustomerSocket";
-import KitchenLayout from "./KitchenLayout";
 import CustomerLayout from "./CustomerLayout";
-import WaiterLayout from "./WaiterLayout";
 import AdminLayout from "./AdminLayout";
+import StaffLayout from "./StaffLayout";
 
-const MainLayout = () => {
-  // Lấy thông tin table session từ context hoặc localStorage
-  const tableId = localStorage.getItem("tableCode");
-  const sessionId = localStorage.getItem("tableSessionId");
+export default function MainLayout() {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
-  const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
-  console.log("User in MainLayout:", user); // Debug thông tin user
-
-  if(!user) {
+  if (!user || user.role === "customer") {
     return <CustomerLayout />;
   }
-  
-  if(user.role === "customer") {
-    return <CustomerLayout />;
-  } else if(user.role === "admin") {
+  if (user.role === "admin") {
     return <AdminLayout />;
-  } else if(user.role === "waiter") {
-    return <WaiterLayout />;
-  } else if(user.role === "kitchen") {
-    return <KitchenLayout />;
   }
-};
+  if (user.role === "kitchen" || user.role === "waiter") {
+    return <StaffLayout role={user.role} />;
+  }
 
-export default MainLayout;
+  return <Outlet />;
+}
