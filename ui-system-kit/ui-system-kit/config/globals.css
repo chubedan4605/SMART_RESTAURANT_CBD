@@ -1,0 +1,244 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Map token CSS → Tailwind utility (Tailwind v4) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand tokens (theme-invariant — không đổi theo dark/light) */
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-ink: var(--ink);
+  --color-cream: var(--cream);
+  --color-olive: var(--olive);
+  --color-burgundy: var(--burgundy);
+
+  /* Font */
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-cormorant);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.25rem;
+  /* Light: warm ivory canvas, charcoal ink, champagne gold */
+  --background: oklch(0.973 0.009 81);
+  --foreground: oklch(0.22 0.012 55);
+  --card: oklch(0.988 0.005 85);
+  --card-foreground: oklch(0.22 0.012 55);
+  --popover: oklch(0.988 0.005 85);
+  --popover-foreground: oklch(0.22 0.012 55);
+  --primary: oklch(0.22 0.012 55);
+  --primary-foreground: oklch(0.973 0.009 81);
+  --secondary: oklch(0.945 0.012 80);
+  --secondary-foreground: oklch(0.28 0.014 55);
+  --muted: oklch(0.945 0.012 80);
+  --muted-foreground: oklch(0.48 0.018 60);
+  --accent: oklch(0.935 0.014 78);
+  --accent-foreground: oklch(0.30 0.02 58);
+  --destructive: oklch(0.55 0.16 28);
+  --border: oklch(0.90 0.012 75);
+  --input: oklch(0.90 0.012 75);
+  --ring: oklch(0.68 0.09 80);
+
+  /* Brand palette (cố định cả 2 theme) */
+  --gold: oklch(0.68 0.095 80);
+  --gold-soft: oklch(0.82 0.06 85);
+  --ink: oklch(0.17 0.011 52);
+  --cream: oklch(0.965 0.009 81);
+  --olive: oklch(0.52 0.06 130);
+  --burgundy: oklch(0.42 0.11 25);
+}
+
+.dark {
+  /* Dark: espresso charcoal, cream text, antique copper */
+  --background: oklch(0.17 0.011 52);
+  --foreground: oklch(0.92 0.014 82);
+  --card: oklch(0.21 0.012 52);
+  --card-foreground: oklch(0.92 0.014 82);
+  --popover: oklch(0.21 0.012 52);
+  --popover-foreground: oklch(0.92 0.014 82);
+  --primary: oklch(0.92 0.014 82);
+  --primary-foreground: oklch(0.17 0.011 52);
+  --secondary: oklch(0.26 0.012 52);
+  --secondary-foreground: oklch(0.92 0.014 82);
+  --muted: oklch(0.25 0.012 52);
+  --muted-foreground: oklch(0.70 0.016 75);
+  --accent: oklch(0.30 0.014 52);
+  --accent-foreground: oklch(0.88 0.03 82);
+  --destructive: oklch(0.62 0.17 25);
+  --border: oklch(0.32 0.012 55);
+  --input: oklch(0.32 0.012 55);
+  --ring: oklch(0.72 0.09 82);
+
+  /* Brand palette — dark variants (gold sáng hơn; ink/cream giữ nguyên) */
+  --gold: oklch(0.76 0.10 82);
+  --gold-soft: oklch(0.86 0.06 85);
+  --ink: oklch(0.17 0.011 52);
+  --cream: oklch(0.965 0.009 81);
+  --olive: oklch(0.66 0.07 130);
+  --burgundy: oklch(0.58 0.13 25);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background-color: var(--gold);
+    color: var(--ink);
+  }
+}
+
+/* ===== Typographic helpers ===== */
+.font-serif {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+}
+.tracking-luxe {
+  letter-spacing: 0.32em;
+}
+.tracking-wide-sm {
+  letter-spacing: 0.18em;
+}
+
+/* ===== Section divider ===== */
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklch, var(--gold) 55%, transparent) 50%,
+    transparent
+  );
+}
+
+/* ===== Texture grain cho block immersive ===== */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ===== Scroll reveal ===== */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.reveal {
+  opacity: 0;
+}
+.reveal.is-visible {
+  animation: reveal-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ===== Nav underline animation ===== */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 1px;
+  width: 0;
+  background: var(--gold);
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-underline:hover::after,
+.nav-underline[data-active="true"]::after {
+  width: 100%;
+}
+
+/* ===== Ken-burns cho hero image ===== */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1.12);
+  }
+}
+.animate-ken-burns {
+  animation: ken-burns 22s ease-out forwards alternate infinite;
+}
+
+/* ===== Theme transition mượt ===== */
+html.theme-ready * {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.45s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ===== Scrollbar tinh tế ===== */
+.scroll-elegant::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.scroll-elegant::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--gold) 60%, transparent);
+  border-radius: 999px;
+}
+.scroll-elegant::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ===== Tôn trọng prefers-reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    animation: none;
+    opacity: 1;
+  }
+  .animate-ken-burns {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

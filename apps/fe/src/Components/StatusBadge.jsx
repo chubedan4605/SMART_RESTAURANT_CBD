@@ -3,15 +3,15 @@ import React from "react";
 export default function StatusBadge({ status }) {
   if (status === "pending") {
     return (
-      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-bold">
-        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none bg-gold/15 border border-gold/30 text-gold text-[10px] font-sans font-semibold uppercase tracking-luxe">
+        <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
         Chờ xử lý
       </span>
     );
   }
   if (status === "accepted") {
     return (
-      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-bold">
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-sans font-semibold uppercase tracking-luxe">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
         Đã chấp nhận
       </span>
@@ -19,31 +19,31 @@ export default function StatusBadge({ status }) {
   }
   if (status === "received") {
     return (
-      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-bold">
-        <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none bg-gold/15 border border-gold/30 text-gold text-[10px] font-sans font-semibold uppercase tracking-luxe">
+        <span className="w-1.5 h-1.5 rounded-full bg-gold" />
         Đã nhận đơn
       </span>
     );
   }
-  if( status === "preparing") {
+  if (status === "preparing") {
     return (
-      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-bold">
-        <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-        Đang chuẩn bị
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none bg-gold/20 border border-gold/40 text-gold text-[10px] font-sans font-semibold uppercase tracking-luxe">
+        <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+        Đang nấu
       </span>
     );
   }
-  if(status === "completed") {  
+  if (status === "completed") {
     return (
-      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-300 text-xs font-bold">
-        <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-        Đã hoàn thành
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-sans font-semibold uppercase tracking-luxe">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+        Hoàn tất
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-200 text-xs font-bold">
-      <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none bg-destructive/15 border border-destructive/30 text-destructive text-[10px] font-sans font-semibold uppercase tracking-luxe">
+      <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
       Đã từ chối
     </span>
   );

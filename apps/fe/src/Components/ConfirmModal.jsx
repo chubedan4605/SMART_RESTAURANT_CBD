@@ -18,25 +18,25 @@ export default function ConfirmModal({
   return (
     <div className="fixed inset-0 z-60">
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-ink/70 backdrop-blur-sm"
         onClick={() => !loading && onClose?.()}
       />
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="w-full max-w-sm rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl">
-          <div className="p-5">
-            <div className="text-white font-black text-lg">
+        <div className="w-full max-w-sm rounded-3xl border border-border bg-card shadow-2xl overflow-hidden animate-scale-in">
+          <div className="p-6">
+            <div className="font-serif font-bold text-lg text-foreground">
               {title || t("common.confirm")}
             </div>
             {description ? (
-              <div className="text-gray-400 text-sm mt-2">{description}</div>
+              <div className="text-muted-foreground text-sm mt-2">{description}</div>
             ) : null}
           </div>
 
-          <div className="px-5 pb-5 flex justify-end gap-2">
+          <div className="px-6 pb-6 flex justify-end gap-3">
             <button
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
+              className="min-h-11 px-4 py-2 rounded-xl bg-background border border-border text-xs font-semibold text-foreground hover:border-gold/40 hover:text-gold transition cursor-pointer"
             >
               {cancelText || t("common.cancel")}
             </button>
@@ -44,10 +44,10 @@ export default function ConfirmModal({
             <button
               onClick={onConfirm}
               disabled={loading}
-              className={`px-4 py-2 rounded-xl border ${
+              className={`min-h-11 px-5 py-2 rounded-xl border text-xs font-semibold transition cursor-pointer ${
                 danger
-                  ? "bg-red-500/20 border-red-500/30 text-red-200 hover:bg-red-500/30"
-                  : "bg-orange-500/20 border-orange-500/30 text-orange-200 hover:bg-orange-500/30"
+                  ? "bg-destructive text-destructive-foreground border-destructive hover:opacity-90"
+                  : "bg-gold text-ink border-gold hover:bg-gold-light"
               }`}
             >
               {loading

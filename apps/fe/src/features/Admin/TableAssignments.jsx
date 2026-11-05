@@ -1,37 +1,36 @@
-// src/pages/Admin/TableAssignments/TableAssignments.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { tableApi } from "../../services/tableApi";
 
 import {
   ClipboardList,
-  Table as TableIcon,
-  Users,
   RefreshCcw,
   Save,
   Search,
   Filter,
   MapPin,
+  RotateCcw,
 } from "lucide-react";
+import { SectionLabel } from "@/Components/site/primitives";
 
 function SkeletonRow() {
   return (
-    <tr className="border-b border-white/5">
-      <td className="py-3 pr-3 pl-4">
-        <div className="h-4 w-5 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+    <tr className="border-b border-border/50">
+      <td className="py-4 pr-3 pl-5">
+        <div className="h-4 w-4 bg-muted/40 rounded-sm animate-pulse" />
       </td>
-      <td className="py-3 px-3">
-        <div className="h-4 w-28 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
-        <div className="mt-2 h-3 w-36 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+      <td className="py-4 px-3">
+        <div className="h-4 w-28 bg-muted/40 rounded-sm animate-pulse" />
+        <div className="mt-2 h-3 w-36 bg-muted/40 rounded-sm animate-pulse" />
       </td>
-      <td className="py-3 px-3">
-        <div className="h-4 w-20 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+      <td className="py-4 px-3">
+        <div className="h-4 w-20 bg-muted/40 rounded-sm animate-pulse" />
       </td>
-      <td className="py-3 px-3">
-        <div className="hidden sm:inline-block h-4 w-16 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+      <td className="hidden sm:table-cell py-4 px-3">
+        <div className="h-4 w-16 bg-muted/40 rounded-sm animate-pulse" />
       </td>
-      <td className="py-3 pl-3 pr-4 text-right">
-        <div className="h-6 w-24 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse ml-auto" />
+      <td className="py-4 pl-3 pr-5 text-right">
+        <div className="h-6 w-24 bg-muted/40 rounded-full animate-pulse ml-auto" />
       </td>
     </tr>
   );
@@ -39,18 +38,17 @@ function SkeletonRow() {
 
 function StatusPill({ checked }) {
   return checked ? (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold bg-orange-500/10 text-orange-200 border-orange-500/20">
-      Assigned
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full border text-[11px] font-bold tracking-wider uppercase bg-gold/15 text-gold border-gold/30">
+      Đã phân công
     </span>
   ) : (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10">
-      Not assigned
+    <span className="inline-flex items-center px-2.5 py-1 rounded-full border text-[11px] font-bold tracking-wider uppercase bg-secondary text-muted-foreground border-border">
+      Chưa gán
     </span>
   );
 }
 
 export default function TableAssignments() {
-
   const [waiters, setWaiters] = useState([]);
   const [tables, setTables] = useState([]);
 
@@ -60,11 +58,9 @@ export default function TableAssignments() {
   const [locationFilter, setLocationFilter] = useState("ALL");
   const [onlyAssigned, setOnlyAssigned] = useState("ALL");
 
-  // Assignment state
   const [assignedTableIds, setAssignedTableIds] = useState(new Set());
   const [initialAssignedIds, setInitialAssignedIds] = useState(new Set());
 
-  // Loading
   const [loadingInit, setLoadingInit] = useState(true);
   const [loadingAssign, setLoadingAssign] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -90,13 +86,12 @@ export default function TableAssignments() {
 
       setWaiters(wItems);
       setTables(tItems);
-    } catch (e) {
-      toast.error("Không tải được dữ liệu");
+    } catch {
+      toast.error("Không tải được dữ liệu bàn & nhân viên");
     } finally {
       setLoadingInit(false);
     }
   };
-
 
   const fetchAssignments = async (waiterId) => {
     if (!waiterId) return;
@@ -106,13 +101,12 @@ export default function TableAssignments() {
       const ids = new Set((res.tableIds || []).map(String));
       setAssignedTableIds(ids);
       setInitialAssignedIds(new Set(ids));
-    } catch (e) {
-      toast.error("Không tải được phân công");
+    } catch {
+      toast.error("Không tải được danh sách phân công");
     } finally {
       setLoadingAssign(false);
     }
   };
-
 
   useEffect(() => {
     fetchInit();
@@ -129,7 +123,7 @@ export default function TableAssignments() {
 
   const toggleTable = (tableId) => {
     if (!selectedWaiterId) {
-      toast.info("Chọn waiter trước");
+      toast.info("Vui lòng chọn nhân viên phục vụ trước");
       return;
     }
     setAssignedTableIds((prev) => {
@@ -143,7 +137,7 @@ export default function TableAssignments() {
 
   const save = async () => {
     if (!selectedWaiterId) {
-      toast.error("Chọn waiter trước");
+      toast.error("Vui lòng chọn nhân viên phục vụ trước");
       return;
     }
 
@@ -155,14 +149,13 @@ export default function TableAssignments() {
       const savedIds = new Set((res.tableIds || tableIds).map(String));
       setAssignedTableIds(savedIds);
       setInitialAssignedIds(new Set(savedIds));
-      toast.success("Đã lưu phân công");
+      toast.success("Đã lưu phân công bàn thành công");
     } catch (e) {
-      toast.error(e?.response?.data?.message || e?.message || "Lưu thất bại");
+      toast.error(e?.response?.data?.message || e?.message || "Lưu phân công thất bại");
     } finally {
       setSaving(false);
     }
   };
-
 
   const resetToInitial = () => {
     setAssignedTableIds(new Set(initialAssignedIds));
@@ -196,65 +189,58 @@ export default function TableAssignments() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20">
-            <ClipboardList className="w-4 h-4 text-orange-500" />
-            <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
-              Table Assignments
-            </span>
-          </div>
+          <SectionLabel icon={ClipboardList}>Floor Operations</SectionLabel>
 
-          <h1 className="text-2xl md:text-3xl font-black mt-3">
-            Phân công{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
-              bàn cho waiter
-            </span>
+          <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground mt-2 tracking-tight">
+            Phân công <span className="text-gold">bàn cho phục vụ</span>
           </h1>
 
-          <div className="text-sm text-gray-400 mt-2">
+          <div className="text-xs text-muted-foreground mt-2">
             {selectedWaiter ? (
               <>
-                Waiter đang chọn:{" "}
-                <span className="text-white font-bold">{selectedWaiter.name}</span>{" "}
-                <span className="text-gray-500">({selectedWaiter.email})</span>
+                Phục vụ đang chọn:{" "}
+                <span className="font-serif font-bold text-foreground text-sm">{selectedWaiter.name}</span>{" "}
+                <span className="text-muted-foreground/80">({selectedWaiter.email})</span>
               </>
             ) : (
-              <>Chọn waiter để xem / chỉnh phân công.</>
+              <>Chọn một nhân viên phục vụ để bắt đầu cấu hình khu vực bàn quản lý.</>
             )}
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm">
-            Assigned: <span className="text-white font-bold">{selectedWaiterId ? assignedCount : "—"}</span>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="px-4 py-2.5 rounded-xl bg-card border border-border text-muted-foreground text-xs">
+            Bàn được gán:{" "}
+            <span className="font-serif font-bold text-gold text-sm">
+              {selectedWaiterId ? assignedCount : "—"}
+            </span>
           </div>
 
           <button
             onClick={fetchInit}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-semibold min-h-11 cursor-pointer"
           >
-            <RefreshCcw size={16} />
-            Refresh
+            <RefreshCcw size={15} />
+            Làm mới
           </button>
 
           <button
             onClick={save}
             disabled={!selectedWaiterId || saving || loadingInit || loadingAssign}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30 transition disabled:opacity-60"
-            title={!dirty ? "Không có thay đổi" : "Lưu phân công"}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs min-h-11 cursor-pointer disabled:opacity-50"
+            title={!dirty ? "Không có thay đổi mới" : "Lưu phân công"}
           >
-            <Save size={16} />
-            {saving ? "Đang lưu..." : "Save"}
+            <Save size={15} />
+            {saving ? "Đang lưu..." : "Lưu phân công"}
           </button>
 
           {dirty && (
             <button
               onClick={resetToInitial}
               disabled={saving}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-                bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground transition text-xs font-semibold min-h-11 cursor-pointer"
             >
+              <RotateCcw size={14} />
               Hoàn tác
             </button>
           )}
@@ -262,27 +248,29 @@ export default function TableAssignments() {
       </div>
 
       {/* Filters */}
-      <div className="mt-4 rounded-2xl bg-neutral-900/60 border border-white/10 p-4">
-        <div className="flex items-start gap-3">
+      <div className="mt-6 rounded-2xl bg-card border border-border p-5 shadow-xs">
+        <div className="flex items-start gap-4">
           <div className="w-full">
-            <div className="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-              <Filter className="text-orange-500" size={18} />
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold">
+                <Filter size={15} />
+              </div>
+              <span className="text-xs uppercase tracking-luxe text-muted-foreground font-semibold">
+                Bộ chọn phục vụ & bộ lọc bàn
+              </span>
             </div>
 
-            <div className="mt-3 grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
               {/* Waiter select */}
               <div className="md:col-span-4">
-                <label className="text-xs text-gray-400 mb-1 block">Waiter</label>
+                <label className="text-xs text-muted-foreground mb-1 block font-medium">Nhân viên phục vụ *</label>
                 <select
                   value={selectedWaiterId}
                   onChange={(e) => setSelectedWaiterId(e.target.value)}
                   disabled={loadingInit || saving}
-                  className="w-full rounded-xl px-3 py-2.5 text-sm
-                    bg-neutral-950 text-white border border-white/10
-                    focus:outline-none focus:border-orange-500/40 transition
-                    [&>option]:bg-neutral-950 [&>option]:text-white"
+                  className="w-full rounded-xl px-3.5 py-2 text-xs bg-background text-foreground border border-border focus:outline-hidden focus:border-gold/50 transition min-h-11 cursor-pointer"
                 >
-                  <option value="">-- chọn waiter --</option>
+                  <option value="">-- Chọn nhân viên phục vụ --</option>
                   {waiters.map((w) => (
                     <option key={w.id} value={w.id}>
                       {w.name} ({w.email})
@@ -293,65 +281,59 @@ export default function TableAssignments() {
 
               {/* Search table */}
               <div className="md:col-span-4">
-                <label className="text-xs text-gray-400 mb-1 block">Tìm bàn</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Tìm bàn</label>
                 <div className="relative">
                   <Search
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-                    size={18}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                    size={16}
                   />
                   <input
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
-                    placeholder="VD: T-01 / VIP..."
-                    className="w-full bg-neutral-950/60 border border-white/10 rounded-xl pl-10 pr-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition"
+                    placeholder="VD: Bàn 01, VIP 02..."
+                    className="w-full bg-background border border-border rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
                   />
                 </div>
               </div>
 
               {/* Location */}
               <div className="md:col-span-2">
-                <label className="text-xs text-gray-400 mb-1 block">Khu vực</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Khu vực</label>
                 <div className="relative">
                   <MapPin
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-                    size={18}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                    size={15}
                   />
                   <select
                     value={locationFilter}
                     onChange={(e) => setLocationFilter(e.target.value)}
-                    className="w-full rounded-xl pl-10 pr-3 py-2.5 text-sm
-                      bg-neutral-950 text-white border border-white/10
-                      focus:outline-none focus:border-orange-500/40 transition
-                      [&>option]:bg-neutral-950 [&>option]:text-white"
+                    className="w-full rounded-xl pl-9 pr-3.5 py-2 text-xs bg-background text-foreground border border-border focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                   >
                     <option value="ALL">Tất cả</option>
-                    <option value="Indoor">Indoor</option>
-                    <option value="Outdoor">Outdoor</option>
-                    <option value="Patio">Patio</option>
-                    <option value="VIP Room">VIP Room</option>
+                    <option value="Indoor">Trong nhà</option>
+                    <option value="Outdoor">Ngoài trời</option>
+                    <option value="Patio">Sân vườn</option>
+                    <option value="VIP Room">Phòng VIP</option>
                   </select>
                 </div>
               </div>
 
               {/* Only assigned */}
               <div className="md:col-span-2">
-                <label className="text-xs text-gray-400 mb-1 block">Hiển thị</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Bộ lọc hiển thị</label>
                 <select
                   value={onlyAssigned}
                   onChange={(e) => setOnlyAssigned(e.target.value)}
-                  className="w-full rounded-xl px-3 py-2.5 text-sm
-                    bg-neutral-950 text-white border border-white/10
-                    focus:outline-none focus:border-orange-500/40 transition
-                    [&>option]:bg-neutral-950 [&>option]:text-white"
+                  className="w-full rounded-xl px-3.5 py-2 text-xs bg-background text-foreground border border-border focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                 >
-                  <option value="ALL">Tất cả</option>
-                  <option value="YES">Chỉ bàn đã assign</option>
-                  <option value="NO">Chỉ bàn chưa assign</option>
+                  <option value="ALL">Tất cả bàn</option>
+                  <option value="YES">Đã gán cho waiter này</option>
+                  <option value="NO">Chưa gán cho waiter này</option>
                 </select>
               </div>
 
-              <div className="md:col-span-12 text-xs text-gray-500">
-                Tip: Click checkbox để assign/unassign. Nhấn <b>Save</b> để lưu.
+              <div className="md:col-span-12 text-xs text-muted-foreground pt-1">
+                Hướng dẫn: Chọn nhân viên phục vụ, tích chọn các bàn tương ứng và nhấn <b>Lưu phân công</b> để cập nhật hệ thống.
               </div>
             </div>
           </div>
@@ -359,27 +341,27 @@ export default function TableAssignments() {
       </div>
 
       {/* Table list */}
-      <div className="mt-6 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
-        <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-          <div className="text-white font-bold">Danh sách bàn (tick để phân công)</div>
-          <div className="text-xs text-gray-400">
-            {loadingInit || loadingAssign ? "Đang tải..." : `Hiển thị: ${filteredTables.length} bàn`}
+      <div className="mt-6 rounded-2xl bg-card border border-border overflow-hidden shadow-xs">
+        <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+          <div className="font-serif font-bold text-foreground text-base">Danh sách bàn phân công</div>
+          <div className="text-xs text-muted-foreground font-serif">
+            {loadingInit || loadingAssign ? "Đang tải..." : `${filteredTables.length} bàn trong danh mục`}
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-neutral-950/60 border-b border-white/10">
-              <tr className="text-left text-xs text-gray-400">
-                <th className="py-3 pr-3 pl-4 w-[8%]">Pick</th>
-                <th className="py-3 px-3 w-[5%] sm:w-[42%]">Bàn</th>
-                <th className="py-3 px-3 w-[8%] sm:w-[20%]">Khu vực</th>
-                <th className="hidden sm:inline-block py-3 px-3 sm:w-[15%]">Sức chứa</th>
-                <th className="py-3 pl-3 pr-4 text-right sm:w-[15%]">Trạng thái</th>
+            <thead className="bg-secondary/30 border-b border-border">
+              <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                <th className="py-3.5 pr-3 pl-5 w-[8%] text-center">Chọn</th>
+                <th className="py-3.5 px-3 w-[35%]">Mã bàn</th>
+                <th className="py-3.5 px-3 w-[25%]">Khu vực</th>
+                <th className="hidden sm:table-cell py-3.5 px-3 w-[15%]">Sức chứa</th>
+                <th className="py-3.5 pl-3 pr-5 text-right w-[17%]">Trạng thái gán</th>
               </tr>
             </thead>
 
-            <tbody>
+            <tbody className="divide-y divide-border/40">
               {loadingInit || loadingAssign
                 ? Array.from({ length: 8 }).map((_, i) => <SkeletonRow key={i} />)
                 : filteredTables.map((t) => {
@@ -387,35 +369,35 @@ export default function TableAssignments() {
                   return (
                     <tr
                       key={t.id}
-                      className={`border-b border-white/5 hover:bg-white dark:bg-neutral-950/5 transition ${!selectedWaiterId ? "opacity-60" : ""
-                        }`}
+                      className={`hover:bg-accent/40 transition ${!selectedWaiterId ? "opacity-50" : "cursor-pointer"}`}
+                      onClick={() => selectedWaiterId && toggleTable(t.id)}
                     >
-                      <td className="py-3 pr-3 pl-4 align-top">
+                      <td className="py-4 pr-3 pl-5 align-middle text-center" onClick={(e) => e.stopPropagation()}>
                         <input
                           type="checkbox"
                           checked={checked}
                           disabled={!selectedWaiterId || saving}
                           onChange={() => toggleTable(t.id)}
-                          className="w-4 h-4 accent-orange-500 cursor-pointer"
+                          className="w-4.5 h-4.5 accent-gold cursor-pointer"
                         />
                       </td>
 
-                      <td className="py-3 px-3 align-top">
-                        <div className="text-white font-bold">{t.table_number}</div>
-                        <div className="hidden sm:inline-block text-xs text-gray-400 mt-1">
-                          ID: <span className="text-gray-500">{t.id}</span>
+                      <td className="py-4 px-3 align-middle">
+                        <div className="font-serif font-bold text-foreground text-base">{t.table_number}</div>
+                        <div className="hidden sm:inline-block text-[11px] text-muted-foreground mt-0.5">
+                          ID: {t.id}
                         </div>
                       </td>
 
-                      <td className="py-3 px-3 align-top">
-                        <div className="text-gray-200">{t.location || "—"}</div>
+                      <td className="py-4 px-3 align-middle">
+                        <div className="text-xs text-foreground font-medium">{t.location || "—"}</div>
                       </td>
 
-                      <td className="hidden sm:inline-block py-3 px-3 align-top">
-                        <div className="text-gray-200">{t.capacity ?? "—"}</div>
+                      <td className="hidden sm:table-cell py-4 px-3 align-middle">
+                        <div className="text-xs text-muted-foreground font-serif">{t.capacity ? `${t.capacity} chỗ` : "—"}</div>
                       </td>
 
-                      <td className="py-3 pl-3 pr-4 align-top text-right">
+                      <td className="py-4 pl-3 pr-5 align-middle text-right">
                         <StatusPill checked={checked} />
                       </td>
                     </tr>
@@ -424,10 +406,10 @@ export default function TableAssignments() {
 
               {!loadingInit && !loadingAssign && filteredTables.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-10 text-center">
-                    <div className="text-white font-bold">Không có bàn phù hợp</div>
-                    <div className="text-gray-400 text-sm mt-1">
-                      Thử đổi filter hoặc từ khóa.
+                  <td colSpan={5} className="py-12 text-center">
+                    <div className="font-serif font-bold text-foreground text-base">Không tìm thấy bàn phù hợp</div>
+                    <div className="text-muted-foreground text-xs mt-1">
+                      Thử đổi bộ lọc hoặc từ khóa tìm kiếm.
                     </div>
                   </td>
                 </tr>
@@ -436,18 +418,18 @@ export default function TableAssignments() {
           </table>
         </div>
 
-        <div className="px-4 py-3 border-t border-white/10 text-xs text-gray-500 flex items-center justify-between">
+        <div className="px-5 py-3.5 border-t border-border text-xs text-muted-foreground flex items-center justify-between bg-card">
           <div>
             {selectedWaiterId ? (
               <>
-                Đã chọn: <span className="text-gray-300">{assignedCount}</span> bàn
+                Đang phân công: <span className="font-serif font-bold text-gold text-sm">{assignedCount}</span> bàn cho nhân viên này
               </>
             ) : (
-              <>Chọn waiter để bắt đầu.</>
+              <>Vui lòng chọn nhân viên phục vụ để bắt đầu thao tác.</>
             )}
           </div>
-          <div className={dirty ? "text-orange-200" : ""}>
-            {dirty ? "Có thay đổi chưa lưu" : "Đã đồng bộ"}
+          <div className={dirty ? "text-gold font-semibold" : "text-muted-foreground"}>
+            {dirty ? "Có thay đổi chưa lưu" : "Đã đồng bộ với hệ thống"}
           </div>
         </div>
       </div>

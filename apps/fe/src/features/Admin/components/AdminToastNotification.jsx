@@ -6,7 +6,6 @@ import { useSocket } from "../../../context/SocketContext";
 import { useNotificationSound } from "../../../hooks/useNotificationSound";
 import { SOCKET_EVENTS } from "../../../constants/socketEvents";
 
-// Toast item component
 function ToastItem({ notification, onClose, onNavigate }) {
   const [isExiting, setIsExiting] = useState(false);
 
@@ -15,7 +14,6 @@ function ToastItem({ notification, onClose, onNavigate }) {
     setTimeout(() => onClose(notification.id), 300);
   }, [onClose, notification.id]);
 
-  // Auto close after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       handleClose();
@@ -40,80 +38,76 @@ function ToastItem({ notification, onClose, onNavigate }) {
   const getStyles = () => {
     switch (notification.type) {
       case "new_order":
-        return "border-orange-500/50 bg-orange-500/10";
+        return "border-gold/50 bg-card/95 text-foreground";
       case "bill_request":
-        return "border-yellow-500/50 bg-yellow-500/10";
+        return "border-gold/50 bg-card/95 text-foreground";
       case "order_update":
-        return "border-blue-500/50 bg-blue-500/10";
+        return "border-blue-500/40 bg-card/95 text-foreground";
       case "table_update":
-        return "border-green-500/50 bg-green-500/10";
+        return "border-emerald-500/40 bg-card/95 text-foreground";
       default:
-        return "border-white/20 bg-white dark:bg-neutral-950/5";
+        return "border-border bg-card/95 text-foreground";
     }
   };
 
   const getIconColor = () => {
     switch (notification.type) {
       case "new_order":
-        return "text-orange-400 bg-orange-500/20";
+        return "text-gold bg-gold/15 border-gold/30";
       case "bill_request":
-        return "text-yellow-400 bg-yellow-500/20";
+        return "text-gold bg-gold/15 border-gold/30";
       case "order_update":
-        return "text-blue-400 bg-blue-500/20";
+        return "text-blue-500 bg-blue-500/15 border-blue-500/30";
       case "table_update":
-        return "text-green-400 bg-green-500/20";
+        return "text-emerald-500 bg-emerald-500/15 border-emerald-500/30";
       default:
-        return "text-gray-400 bg-white dark:bg-neutral-950/10";
+        return "text-muted-foreground bg-secondary border-border";
     }
   };
 
   return (
     <div
       className={`
-        relative p-4 rounded-2xl border shadow-2xl shadow-black/50 backdrop-blur-xl
-        transition-all duration-300 cursor-pointer
+        relative p-4 rounded-2xl border shadow-2xl backdrop-blur-xl
+        transition-all duration-300 cursor-pointer overflow-hidden
         ${getStyles()}
         ${isExiting ? "opacity-0 translate-x-full" : "opacity-100 translate-x-0"}
       `}
       onClick={() => onNavigate(notification)}
     >
-      {/* Close button */}
       <button
         onClick={(e) => {
           e.stopPropagation();
           handleClose();
         }}
-        className="absolute top-2 right-2 p-1 rounded-lg hover:bg-white dark:bg-neutral-950/10 text-gray-400 hover:text-white transition"
+        className="absolute top-2.5 right-2.5 p-1 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition cursor-pointer"
       >
         <X className="w-4 h-4" />
       </button>
 
       <div className="flex items-start gap-3 pr-6">
-        {/* Icon */}
         <div
-          className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${getIconColor()}`}
+          className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${getIconColor()}`}
         >
           {getIcon()}
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
-          <h4 className="font-bold text-sm text-white">{notification.title}</h4>
-          <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+          <h4 className="font-serif font-bold text-sm text-foreground">{notification.title}</h4>
+          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
             {notification.message}
           </p>
 
-          <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5 mt-2 text-[11px] text-gold font-medium">
             <ExternalLink className="w-3 h-3" />
             <span>Nhấn để xem chi tiết</span>
           </div>
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white dark:bg-neutral-950/5 rounded-b-2xl overflow-hidden">
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-border/40 overflow-hidden">
         <div
-          className="h-full bg-orange-500 animate-shrink-width"
+          className="h-full bg-gold animate-shrink-width"
           style={{ animationDuration: "5s" }}
         />
       </div>
@@ -121,7 +115,6 @@ function ToastItem({ notification, onClose, onNavigate }) {
   );
 }
 
-// Main Toast Container
 export default function AdminToastNotification() {
   const socket = useSocket();
   const navigate = useNavigate();
@@ -139,7 +132,7 @@ export default function AdminToastNotification() {
       id: Date.now() + Math.random(),
       ...notification,
     };
-    setToasts((prev) => [...prev, newToast].slice(-5)); // Max 5 toasts
+    setToasts((prev) => [...prev, newToast].slice(-5));
   };
 
   const removeToast = (id) => {
@@ -163,7 +156,6 @@ export default function AdminToastNotification() {
     }
   };
 
-  // Listen to socket events
   useEffect(() => {
     if (!socket) return;
 
@@ -221,7 +213,6 @@ export default function AdminToastNotification() {
       }
     };
 
-    // Lắng nghe session bàn (khách quét QR)
     const handleTableSession = (data) => {
       playUpdateSound();
       const isStarted = data.type === "session_started";

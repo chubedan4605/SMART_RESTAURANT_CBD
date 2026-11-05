@@ -7,9 +7,9 @@ import MultiSelectCombobox from "../../../Components/MultiSelectCombobox";
 import { toast } from "react-toastify";
 
 const ITEM_STATUS = [
-  { value: "available", label: "available" },
-  { value: "unavailable", label: "unavailable" },
-  { value: "sold_out", label: "sold_out" },
+  { value: "available", label: "Có sẵn (Available)" },
+  { value: "unavailable", label: "Tạm ngưng (Unavailable)" },
+  { value: "sold_out", label: "Hết hàng (Sold out)" },
 ];
 
 export default function CreateMenuItemModal({
@@ -31,21 +31,18 @@ export default function CreateMenuItemModal({
   const [status, setStatus] = useState("available");
   const [isChefRecommended, setChefRecommended] = useState(false);
 
-  // ✅ ảnh: chỉ chọn file + preview local (không upload trước)
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
-
   const [isLoading, setLoading] = useState(false);
 
   const modifierGroupOptions = useMemo(() => {
     return (modifierGroups || []).map((g) => ({
       value: g.id,
       label: g.name,
-      subLabel: `${g.selectionType} • ${g.isRequired ? "required" : "optional"} • min ${g.minSelections} / max ${g.maxSelections}`,
+      subLabel: `${g.selectionType} • ${g.isRequired ? "bắt buộc" : "tuỳ chọn"} • min ${g.minSelections} / max ${g.maxSelections}`,
     }));
   }, [modifierGroups]);
 
-  // lock scroll
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -55,10 +52,8 @@ export default function CreateMenuItemModal({
     };
   }, [open]);
 
-  // load modifier groups
   useEffect(() => {
     if (!open) return;
-
     (async () => {
       try {
         setLoadingGroups(true);
@@ -72,7 +67,6 @@ export default function CreateMenuItemModal({
     })();
   }, [open]);
 
-  // preview URL cleanup
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -89,7 +83,6 @@ export default function CreateMenuItemModal({
     setChefRecommended(false);
     setSelectedGroupIds([]);
     setModifierGroups([]);
-
     setImageFile(null);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl("");
@@ -109,17 +102,16 @@ export default function CreateMenuItemModal({
     const numPrice = Number(price);
 
     if (!categoryId || categoryId === "ALL")
-      return toast.error("Vui lòng chọn category.");
+      return toast.error("Vui lòng chọn danh mục.");
     if (!trimmed) return toast.error("Vui lòng nhập tên món.");
     if (!Number.isFinite(numPrice) || numPrice <= 0)
-      return toast.error("Giá phải là số > 0.");
+      return toast.error("Đơn giá phải là số dương > 0.");
     if (!status) return toast.error("Vui lòng chọn trạng thái.");
     if (!imageFile) return toast.error("Vui lòng chọn ảnh món ăn.");
 
     try {
       setLoading(true);
 
-      // 1) ✅ tạo menu item trước để có ID
       const created = await adminMenuApi.createMenuItem({
         categoryId,
         name: trimmed,
@@ -128,10 +120,8 @@ export default function CreateMenuItemModal({
         prepTimeMinutes: Number(prepTimeMinutes) || 0,
         status,
         isChefRecommended,
-        // ⚠️ KHÔNG gửi imageUrl ở đây nữa (vì ảnh quản lý bằng menu_item_photos)
       });
 
-      // tuỳ BE trả: { item: {...} } / { id } / { data: { item } }...
       const newId =
         created?.item?.id ||
         created?.data?.item?.id ||
@@ -140,36 +130,18 @@ export default function CreateMenuItemModal({
 
       if (!newId) throw new Error("Tạo món thành công nhưng không nhận được ID.");
 
-      // 2) ✅ upload ảnh vào menu_item_photos
-      // BE nên dùng multer.array("images")
-      const upRes = await adminMenuApi.uploadMenuItemPhotos(newId, [imageFile]);
+      await adminMenuApi.uploadMenuItemPhotos(newId, [imageFile]);
 
-      // optional: nếu BE trả lại photos/url để preview
-      const firstPhotoUrl =
-        upRes?.photos?.[0]?.url ||
-        upRes?.data?.photos?.[0]?.url ||
-        upRes?.data?.url ||
-        upRes?.url;
-
-      // 3) set modifier groups (nếu có)
       if (selectedGroupIds?.length) {
         await adminMenuApi.setMenuItemModifierGroups(newId, selectedGroupIds);
       }
 
-      toast.success("Thêm món thành công");
-
-      // nếu muốn update UI ngay không cần refetch: có thể trả về item + photos
+      toast.success("Thêm món ăn thành công");
       onSuccess?.();
-
       reset();
       onClose?.();
-
-      // optional log preview
-      if (firstPhotoUrl) {
-        // console.log("Uploaded photo url:", firstPhotoUrl);
-      }
     } catch (e) {
-      toast.error(e?.response?.data?.message || e?.message || "Tạo món thất bại.");
+      toast.error(e?.response?.data?.message || e?.message || "Tạo món ăn thất bại.");
     } finally {
       setLoading(false);
     }
@@ -177,32 +149,25 @@ export default function CreateMenuItemModal({
 
   return (
     <div className="fixed inset-0 z-50">
-      <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-        onClick={handleClose}
-      />
+      <div className="absolute inset-0 bg-ink/70 backdrop-blur-xs" onClick={handleClose} />
 
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="w-full max-w-2xl max-h-[90vh] rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl overflow-hidden flex flex-col">
-          {/* header */}
-          <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+        <div className="w-full max-w-2xl max-h-[90vh] rounded-3xl border border-border bg-card shadow-2xl overflow-hidden flex flex-col animate-scale-in">
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-card">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-                <PlusSquare className="text-orange-500" size={18} />
+              <div className="w-10 h-10 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold">
+                <PlusSquare size={18} />
               </div>
               <div>
-                <div className="text-white font-black leading-tight">
-                  Thêm món mới
-                </div>
-                <div className="text-xs text-gray-400 mt-0.5">
-                  Tạo menu item và chọn category
-                </div>
+                <div className="font-serif font-bold text-foreground text-lg leading-tight">Thêm món mới vào menu</div>
+                <div className="text-xs text-muted-foreground mt-0.5">Cấu hình thông tin, giá bán và modifiers</div>
               </div>
             </div>
 
             <button
               onClick={handleClose}
-              className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+              className="min-h-11 min-w-11 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition flex items-center justify-center cursor-pointer"
               type="button"
               aria-label="Close"
               disabled={isLoading}
@@ -212,19 +177,16 @@ export default function CreateMenuItemModal({
           </div>
 
           <ScrollArea>
-            <div className="p-5 space-y-4 overflow-y-auto flex-1">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-6 space-y-4 overflow-y-auto flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">
-                    Category *
-                  </label>
+                  <label className="text-xs text-muted-foreground mb-1 block font-medium">Danh mục *</label>
                   <select
                     value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
-                    className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500/40 transition
-                    [&>option]:bg-neutral-900 [&>option]:text-white"
+                    className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                   >
-                    <option value="ALL">Chọn category</option>
+                    <option value="ALL">Chọn danh mục</option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
@@ -234,14 +196,11 @@ export default function CreateMenuItemModal({
                 </div>
 
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">
-                    Status *
-                  </label>
+                  <label className="text-xs text-muted-foreground mb-1 block font-medium">Trạng thái *</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500/40 transition
-                    [&>option]:bg-neutral-900 [&>option]:text-white"
+                    className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                   >
                     {ITEM_STATUS.map((s) => (
                       <option key={s.value} value={s.value}>
@@ -253,46 +212,40 @@ export default function CreateMenuItemModal({
               </div>
 
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">
-                  Tên món *
-                </label>
+                <label className="text-xs text-muted-foreground mb-1 block font-medium">Tên món *</label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="VD: Pasta Carbonara..."
-                  className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition"
+                  placeholder="VD: Wagyu Steak A5, Lobster Bisque..."
+                  className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">
-                  Mô tả
-                </label>
+                <label className="text-xs text-muted-foreground mb-1 block font-medium">Mô tả món ăn</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Mô tả món..."
+                  placeholder="Mô tả nguyên liệu, hương vị, phong cách ẩm thực..."
                   rows={3}
-                  className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition"
+                  className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                 <div className="sm:col-span-2">
-                  <label className="text-xs text-gray-400 mb-1 block">
-                    Giá (VND) *
-                  </label>
+                  <label className="text-xs text-muted-foreground mb-1 block font-medium">Đơn giá (VND) *</label>
                   <input
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    placeholder="VD: 89000"
+                    placeholder="VD: 250000"
                     inputMode="numeric"
-                    className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition"
+                    className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
                   />
-                  <div className="text-xs text-gray-500 mt-1">
-                    Preview:{" "}
-                    <span className="text-gray-200 font-semibold">
-                      {Number.isFinite(Number(price))
+                  <div className="text-[11px] text-muted-foreground mt-1">
+                    Hiển thị:{" "}
+                    <span className="font-serif font-bold text-gold text-sm">
+                      {Number.isFinite(Number(price)) && Number(price) > 0
                         ? formatVND(Number(price))
                         : "—"}
                     </span>
@@ -300,30 +253,26 @@ export default function CreateMenuItemModal({
                 </div>
 
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">
-                    Prep (phút)
-                  </label>
+                  <label className="text-xs text-muted-foreground mb-1 block font-medium">Prep (phút)</label>
                   <input
                     type="number"
                     value={prepTimeMinutes}
                     onChange={(e) => setPrepTimeMinutes(e.target.value)}
-                    className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500/40 transition"
+                    className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
                   />
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white dark:bg-neutral-950/5 p-4">
+              <div className="rounded-2xl border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-white font-bold">
-                      Modifiers cho món
-                    </div>
-                    <div className="text-xs text-gray-400 mt-0.5">
-                      Chọn các nhóm tuỳ chọn (Size, Topping, Spicy…)
+                    <div className="font-serif font-bold text-foreground text-sm">Nhóm Modifiers tuỳ chọn</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">
+                      Chọn các nhóm tuỳ chọn áp dụng (Độ chín, Topping, Sốt…)
                     </div>
                   </div>
                   {loadingGroups ? (
-                    <div className="text-xs text-gray-500">Đang tải...</div>
+                    <div className="text-xs text-muted-foreground">Đang tải...</div>
                   ) : null}
                 </div>
 
@@ -332,15 +281,15 @@ export default function CreateMenuItemModal({
                     options={modifierGroupOptions}
                     value={selectedGroupIds}
                     onChange={setSelectedGroupIds}
-                    placeholder="Chọn modifier groups..."
+                    placeholder="Chọn các nhóm modifier..."
                     disabled={loadingGroups || isLoading}
                   />
                 </div>
 
                 {selectedGroupIds.length ? (
-                  <div className="mt-3 text-xs text-gray-500">
+                  <div className="mt-2.5 text-[11px] text-muted-foreground">
                     Đã chọn:{" "}
-                    <span className="text-gray-200">
+                    <span className="text-foreground font-medium">
                       {modifierGroupOptions
                         .filter((o) => selectedGroupIds.includes(o.value))
                         .map((o) => o.label)
@@ -350,69 +299,63 @@ export default function CreateMenuItemModal({
                 ) : null}
               </div>
 
-              {/* ✅ Ảnh: chọn file + preview */}
+              {/* Photo input */}
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">
-                  Ảnh món ăn *
-                </label>
-
+                <label className="text-xs text-muted-foreground mb-1 block font-medium">Ảnh đại diện món *</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => {
                     const f = e.target.files?.[0] || null;
-
-                    // cleanup preview cũ
                     if (previewUrl) URL.revokeObjectURL(previewUrl);
-
                     setImageFile(f);
-
                     if (f) {
                       setPreviewUrl(URL.createObjectURL(f));
                     } else {
                       setPreviewUrl("");
                     }
                   }}
-                  className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500/40 transition"
+                  className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                 />
 
                 {previewUrl ? (
                   <img
                     src={previewUrl}
                     alt="preview"
-                    className="mt-3 w-full h-40 object-cover rounded-2xl border border-white/10"
+                    className="mt-3 w-full h-40 object-cover rounded-2xl border border-border"
                   />
                 ) : (
-                  <div className="mt-2 text-xs text-gray-500">Chưa chọn ảnh</div>
+                  <div className="mt-1.5 text-[11px] text-muted-foreground">Vui lòng chọn ảnh đại diện cho món ăn</div>
                 )}
               </div>
 
-              <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white dark:bg-neutral-950/5 px-4 py-3">
+              <div className="flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-3">
                 <div>
-                  <div className="text-white font-bold">Chef recommended</div>
-                  <div className="text-xs text-gray-400 mt-0.5">
-                    Đánh dấu món nổi bật
+                  <div className="text-foreground font-semibold text-xs">Món Chef khuyên dùng</div>
+                  <div className="text-muted-foreground text-[11px] mt-0.5">
+                    Hiển thị huy hiệu đề xuất của Bếp trưởng
                   </div>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => setChefRecommended((v) => !v)}
-                  className={`px-4 py-2 rounded-xl border transition ${isChefRecommended
-                      ? "bg-orange-500/15 border-orange-500/30 text-orange-200"
-                      : "bg-neutral-950/40 border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
-                    }`}
+                  className={`min-h-10 px-4 py-1.5 rounded-xl border text-xs font-semibold transition cursor-pointer ${
+                    isChefRecommended
+                      ? "bg-gold/15 border-gold/40 text-gold"
+                      : "bg-card border-border text-muted-foreground hover:text-foreground"
+                  }`}
                 >
-                  {isChefRecommended ? "ON" : "OFF"}
+                  {isChefRecommended ? "BẬT" : "TẮT"}
                 </button>
               </div>
             </div>
           </ScrollArea>
 
-          <div className="px-5 py-4 border-t border-white/10 flex items-center justify-end gap-2">
+          <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-3 bg-card">
             <button
               onClick={handleClose}
-              className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+              className="min-h-11 px-5 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-semibold cursor-pointer"
               type="button"
               disabled={isLoading}
             >
@@ -421,11 +364,11 @@ export default function CreateMenuItemModal({
 
             <button
               onClick={handleSubmit}
-              className="px-4 py-2 rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30 transition disabled:opacity-60"
+              className="min-h-11 px-6 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs cursor-pointer disabled:opacity-50"
               type="button"
               disabled={isLoading}
             >
-              {isLoading ? "Đang tạo..." : "Tạo món"}
+              {isLoading ? "Đang tạo món..." : "Thêm món ăn"}
             </button>
           </div>
         </div>

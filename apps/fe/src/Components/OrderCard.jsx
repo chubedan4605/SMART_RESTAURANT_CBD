@@ -15,7 +15,6 @@ import OrderTimer from "./OrderTimer";
 export default function OrderCard({ order, onView, onAccept, onReject }) {
   const total = calcTotal(order);
 
-  // Tính prep_time lớn nhất và kiểm tra urgent
   const { maxPrepTime, isUrgent, isWarning } = useMemo(() => {
     const items = order.items || [];
     const max = Math.max(...items.map((it) => it.prep_time_minutes || 15), 15);
@@ -28,50 +27,50 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
     };
   }, [order]);
 
-  // Chỉ hiện timer cho các đơn chưa hoàn thành
   const showTimer = !["completed", "rejected"].includes(order.status);
 
   return (
     <div
-      className={`rounded-2xl bg-neutral-900/60 border shadow-2xl overflow-hidden h-full flex flex-col transition-all ${
+      className={`rounded-none bg-card text-card-foreground border shadow-xs overflow-hidden h-full flex flex-col transition-all duration-300 ${
         isUrgent && showTimer
-          ? "border-red-500/50 ring-2 ring-red-500/20"
+          ? "border-destructive/60 ring-1 ring-destructive/30"
           : isWarning && showTimer
-            ? "border-yellow-500/30"
-            : "border-white/10"
+            ? "border-gold/40"
+            : "border-border hover:border-gold/40"
       }`}
     >
       {/* Urgent Banner */}
       {isUrgent && showTimer && (
-        <div className="px-4 py-2 bg-red-500/20 border-b border-red-500/30 flex items-center gap-2">
-          <AlertTriangle size={16} className="text-red-400 animate-bounce" />
-          <span className="text-red-400 text-xs font-bold uppercase tracking-wide">
-            Đơn trễ - Cần xử lý ngay!
+        <div className="px-4 py-2 bg-destructive/15 border-b border-destructive/30 flex items-center gap-2">
+          <AlertTriangle size={15} className="text-destructive animate-bounce shrink-0" />
+          <span className="text-destructive text-xs font-sans font-semibold uppercase tracking-luxe">
+            Đơn trễ — Cần xử lý ngay!
           </span>
         </div>
       )}
 
-      <div className="p-5 flex flex-col h-full">
+      <div className="p-5 flex flex-col h-full font-sans">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-3">
-              <div className="text-white font-black text-lg">#{order.id.slice(0, 8)}</div>
+              <div className="text-foreground font-serif text-lg font-medium">
+                #{order.id.slice(0, 8)}
+              </div>
               <StatusBadge status={order.status} />
             </div>
 
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-300">
-              <div className="inline-flex items-center gap-2">
-                <Table2 size={16} className="text-orange-500" />
-                <span className="font-semibold text-gray-200">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+              <div className="inline-flex items-center gap-1.5">
+                <Table2 size={15} className="text-gold" />
+                <span className="font-serif text-sm font-semibold text-foreground">
                   {order.table_number || "—"}
                 </span>
               </div>
-              <div className="inline-flex items-center gap-2">
-                <Clock size={16} className="text-orange-500" />
+              <div className="inline-flex items-center gap-1.5">
+                <Clock size={15} className="text-gold" />
                 <span>{formatTime(order.created_at)}</span>
               </div>
 
-              {/* Timer */}
               {showTimer && (
                 <OrderTimer
                   createdAt={order.created_at}
@@ -81,7 +80,7 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
               )}
             </div>
 
-            <div className="mt-3 text-gray-400 text-sm">
+            <div className="mt-3 text-muted-foreground text-xs space-y-1">
               {order.items.slice(0, 2).map((it, idx) => (
                 <div
                   key={idx}
@@ -90,13 +89,13 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
                   <span className="truncate">
                     {it.qty}× {it.name}
                   </span>
-                  <span className="text-gray-300">
+                  <span className="text-foreground font-serif">
                     {formatMoneyVND(it.qty * it.price)}
                   </span>
                 </div>
               ))}
               {order.items.length > 2 && (
-                <div className="text-xs text-gray-500 mt-1">
+                <div className="text-[11px] text-muted-foreground/60 italic mt-0.5">
                   +{order.items.length - 2} món khác
                 </div>
               )}
@@ -104,54 +103,57 @@ export default function OrderCard({ order, onView, onAccept, onReject }) {
           </div>
 
           <div className="text-right">
-            <div className="text-gray-400 text-xs">Tổng</div>
-            <div className="text-white font-black text-xl">
+            <div className="text-muted-foreground text-[10px] uppercase tracking-luxe">Tổng tiền</div>
+            <div className="text-gold font-serif text-2xl font-normal mt-0.5">
               {formatMoneyVND(total)}
             </div>
           </div>
         </div>
 
         {order.note ? (
-          <div className="mt-4 p-3 rounded-xl bg-black/30 border border-white/5 text-sm text-gray-300">
-            <span className="text-gray-500">Ghi chú: </span>
+          <div className="mt-3 p-2.5 rounded-none bg-muted/40 border border-border text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">Ghi chú: </span>
             {order.note}
           </div>
         ) : null}
 
         <div className="mt-auto pt-5 flex flex-col sm:flex-row gap-2">
           <button
+            type="button"
             onClick={onView}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+            className="flex-1 min-h-11 px-4 py-2.5 rounded-none bg-muted hover:bg-muted/80 border border-border text-foreground font-sans text-xs uppercase tracking-luxe transition-all inline-flex items-center justify-center gap-2 cursor-pointer"
           >
-            <Eye size={18} />
-            Xem chi tiết
+            <Eye size={16} className="text-gold" />
+            Chi tiết
           </button>
 
           {order.status === "received" ? (
             <>
               <button
+                type="button"
                 onClick={onReject}
-                className="px-4 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/15 border border-red-500/20 text-red-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+                className="min-h-11 px-4 py-2.5 rounded-none bg-destructive/10 hover:bg-destructive/20 border border-destructive/30 text-destructive font-sans text-xs uppercase tracking-luxe transition-all inline-flex items-center justify-center gap-2 cursor-pointer font-medium"
               >
-                <XCircle size={18} />
+                <XCircle size={16} />
                 Từ chối
               </button>
               <button
+                type="button"
                 onClick={onAccept}
-                className={`px-4 py-2.5 rounded-xl font-bold transition-all active:scale-95 inline-flex items-center justify-center gap-2 ${
+                className={`min-h-11 px-5 py-2.5 rounded-none font-sans text-xs uppercase tracking-luxe font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer ${
                   isUrgent
-                    ? "bg-red-500 hover:bg-red-600 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)] animate-pulse"
-                    : "bg-orange-500 hover:bg-orange-600 text-white shadow-[0_0_20px_rgba(249,115,22,0.25)]"
+                    ? "bg-destructive hover:bg-destructive/90 text-white shadow-md animate-pulse"
+                    : "bg-gold hover:bg-gold-soft text-ink shadow-md"
                 }`}
               >
-                <CheckCircle2 size={18} />
-                {isUrgent ? "Chấp nhận ngay!" : "Chấp nhận"}
+                <CheckCircle2 size={16} />
+                {isUrgent ? "Nhận ngay!" : "Nhận đơn"}
               </button>
             </>
           ) : (
-            <div className="sm:ml-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black/30 border border-white/5 text-gray-300">
-              <Bell size={18} className="text-orange-500" />
-              <span className="text-sm">Đơn đã xử lý</span>
+            <div className="sm:ml-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-none bg-muted border border-border text-muted-foreground text-xs font-sans uppercase tracking-luxe">
+              <Bell size={14} className="text-gold" />
+              <span>Đang phục vụ</span>
             </div>
           )}
         </div>

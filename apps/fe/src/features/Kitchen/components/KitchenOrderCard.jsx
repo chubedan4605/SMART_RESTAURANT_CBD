@@ -4,52 +4,36 @@ import {
   Table2,
   CheckCircle2,
   Eye,
-  PlayCircle,
   AlertTriangle,
   Check,
   XCircle,
 } from "lucide-react";
-import { formatTime } from "../../../utils/orders";
-import OrderTimer, { OrderItemsTimerSummary } from "../../../Components/OrderTimer";
+import OrderTimer from "../../../Components/OrderTimer";
 
 export default function KitchenOrderCard({
   order,
   onView,
-  onStart,
   onComplete,
   onUpdateItemStatus,
 }) {
   if (!order) return null;
 
   const items = order.items || [];
-  // console.log(">>>>>> order items:", items);
 
-  const totalItems = items.reduce(
-    (acc, item) => acc + (Number(item.qty) || 0),
-    0,
-  );
-
-  // Đếm số item đã hoàn thành
   const completedItems = items.filter(
     (it) => it.status === "ready" || it.status === "rejected",
   ).length;
-  const pendingItems = items.filter(
-    (it) => it.status !== "ready" && it.status !== "rejected",
-  );
 
-  // Kiểm tra tất cả items đã xong chưa
   const allItemsDone = items.every(
     (it) => it.status === "ready" || it.status === "rejected",
   );
 
-  // Tính prep_time lớn nhất trong các món để hiển thị timer chính
   const maxPrepTime = Math.max(
     ...items.map((it) => it.prep_time_minutes || 15),
     15,
   );
 
-  // Helper format thời gian
-  const formatTime = (isoString) => {
+  const formatOrderTime = (isoString) => {
     if (!isoString) return "";
     return new Date(isoString).toLocaleTimeString("vi-VN", {
       hour: "2-digit",
@@ -57,7 +41,6 @@ export default function KitchenOrderCard({
     });
   };
 
-  // Helper tính thời gian đã trôi qua (phút)
   const getMinutesElapsed = (isoString) => {
     if (!isoString) return 0;
     const diff = new Date() - new Date(isoString);
@@ -70,58 +53,59 @@ export default function KitchenOrderCard({
 
   return (
     <div
-      className={`rounded-2xl bg-neutral-900/60 border shadow-2xl overflow-hidden h-full flex flex-col transition-all ${
+      className={`rounded-none bg-card text-card-foreground border shadow-xs overflow-hidden h-full flex flex-col transition-all duration-300 ${
         isUrgent
-          ? "border-red-500/50 ring-2 ring-red-500/20"
+          ? "border-destructive/60 ring-1 ring-destructive/30"
           : isWarning
-            ? "border-yellow-500/30"
-            : "border-white/10"
+            ? "border-gold/40"
+            : "border-border hover:border-gold/40"
       }`}
     >
       {/* Urgent Banner */}
       {isUrgent && (
-        <div className="px-4 py-2 bg-red-500/20 border-b border-red-500/30 flex items-center gap-2">
-          <AlertTriangle size={16} className="text-red-400 animate-bounce" />
-          <span className="text-red-400 text-xs font-bold uppercase tracking-wide">
-            Đơn trễ - Cần ưu tiên!
+        <div className="px-4 py-2 bg-destructive/15 border-b border-destructive/30 flex items-center gap-2">
+          <AlertTriangle size={15} className="text-destructive animate-bounce shrink-0" />
+          <span className="text-destructive text-xs font-sans font-semibold uppercase tracking-luxe">
+            Đơn trễ — Cần ưu tiên chế biến!
           </span>
         </div>
       )}
 
-      <div className="p-5 flex flex-col h-full">
+      <div className="p-5 flex flex-col h-full font-sans">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-white font-black text-lg">#{order.id.slice(0, 8)}</div>
+            <div className="text-foreground font-serif text-xl font-medium">
+              #{order.id.slice(0, 8)}
+            </div>
 
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-300">
-              <div className="inline-flex items-center gap-2">
-                <Table2 size={16} className="text-orange-500" />
-                <span className="font-semibold text-gray-200">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+              <div className="inline-flex items-center gap-1.5">
+                <Table2 size={15} className="text-gold" />
+                <span className="font-serif text-sm font-semibold text-foreground">
                   {order.table_number || "Mang về"}
                 </span>
               </div>
-              <div className="inline-flex items-center gap-2">
-                <Clock size={16} className="text-orange-500" />
-                <span>{formatTime(order.created_at)}</span>
+              <div className="inline-flex items-center gap-1.5">
+                <Clock size={15} className="text-gold" />
+                <span>{formatOrderTime(order.created_at)}</span>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col items-end gap-2">
-            {/* Timer chính */}
             <OrderTimer
               createdAt={order.created_at}
               estimatedMinutes={maxPrepTime}
               size="default"
             />
 
-            <div className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs font-bold">
+            <div className="px-3 py-1 rounded-none bg-gold/15 border border-gold/30 text-gold text-[10px] font-sans uppercase tracking-luxe font-semibold">
               {completedItems}/{items.length} món xong
             </div>
           </div>
         </div>
 
-        {/* Items với indicator thời gian riêng */}
+        {/* Items List */}
         <div className="mt-4 space-y-2">
           {(items || []).slice(0, 4).map((it, idx) => {
             const itemPrepTime = it.prep_time_minutes || 15;
@@ -133,61 +117,63 @@ export default function KitchenOrderCard({
             return (
               <div
                 key={it.id || idx}
-                className={`flex items-center justify-between gap-3 p-2 rounded-lg transition-all ${
+                className={`flex items-center justify-between gap-3 p-2.5 rounded-none border transition-all ${
                   isItemReady
-                    ? "bg-green-500/10 border border-green-500/20"
+                    ? "bg-emerald-500/10 border-emerald-500/25"
                     : isItemRejected
-                      ? "bg-red-500/10 border border-red-500/20 opacity-50"
+                      ? "bg-destructive/10 border-destructive/25 opacity-50"
                       : itemOverdue
-                        ? "bg-red-500/10 border border-red-500/20"
-                        : "bg-white dark:bg-neutral-950/5"
+                        ? "bg-destructive/10 border-destructive/30"
+                        : "bg-background border-border"
                 }`}
               >
                 <div className="min-w-0 flex items-center gap-2">
                   {isItemReady && (
-                    <Check size={14} className="text-green-400 shrink-0" />
+                    <Check size={14} className="text-emerald-500 shrink-0" />
                   )}
                   {isItemRejected && (
-                    <XCircle size={14} className="text-red-400 shrink-0" />
+                    <XCircle size={14} className="text-destructive shrink-0" />
                   )}
                   {isItemPending && itemOverdue && (
                     <AlertTriangle
                       size={14}
-                      className="text-red-400 shrink-0"
+                      className="text-destructive shrink-0"
                     />
                   )}
                   <div
-                    className={`font-semibold truncate ${
+                    className={`font-serif text-sm truncate font-medium ${
                       isItemReady
-                        ? "text-green-300 line-through"
+                        ? "text-emerald-500 line-through"
                         : isItemRejected
-                          ? "text-red-300 line-through"
+                          ? "text-destructive line-through"
                           : itemOverdue
-                            ? "text-red-300"
-                            : "text-white"
+                            ? "text-destructive"
+                            : "text-foreground"
                     }`}
                   >
                     {it.item_name || it.name}
                   </div>
                 </div>
+
                 <div className="flex items-center gap-2">
                   {isItemPending && itemOverdue && (
-                    <span className="text-[10px] text-red-400 font-mono">
+                    <span className="text-[10px] text-destructive font-mono">
                       +{elapsed - itemPrepTime}m
                     </span>
                   )}
-                  <div className="px-2 py-1 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 text-sm font-bold">
+                  <div className="px-2 py-0.5 rounded-none bg-muted border border-border text-foreground font-serif text-xs font-semibold">
                     x{it.qty}
                   </div>
-                  {/* Nút hoàn thành từng item */}
                   {isItemPending && onUpdateItemStatus && (
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         onUpdateItemStatus(order.id, it.id, "ready");
                       }}
-                      className="p-1.5 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 transition-colors"
+                      className="w-8 h-8 rounded-none bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
                       title="Đánh dấu hoàn thành"
+                      aria-label="Mark item ready"
                     >
                       <Check size={14} />
                     </button>
@@ -197,46 +183,48 @@ export default function KitchenOrderCard({
             );
           })}
           {(items || []).length > 4 && (
-            <div className="text-xs text-gray-500">
-              +{items.length - 4} món khác
+            <div className="text-xs text-muted-foreground font-sans pt-1">
+              +{items.length - 4} món khác trong đơn
             </div>
           )}
         </div>
 
         {order.note ? (
-          <div className="mt-4 p-3 rounded-xl bg-black/30 border border-white/5 text-sm text-gray-300">
-            <span className="text-gray-500">Ghi chú: </span>
+          <div className="mt-3 p-2.5 rounded-none bg-muted/40 border border-border text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">Ghi chú: </span>
             {order.note}
           </div>
         ) : null}
 
         {/* Actions pinned bottom */}
-        <div className="mt-auto pt-5 flex flex-col sm:flex-row gap-2">
+        <div className="mt-auto pt-5 flex flex-col sm:flex-row gap-2.5">
           <button
+            type="button"
             onClick={onView}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+            className="flex-1 min-h-11 px-4 py-2.5 rounded-none bg-muted hover:bg-muted/80 border border-border text-foreground font-sans text-xs uppercase tracking-luxe transition-all cursor-pointer inline-flex items-center justify-center gap-2"
           >
-            <Eye size={18} />
-            Xem chi tiết
+            <Eye size={16} className="text-gold" />
+            Xem Chi Tiết
           </button>
 
           <button
+            type="button"
             onClick={onComplete}
             disabled={!allItemsDone}
-            className={`px-4 py-2.5 rounded-xl font-bold transition-all active:scale-95 inline-flex items-center justify-center gap-2 ${
+            className={`min-h-11 px-5 py-2.5 rounded-none font-sans text-xs uppercase tracking-luxe font-semibold transition-all inline-flex items-center justify-center gap-2 cursor-pointer ${
               !allItemsDone
-                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                ? "bg-muted text-muted-foreground border border-border cursor-not-allowed"
                 : isUrgent
-                  ? "bg-red-500 hover:bg-red-600 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)] animate-pulse"
-                  : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.25)]"
+                  ? "bg-destructive hover:bg-destructive/90 text-white shadow-md animate-pulse"
+                  : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md"
             }`}
           >
-            <CheckCircle2 size={18} />
+            <CheckCircle2 size={16} />
             {!allItemsDone
-              ? `${completedItems}/${items.length} xong`
+              ? `${completedItems}/${items.length} món`
               : isUrgent
-                ? "Hoàn thành ngay!"
-                : "Hoàn thành đơn"}
+                ? "Hoàn thành gấp!"
+                : "Hoàn tất đơn"}
           </button>
         </div>
       </div>

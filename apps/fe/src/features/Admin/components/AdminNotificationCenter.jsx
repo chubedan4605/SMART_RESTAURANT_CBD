@@ -7,7 +7,6 @@ import {
   CheckCheck,
   Trash2,
   ClipboardList,
-  UtensilsCrossed,
   Receipt,
   Clock,
 } from "lucide-react";
@@ -15,37 +14,34 @@ import { MdOutlineTableBar } from "react-icons/md";
 import { useAdminNotification } from "../hooks/useAdminNotification";
 import { formatVNTimeOnly } from "../../../utils/timezone";
 
-// Icon mapping theo loại notification
 const getNotificationIcon = (type) => {
   switch (type) {
     case "new_order":
     case "order_update":
-      return <ClipboardList className="w-5 h-5" />;
+      return <ClipboardList className="w-4 h-4" />;
     case "table_update":
-      return <MdOutlineTableBar className="w-5 h-5" />;
+      return <MdOutlineTableBar className="w-4 h-4" />;
     case "bill_request":
-      return <Receipt className="w-5 h-5" />;
+      return <Receipt className="w-4 h-4" />;
     default:
-      return <Bell className="w-5 h-5" />;
+      return <Bell className="w-4 h-4" />;
   }
 };
 
-// Màu sắc theo priority
 const getPriorityStyles = (priority, type) => {
   if (type === "new_order" || type === "bill_request") {
-    return "bg-orange-500/20 border-orange-500/30 text-orange-400";
+    return "bg-gold/15 border-gold/30 text-gold";
   }
   switch (priority) {
     case "high":
-      return "bg-red-500/20 border-red-500/30 text-red-400";
+      return "bg-destructive/15 border-destructive/30 text-destructive";
     case "medium":
-      return "bg-blue-500/20 border-blue-500/30 text-blue-400";
+      return "bg-blue-500/15 border-blue-500/30 text-blue-500 dark:text-blue-400";
     default:
-      return "bg-green-500/20 border-green-500/30 text-green-400";
+      return "bg-emerald-500/15 border-emerald-500/30 text-emerald-500 dark:text-emerald-400";
   }
 };
 
-// Component cho từng notification item
 function NotificationItem({ notification, onRead, onRemove, onClick }) {
   const iconStyles = getPriorityStyles(
     notification.priority,
@@ -76,55 +72,52 @@ function NotificationItem({ notification, onRead, onRemove, onClick }) {
 
   return (
     <div
-      className={`relative p-3 rounded-xl border transition-all cursor-pointer hover:bg-white dark:bg-neutral-950/5 ${notification.read
-          ? "bg-transparent border-white/5 opacity-60"
-          : "bg-white dark:bg-neutral-950/5 border-white/10"
-        }`}
+      className={`relative p-3.5 rounded-xl border transition-all cursor-pointer hover:border-gold/40 ${
+        notification.read
+          ? "bg-secondary/20 border-border/40 opacity-70"
+          : "bg-background border-border shadow-xs"
+      }`}
       onClick={() => onClick?.(notification)}
     >
-      {/* Unread indicator */}
       {!notification.read && (
-        <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+        <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-gold animate-pulse" />
       )}
 
       <div className="flex gap-3">
-        {/* Icon */}
         <div
-          className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${iconStyles}`}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${iconStyles}`}
         >
           {getNotificationIcon(notification.type)}
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h4 className="font-bold text-sm text-white truncate">
+            <h4 className="font-serif font-bold text-sm text-foreground truncate">
               {notification.title}
             </h4>
           </div>
 
-          <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
             {notification.message}
           </p>
 
-          <div className="flex items-center gap-2 mt-2">
-            <Clock className="w-3 h-3 text-gray-500" />
-            <span className="text-xs text-gray-500">
+          <div className="flex items-center gap-1.5 mt-2">
+            <Clock className="w-3 h-3 text-muted-foreground" />
+            <span className="text-[11px] text-muted-foreground">
               {formatTime(notification.createdAt)}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-1 mt-2 pt-2 border-t border-white/5">
+      <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border/50">
         {!notification.read && (
           <button
             onClick={(e) => {
               e.stopPropagation();
               onRead?.(notification.id);
             }}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs text-gray-400 hover:text-green-400 hover:bg-green-500/10 transition"
+            className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 transition cursor-pointer"
           >
             <Check className="w-3 h-3" />
             Đã đọc
@@ -135,7 +128,7 @@ function NotificationItem({ notification, onRead, onRemove, onClick }) {
             e.stopPropagation();
             onRemove?.(notification.id);
           }}
-          className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition"
+          className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition cursor-pointer"
         >
           <Trash2 className="w-3 h-3" />
           Xóa
@@ -145,7 +138,6 @@ function NotificationItem({ notification, onRead, onRemove, onClick }) {
   );
 }
 
-// Main Component
 export default function AdminNotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -160,7 +152,6 @@ export default function AdminNotificationCenter() {
     clearAll,
   } = useAdminNotification();
 
-  // Click outside to close
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -171,7 +162,6 @@ export default function AdminNotificationCenter() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle notification click - navigate to relevant page
   const handleNotificationClick = (notification) => {
     markAsRead(notification.id);
 
@@ -197,13 +187,13 @@ export default function AdminNotificationCenter() {
       {/* Bell Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 transition-all active:scale-95"
+        className="relative min-h-11 min-w-11 rounded-xl bg-card hover:bg-accent/40 border border-border hover:border-gold/40 text-foreground hover:text-gold transition flex items-center justify-center cursor-pointer"
+        aria-label="Thông báo hệ thống"
       >
-        <Bell className="w-5 h-5 text-gray-300" />
+        <Bell className="w-4.5 h-4.5" />
 
-        {/* Badge */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center animate-pulse">
+          <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 rounded-full bg-gold text-ink text-[10px] font-bold flex items-center justify-center shadow-xs">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
@@ -211,17 +201,17 @@ export default function AdminNotificationCenter() {
 
       {/* Dropdown Panel */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-[70vw] sm:w-96 max-h-[70vh] bg-neutral-900 border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 top-full mt-2 w-[85vw] sm:w-96 max-h-[70vh] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden z-50 animate-scale-in">
           {/* Header */}
-          <div className="sticky top-0 bg-neutral-900 border-b border-white/10 p-4 flex items-center justify-between">
+          <div className="sticky top-0 bg-card border-b border-border p-4 flex items-center justify-between z-10">
             <div>
-              <h3 className="font-bold text-white flex items-center gap-2">
-                <Bell className="w-4 h-4 text-orange-500" />
-                Thông báo
+              <h3 className="font-serif font-bold text-foreground text-base flex items-center gap-2">
+                <Bell className="w-4 h-4 text-gold" />
+                Thông báo vận hành
               </h3>
-              <p className="text-xs text-gray-500 mt-0.5">
+              <p className="text-[11px] text-muted-foreground mt-0.5">
                 {unreadCount > 0
-                  ? `${unreadCount} chưa đọc`
+                  ? `${unreadCount} thông báo chưa đọc`
                   : "Không có thông báo mới"}
               </p>
             </div>
@@ -230,7 +220,7 @@ export default function AdminNotificationCenter() {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  className="p-2 rounded-lg hover:bg-white dark:bg-neutral-950/5 text-gray-400 hover:text-green-400 transition"
+                  className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-emerald-500 transition cursor-pointer"
                   title="Đánh dấu tất cả đã đọc"
                 >
                   <CheckCheck className="w-4 h-4" />
@@ -239,7 +229,7 @@ export default function AdminNotificationCenter() {
               {notifications.length > 0 && (
                 <button
                   onClick={clearAll}
-                  className="p-2 rounded-lg hover:bg-white dark:bg-neutral-950/5 text-gray-400 hover:text-red-400 transition"
+                  className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-destructive transition cursor-pointer"
                   title="Xóa tất cả"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -247,7 +237,7 @@ export default function AdminNotificationCenter() {
               )}
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-lg hover:bg-white dark:bg-neutral-950/5 text-gray-400 hover:text-white transition"
+                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -255,12 +245,12 @@ export default function AdminNotificationCenter() {
           </div>
 
           {/* Notification List */}
-          <div className="overflow-y-auto max-h-[calc(70vh-80px)] p-3 space-y-2">
+          <div className="overflow-y-auto max-h-[calc(70vh-80px)] p-3 space-y-2.5">
             {notifications.length === 0 ? (
               <div className="py-12 text-center">
-                <Bell className="w-12 h-12 text-gray-700 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm">Chưa có thông báo nào</p>
-                <p className="text-gray-600 text-xs mt-1">
+                <Bell className="w-10 h-10 text-muted-foreground/40 mx-auto mb-2" />
+                <p className="font-serif font-bold text-foreground text-sm">Chưa có thông báo nào</p>
+                <p className="text-muted-foreground text-xs mt-0.5">
                   Các thông báo về đơn hàng và bàn ăn sẽ hiển thị ở đây
                 </p>
               </div>

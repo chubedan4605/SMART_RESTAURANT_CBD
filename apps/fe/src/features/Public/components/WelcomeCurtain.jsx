@@ -1,21 +1,18 @@
-import { ChefHat } from "lucide-react";
+import { UtensilsCrossed } from "lucide-react";
 import { useEffect, useState } from "react";
 
-// --- COMPONENT CON: HIỆU ỨNG MÀN CHÀO MỪNG (ĐÃ FIX LỖI MOBILE) ---
 export const WelcomeCurtain = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isRemoved, setIsRemoved] = useState(false);
 
-
-
   useEffect(() => {
     const startTimer = setTimeout(() => {
       setIsOpen(true);
-    }, 800);
+    }, 600);
 
     const removeTimer = setTimeout(() => {
       setIsRemoved(true);
-    }, 2500);
+    }, 2200);
 
     return () => {
       clearTimeout(startTimer);
@@ -26,39 +23,40 @@ export const WelcomeCurtain = () => {
   if (isRemoved) return null;
 
   return (
-    // FIX 1: Thay 'flex' bằng 'grid grid-cols-2' để chia đôi màn hình cứng cáp hơn
-    // Hoặc giữ flex nhưng thêm w-screen để đảm bảo full width
-    <div className="fixed inset-0 z-50 flex w-screen h-screen pointer-events-none overflow-hidden">
-      
-      {/* CÁNH MÀN TRÁI */}
-      <div 
-        className={`relative w-[50vw] shrink-0 h-full bg-red-900 flex items-center justify-end border-r-2 md:border-r-4 border-yellow-500 shadow-2xl transition-transform duration-[1500ms] ease-in-out ${
-          isOpen ? '-translate-x-full' : 'translate-x-0'
+    <div className="fixed inset-0 z-50 flex w-screen h-screen pointer-events-none overflow-hidden font-sans">
+      {/* Left Curtain */}
+      <div
+        className={`relative w-[50vw] shrink-0 h-full bg-ink grain flex items-center justify-end border-r border-gold/30 shadow-2xl transition-transform duration-[1400ms] ease-in-out ${
+          isOpen ? "-translate-x-full" : "translate-x-0"
         }`}
       >
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle,theme(colors.yellow.500)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+        <div className="absolute inset-0 bg-radial from-gold/5 via-transparent to-transparent" />
       </div>
 
-      {/* CÁNH MÀN PHẢI */}
-      <div 
-        className={`relative w-[50vw] shrink-0 h-full bg-red-900 flex items-center justify-start border-l-2 md:border-l-4 border-yellow-500 shadow-2xl transition-transform duration-[1500ms] ease-in-out ${
-          isOpen ? 'translate-x-full' : 'translate-x-0'
+      {/* Right Curtain */}
+      <div
+        className={`relative w-[50vw] shrink-0 h-full bg-ink grain flex items-center justify-start border-l border-gold/30 shadow-2xl transition-transform duration-[1400ms] ease-in-out ${
+          isOpen ? "translate-x-full" : "translate-x-0"
         }`}
       >
-         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle,theme(colors.yellow.500)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+        <div className="absolute inset-0 bg-radial from-gold/5 via-transparent to-transparent" />
       </div>
 
-      {/* LOGO TRÒN Ở GIỮA */}
-      <div 
-        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 ${
-          isOpen ? 'opacity-0' : 'opacity-100'
+      {/* Center Crest */}
+      <div
+        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-600 ${
+          isOpen ? "opacity-0 scale-95" : "opacity-100 scale-100"
         }`}
       >
-        {/* FIX 4: Giảm kích thước logo trên mobile một chút để cân đối */}
-        <div className="w-20 h-20 md:w-40 md:h-40 bg-yellow-500 rounded-full flex items-center justify-center shadow-[0_0_60px_rgba(234,179,8,0.8)] z-50 border-4 border-white transform scale-100">
-          <ChefHat className="text-red-900 w-10 h-10 md:w-20 md:h-20" />
+        <div className="w-24 h-24 md:w-36 md:h-36 bg-ink border-2 border-gold/60 text-gold rounded-full flex flex-col items-center justify-center shadow-[0_0_60px_rgba(202,160,82,0.3)] z-50 gap-1">
+          <UtensilsCrossed className="w-8 h-8 md:w-12 md:h-12 text-gold stroke-[1.5]" />
+          <span className="font-serif text-[9px] md:text-xs uppercase tracking-luxe text-cream/90 font-medium">
+            Le Bistro
+          </span>
         </div>
       </div>
     </div>
   );
 };
+
+export default WelcomeCurtain;

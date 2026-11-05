@@ -134,6 +134,9 @@ importers:
       axios:
         specifier: ^1.13.2
         version: 1.18.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       file-saver:
         specifier: ^2.0.5
         version: 2.0.5
@@ -206,6 +209,9 @@ importers:
       swiper:
         specifier: ^12.0.3
         version: 12.2.0
+      tailwind-merge:
+        specifier: ^3.7.0
+        version: 3.7.0
       tailwindcss:
         specifier: ^4.1.17
         version: 4.3.3
@@ -2622,7 +2628,7 @@ packages:
     resolution: {integrity: sha512-v/qV5aV5EUA2pGilzUCq5/eyOloZAqDZBu9UMBIzgPpLlprjSR6zswsWBTv0KpqxLGUAZEwhO95ZCt7srymNVA==}
 
   emitter@http://github.com/component/emitter/archive/1.0.1.tar.gz:
-    resolution: {integrity: sha512-r/UcFj7JS3lRjv9cgYjgpDNbAsGUdqU64n6ZUOgSF7s1UFBbGu7pUDwKEjHu9NBCy6j2AmmjNW4rijR4De65eA==, tarball: http://github.com/component/emitter/archive/1.0.1.tar.gz}
+    resolution: {tarball: http://github.com/component/emitter/archive/1.0.1.tar.gz}
     version: 1.0.1
 
   emittery@0.13.1:
@@ -3038,7 +3044,7 @@ packages:
     engines: {node: 18 || 20 || >=22}
 
   global@https://github.com/component/global/archive/v2.0.1.tar.gz:
-    resolution: {integrity: sha512-O91OcV/NbdmQJPHaRu2ekSP7bqFRLWgqSwaJvqHPZHUwmHBagQYTOra29+LnzzG3lZkXH1ANzHzfCxtAPM9HMA==, tarball: https://github.com/component/global/archive/v2.0.1.tar.gz}
+    resolution: {tarball: https://github.com/component/global/archive/v2.0.1.tar.gz}
     version: 2.0.1
 
   globals@14.0.0:
@@ -4797,6 +4803,9 @@ packages:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
 
+  tailwind-merge@3.7.0:
+    resolution: {integrity: sha512-XPPUyAc+cvspz3lHTcR/QgPfW2A0lv/xQNIjX3HGhLR+Nq2lHaLq5MtTesHn8GUr3W3DguT2KT5x3NVgRtYwmA==}
+
   tailwindcss@4.3.3:
     resolution: {integrity: sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ==}
 
@@ -5211,7 +5220,7 @@ packages:
     engines: {node: '>=0.4.0'}
 
   xmlhttprequest@https://github.com/LearnBoost/node-XMLHttpRequest/archive/0f36d0b5ebc03d85f860d42a64ae9791e1daa433.tar.gz:
-    resolution: {integrity: sha512-TVSZwoeUQ7OKhb8jnQdSxGFz+lm4MGWmhG0deeYg85VQT74x5LcSrKeXHE0ZIzEycgqQ5mF8r8e1AykA7TpNAQ==, tarball: https://github.com/LearnBoost/node-XMLHttpRequest/archive/0f36d0b5ebc03d85f860d42a64ae9791e1daa433.tar.gz}
+    resolution: {tarball: https://github.com/LearnBoost/node-XMLHttpRequest/archive/0f36d0b5ebc03d85f860d42a64ae9791e1daa433.tar.gz}
     version: 1.5.0
     engines: {node: '>=0.4.0'}
 
@@ -9928,6 +9937,8 @@ snapshots:
       '@pkgr/core': 0.3.6
 
   tagged-tag@1.0.0: {}
+
+  tailwind-merge@3.7.0: {}
 
   tailwindcss@4.3.3: {}
 

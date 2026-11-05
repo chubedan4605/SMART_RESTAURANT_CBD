@@ -9,37 +9,37 @@ const OrderItemStatus = ({ item }) => {
     Queued: {
       icon: Clock,
       label: t("order.status.queued"),
-      bgColor: "bg-gray-500/10",
-      textColor: "text-gray-400",
-      borderColor: "border-gray-500/20",
-      progressColor: "bg-gray-500",
+      bgColor: "bg-muted",
+      textColor: "text-muted-foreground",
+      borderColor: "border-border",
+      progressColor: "bg-muted-foreground/40",
       progressWidth: "33%",
     },
     Cooking: {
       icon: ChefHat,
       label: t("order.status.cooking"),
-      bgColor: "bg-orange-500/10",
-      textColor: "text-orange-400",
-      borderColor: "border-orange-500/20",
-      progressColor: "bg-orange-500",
+      bgColor: "bg-gold/15",
+      textColor: "text-gold",
+      borderColor: "border-gold/30",
+      progressColor: "bg-gold",
       progressWidth: "66%",
     },
     Ready: {
       icon: CheckCircle,
       label: t("order.status.ready"),
-      bgColor: "bg-green-500/10",
-      textColor: "text-green-400",
-      borderColor: "border-green-500/20",
-      progressColor: "bg-green-500",
+      bgColor: "bg-emerald-500/15",
+      textColor: "text-emerald-400",
+      borderColor: "border-emerald-500/30",
+      progressColor: "bg-emerald-500",
       progressWidth: "100%",
     },
     Rejected: {
       icon: XCircle,
       label: t("order.status.rejected"),
-      bgColor: "bg-red-500/10",
-      textColor: "text-red-400",
-      borderColor: "border-red-500/20",
-      progressColor: "bg-red-500",
+      bgColor: "bg-destructive/15",
+      textColor: "text-destructive",
+      borderColor: "border-destructive/30",
+      progressColor: "bg-destructive",
       progressWidth: "0%",
     },
   };
@@ -48,9 +48,9 @@ const OrderItemStatus = ({ item }) => {
   const Icon = config.icon;
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-white dark:bg-neutral-950/5 rounded-xl border border-white/10">
+    <div className="flex items-center gap-4 p-4 bg-card text-card-foreground rounded-none border border-border shadow-xs">
       {/* Item Image */}
-      <div className="w-14 h-14 rounded-lg overflow-hidden bg-white dark:bg-neutral-950/10 shrink-0">
+      <div className="w-14 h-14 rounded-none overflow-hidden bg-muted shrink-0 border border-border">
         {item.image ? (
           <img
             src={item.image}
@@ -58,8 +58,8 @@ const OrderItemStatus = ({ item }) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-500 shrink-0">
-            <ChefHat size={24} />
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground shrink-0">
+            <ChefHat size={22} />
           </div>
         )}
       </div>
@@ -67,12 +67,12 @@ const OrderItemStatus = ({ item }) => {
       {/* Item Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-2">
-          <h4 className="font-medium text-white truncate">{item.name}</h4>
-          <span className="text-sm text-gray-400 ml-2">x{item.quantity}</span>
+          <h4 className="font-serif text-base text-foreground font-medium truncate">{item.name}</h4>
+          <span className="text-xs font-serif text-gold ml-2">x{item.quantity}</span>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-1.5 bg-white dark:bg-neutral-950/10 rounded-full overflow-hidden mb-2">
+        <div className="w-full h-1 bg-muted rounded-none overflow-hidden mb-2">
           <div
             className={`h-full ${config.progressColor} transition-all duration-500 ease-out`}
             style={{ width: config.progressWidth }}
@@ -82,12 +82,12 @@ const OrderItemStatus = ({ item }) => {
         {/* Status Badge */}
         <div className="flex items-center gap-2">
           <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${config.bgColor} ${config.textColor} ${config.borderColor}`}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-none text-[10px] font-sans uppercase tracking-luxe border ${config.bgColor} ${config.textColor} ${config.borderColor}`}
           >
             {item.status === "Cooking" ? (
-              <Loader2 size={12} className="animate-spin" />
+              <Loader2 size={11} className="animate-spin" />
             ) : (
-              <Icon size={12} />
+              <Icon size={11} />
             )}
             {config.label}
           </span>

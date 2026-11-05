@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import FoodDetailPopup from "./DetailFoodPopup";
+import FoodDetailPopup from "./components/DetailFoodPopup";
 import tableApi from "../../services/tableApi";
 import { formatMoneyVND } from "../../utils/orders";
 
@@ -76,7 +76,7 @@ const Cart = () => {
     const qrToken = localStorage.getItem("qrToken");
     if (!qrToken) {
       toast.warning(t("cart.scanQRFirst"));
-      navigate(`/menu/`);
+      navigate(`/menu`);
       return;
     }
 
@@ -100,8 +100,6 @@ const Cart = () => {
       return;
     }
 
-    console.log("Session validation:", isValidSession);
-
     if (!sessionToken) {
       toast.warning(t("cart.sessionExpired"));
       navigate(tableCode ? `/menu/${tableCode}` : "/scan");
@@ -109,13 +107,9 @@ const Cart = () => {
     }
 
     const sessionId = localStorage.getItem("tableSessionId");
-
-    // Lấy userId từ localStorage hoặc Redux store (nếu user đã đăng nhập)
     const userId = localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user")).id
       : null;
-
-    console.log("Checking out with:", { qrToken, sessionId, userId });
 
     try {
       await dispatch(
@@ -153,22 +147,22 @@ const Cart = () => {
 
   if (!cartItems || cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 flex items-center justify-center p-4 font-sans">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4 font-sans">
         <div className="text-center max-w-md">
-          <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-white dark:bg-neutral-950 border border-bistro-wine/10 flex items-center justify-center shadow-lg">
-            <ShoppingCart size={64} className="text-bistro-wine/40" />
+          <div className="w-28 h-28 mx-auto mb-6 rounded-full bg-card border border-border flex items-center justify-center shadow-lg">
+            <ShoppingCart size={48} className="text-gold/50" />
           </div>
-          <h2 className="text-3xl font-display text-bistro-charcoal dark:text-gray-100 mb-3">
+          <h2 className="text-3xl font-serif text-foreground mb-3 font-medium">
             {t("cart.empty")}
           </h2>
-          <p className="text-bistro-charcoal dark:text-gray-100/60 mb-8 font-sans leading-relaxed">
+          <p className="text-muted-foreground mb-8 font-sans text-sm leading-relaxed font-light">
             {t("cart.emptyDescription")}
           </p>
           <Link
             to={tableCode ? `/menu/${tableCode}` : "/menu"}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-bistro-charcoal hover:bg-black text-white font-sans text-xs uppercase tracking-[0.2em] rounded-sm transition-all shadow-lg active:scale-95"
+            className="inline-flex items-center gap-3 min-h-11 px-8 py-3.5 bg-gold hover:bg-gold-soft text-ink font-sans text-xs uppercase tracking-luxe font-semibold rounded-none transition-all shadow-md active:scale-95 cursor-pointer"
           >
-            <ShoppingBag size={18} />
+            <ShoppingBag size={16} />
             {t("cart.goToMenu")}
           </Link>
         </div>
@@ -181,22 +175,23 @@ const Cart = () => {
   const grandTotal = subtotal + serviceFee;
 
   return (
-    <div className="min-h-screen bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 pb-32 font-sans">
-      <div className="sticky top-0 z-20 bg-bistro-cream dark:bg-neutral-900/95 backdrop-blur-2xl border-b border-bistro-wine/10 py-5 shadow-sm">
+    <div className="min-h-screen bg-background text-foreground pb-32 font-sans selection:bg-gold/30 selection:text-gold">
+      {/* Sticky Top Bar */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b border-border py-4 shadow-xs">
         <div className="container mx-auto max-w-4xl px-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display text-bistro-charcoal dark:text-gray-100">
-                {t("cart.title").toUpperCase()}
+              <h1 className="text-2xl sm:text-3xl font-serif text-foreground font-medium">
+                {t("cart.title")}
               </h1>
-              <p className="text-xs font-sans text-bistro-charcoal dark:text-gray-100/50 mt-1 uppercase tracking-widest font-bold">
+              <p className="text-[10px] font-sans text-gold mt-0.5 uppercase tracking-luxe font-semibold">
                 {t("cart.items", { count: totalItems })}
               </p>
             </div>
 
             <button
               onClick={handleClearCart}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-sans text-red-500 hover:text-red-600 hover:bg-red-50 rounded-sm transition-all uppercase tracking-wider font-bold"
+              className="flex items-center gap-2 px-3 py-2 text-xs font-sans text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20 rounded-none transition-all uppercase tracking-luxe cursor-pointer min-h-11 font-medium"
             >
               <Trash2 size={16} />
               Xóa tất cả
@@ -210,14 +205,14 @@ const Cart = () => {
           {computed.items.map((item) => (
             <div
               key={item.lineKey}
-              onClick={() => setEditingItem(item)} // ✅ click mở popup sửa
-              className="cursor-pointer group bg-white dark:bg-neutral-950 hover:bg-bistro-cream dark:bg-neutral-900/30 rounded-sm p-4 transition-all duration-300 border border-bistro-charcoal/10 dark:border-white/10 hover:border-bistro-wine/30 shadow-sm hover:shadow-md"
+              onClick={() => setEditingItem(item)}
+              className="cursor-pointer group bg-card text-card-foreground hover:border-gold/50 rounded-none p-4 transition-all duration-300 border border-border shadow-xs hover:shadow-md"
               title={t("cart.clickToEdit")}
             >
               <div className="flex gap-4">
-                <div className="w-24 h-24 shrink-0 rounded-sm overflow-hidden bg-gray-100">
+                <div className="w-24 h-24 shrink-0 rounded-none overflow-hidden bg-muted">
                   <img
-                    src={item.image || "/placeholder.png"}
+                    src={item.image || "https://images.unsplash.com/photo-1544025162-d76694265947?w=300&q=80"}
                     alt={item.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -227,33 +222,34 @@ const Cart = () => {
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-lg font-display text-bistro-charcoal dark:text-gray-100 group-hover:text-bistro-wine transition-colors line-clamp-1">
+                      <h3 className="text-lg font-serif text-foreground group-hover:text-gold transition-colors line-clamp-1 font-medium">
                         {item.name}
                       </h3>
 
                       <button
                         onClick={(e) => handleRemoveItem(e, item)}
-                        className="p-1.5 text-bistro-charcoal dark:text-gray-100/40 hover:text-red-500 hover:bg-red-50 rounded-sm transition-all"
+                        aria-label="Remove item"
+                        className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-none transition-all cursor-pointer"
                       >
-                        <X size={18} />
+                        <X size={16} />
                       </button>
                     </div>
 
                     {Array.isArray(item.modifiers) &&
                     item.modifiers.length > 0 ? (
-                      <div className="mt-2 text-xs text-bistro-charcoal dark:text-gray-100/70 space-y-1 font-sans">
+                      <div className="mt-1 text-xs text-muted-foreground space-y-0.5 font-sans">
                         {item.modifiers.map((m, i) => (
                           <div
                             key={`${item.lineKey}-m-${i}`}
                             className="flex justify-between gap-2"
                           >
-                            <span className="text-bistro-charcoal dark:text-gray-100/60">
+                            <span className="text-muted-foreground">
                               • {m.group_name ? `${m.group_name}: ` : ""}
-                              <span className="text-bistro-charcoal dark:text-gray-100 font-medium">
+                              <span className="text-foreground font-medium">
                                 {m.name}
                               </span>
                             </span>
-                            <span className="text-bistro-wine font-bold">
+                            <span className="text-gold font-serif">
                               {Number(m.price || 0) > 0
                                 ? `+${formatMoneyVND(m.price)}`
                                 : "+0₫"}
@@ -262,45 +258,47 @@ const Cart = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="mt-2 text-xs text-bistro-charcoal dark:text-gray-100/40 italic font-sans">
-                        (Nhấn để chọn tuỳ chọn)
+                      <div className="mt-1 text-xs text-muted-foreground/60 italic font-sans font-light">
+                        (Nhấn để chỉnh sửa tùy chọn)
                       </div>
                     )}
 
                     {item.note ? (
-                      <div className="mt-2 text-[11px] text-bistro-charcoal dark:text-gray-100/50 italic font-sans">
+                      <div className="mt-1.5 text-[11px] text-muted-foreground italic font-sans">
                         Ghi chú: {item.note}
                       </div>
                     ) : null}
                   </div>
 
-                  <div className="flex justify-between items-end mt-4">
+                  <div className="flex justify-between items-end mt-4 pt-2 border-t border-border/40">
                     <div className="flex flex-col">
-                      <span className="text-xl font-sans font-bold text-bistro-charcoal dark:text-gray-100">
+                      <span className="text-xl font-serif text-gold font-normal">
                         {formatMoneyVND(item.lineTotal)}
                       </span>
-                      <span className="text-xs text-bistro-charcoal dark:text-gray-100/50 font-sans mt-0.5">
+                      <span className="text-[11px] text-muted-foreground font-sans mt-0.5">
                         {formatMoneyVND(item.unit)} × {item.quantity}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-gray-100 dark:bg-neutral-900 rounded-full p-1 border border-bistro-charcoal/10 dark:border-white/10">
+                    <div className="flex items-center gap-1 bg-muted rounded-none p-1 border border-border">
                       <button
                         onClick={(e) => handleDecrement(e, item)}
-                        className="w-8 h-8 rounded-full bg-white dark:bg-neutral-800 hover:bg-bistro-wine text-bistro-charcoal dark:text-gray-100 hover:text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
+                        aria-label="Decrease quantity"
+                        className="w-8 h-8 rounded-none bg-card hover:bg-gold hover:text-ink text-foreground flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer"
                       >
-                        <Minus size={16} />
+                        <Minus size={14} />
                       </button>
 
-                      <span className="text-sm font-sans font-bold w-6 text-center text-bistro-charcoal dark:text-gray-100">
+                      <span className="text-xs font-serif font-medium w-7 text-center text-foreground">
                         {item.quantity}
                       </span>
 
                       <button
                         onClick={(e) => handleIncrement(e, item)}
-                        className="w-8 h-8 rounded-full bg-bistro-wine hover:bg-bistro-wine-light text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
+                        aria-label="Increase quantity"
+                        className="w-8 h-8 rounded-none bg-gold hover:bg-gold-soft text-ink flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer"
                       >
-                        <Plus size={16} />
+                        <Plus size={14} />
                       </button>
                     </div>
                   </div>
@@ -310,44 +308,44 @@ const Cart = () => {
           ))}
         </div>
 
-        {/* Summary */}
-        <div className="mt-8 bg-white dark:bg-neutral-950 rounded-sm p-8 border border-bistro-wine/10 shadow-xl">
-          <h3 className="text-xl font-display mb-6 text-bistro-charcoal dark:text-gray-100">
+        {/* Summary Card */}
+        <div className="mt-8 bg-card rounded-none p-6 md:p-8 border border-border shadow-xl">
+          <h3 className="text-xl font-serif mb-6 text-foreground font-medium">
             {t("cart.orderDetails")}
           </h3>
 
-          <div className="flex justify-between text-bistro-charcoal dark:text-gray-100/70 font-sans text-sm mb-3">
+          <div className="flex justify-between text-muted-foreground font-sans text-sm mb-3">
             <span>{t("cart.itemsTotal", { count: totalItems })}</span>
-            <span className="font-medium text-bistro-charcoal dark:text-gray-100">{formatMoneyVND(subtotal)}</span>
+            <span className="font-serif text-foreground text-base">{formatMoneyVND(subtotal)}</span>
           </div>
 
-          <div className="flex justify-between text-bistro-charcoal dark:text-gray-100/70 font-sans text-sm">
-            <span>{t("cart.serviceFee")}</span>
-            <span className="font-medium text-bistro-charcoal dark:text-gray-100">{formatMoneyVND(serviceFee)}</span>
+          <div className="flex justify-between text-muted-foreground font-sans text-sm">
+            <span>{t("cart.serviceFee")} (10%)</span>
+            <span className="font-serif text-foreground text-base">{formatMoneyVND(serviceFee)}</span>
           </div>
 
-          <div className="h-px bg-bistro-wine/10 my-6" />
+          <div className="hairline my-6" />
 
-          <div className="flex justify-between text-xl font-sans font-bold items-end">
-            <span className="text-bistro-charcoal dark:text-gray-100 text-sm uppercase tracking-widest">{t("cart.total")}</span>
-            <span className="text-2xl text-bistro-wine">
+          <div className="flex justify-between items-end">
+            <span className="text-foreground text-xs uppercase tracking-luxe font-medium">{t("cart.total")}</span>
+            <span className="text-3xl font-serif text-gold font-normal">
               {formatMoneyVND(grandTotal)}
             </span>
           </div>
 
           <button
             onClick={handleCheckout}
-            className="w-full mt-8 flex items-center justify-center gap-3 px-6 py-4 bg-bistro-charcoal hover:bg-black text-white font-sans text-xs uppercase tracking-[0.2em] rounded-sm transition-all duration-300 shadow-lg active:scale-95"
+            className="w-full mt-8 min-h-11 flex items-center justify-center gap-3 px-6 py-4 bg-gold hover:bg-gold-soft text-ink font-sans text-xs uppercase tracking-luxe font-semibold rounded-none transition-all duration-300 shadow-lg active:scale-95 cursor-pointer"
           >
             <span>{t("cart.placeOrder")}</span>
-            <ArrowRight size={18} />
+            <ArrowRight size={16} />
           </button>
 
           <Link
             to={tableCode ? `/menu/${tableCode}` : "/menu"}
-            className="block text-center mt-6 text-[11px] uppercase tracking-widest font-sans font-bold text-bistro-charcoal dark:text-gray-100/50 hover:text-bistro-wine transition-colors"
+            className="block text-center mt-6 text-xs uppercase tracking-luxe font-sans text-muted-foreground hover:text-gold transition-colors min-h-11 inline-flex items-center justify-center w-full"
           >
-            {t("cart.continueShopping")}
+            {t("cart.continueShopping")} &rarr;
           </Link>
         </div>
       </div>

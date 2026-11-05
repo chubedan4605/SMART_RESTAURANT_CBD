@@ -7,14 +7,11 @@ import {
   CheckCircle2,
   ChefHat,
   AlertCircle,
-  Bell,
 } from "lucide-react";
-import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { orderApi } from "../../services/orderApi";
 import useCustomerSocket from "../../hooks/useCustomerSocket";
 import OrderItemStatus from "../../Components/customer/OrderItemStatus";
-import { formatMoneyVND } from "../../utils/orders";
 
 // Map status từ backend sang UI status
 const mapItemStatus = (status) => {
@@ -34,10 +31,9 @@ const mapItemStatus = (status) => {
 const OrderTrackingPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // Sử dụng hook chung - socket events đã được xử lý ở CustomerLayout
   const { isConnected, lastUpdate } = useCustomerSocket(false);
   const [orders, setOrders] = useState([]);
-  const [selectedOrderId, setSelectedOrderId] = useState(null); // <-- ĐỔI: Chỉ lưu ID
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
@@ -54,8 +50,6 @@ const OrderTrackingPage = () => {
     try {
       setError("");
       const response = await orderApi.getOrdersByTable(qrToken);
-
-      console.log("Fetched orders:", response);
 
       const mappedOrders = (response || []).map((order) => ({
         id: order.id,
@@ -76,12 +70,8 @@ const OrderTrackingPage = () => {
 
       setOrders(mappedOrders);
 
-      // Auto-select đơn hàng đang active
-      if (!selectedOrderId) {
-        const activeOrder = mappedOrders.find((o) => ![].includes(o.status));
-        if (activeOrder) {
-          setSelectedOrderId(activeOrder.id);
-        }
+      if (!selectedOrderId && mappedOrders.length > 0) {
+        setSelectedOrderId(mappedOrders[0].id);
       }
     } catch (err) {
       console.error("Failed to fetch orders:", err);
@@ -90,16 +80,14 @@ const OrderTrackingPage = () => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [qrToken, selectedOrderId]);
+  }, [qrToken, selectedOrderId, t]);
 
-  // TÍNH TOÁN selectedOrder từ orders dựa trên selectedOrderId
   const selectedOrder = orders.find((o) => o.id === selectedOrderId) || null;
 
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
 
-  // Lắng nghe lastUpdate từ socket để refresh data
   useEffect(() => {
     if (
       lastUpdate &&
@@ -107,7 +95,6 @@ const OrderTrackingPage = () => {
         lastUpdate.type === "order_item_status" ||
         lastUpdate.type === "bill_update")
     ) {
-      // Fetch lại data khi có cập nhật từ socket
       fetchOrders();
     }
   }, [lastUpdate, fetchOrders]);
@@ -121,14 +108,9 @@ const OrderTrackingPage = () => {
     if (!order)
       return { ready: 0, cooking: 0, queued: 0, rejected: 0, total: 0 };
 
-    // Sửa lại các chuỗi string so sánh cho khớp với hàm mapItemStatus
     const ready = order.items.filter((i) => i.status === "Ready").length;
     const cooking = order.items.filter((i) => i.status === "Cooking").length;
-
-    // SỬA Ở ĐÂY: Đổi "Queued" thành "Pending"
     const queued = order.items.filter((i) => i.status === "Queued").length;
-
-    // SỬA Ở ĐÂY: Đổi "Rejected" thành "Cancelled" (nếu bạn muốn đếm món hủy)
     const rejected = order.items.filter((i) => i.status === "Rejected").length;
 
     return { ready, cooking, queued, rejected, total: order.items.length };
@@ -137,19 +119,19 @@ const OrderTrackingPage = () => {
   // No QR Token
   if (!qrToken) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4">
-        <div className="w-20 h-20 bg-orange-500/10 rounded-full flex items-center justify-center mb-6">
-          <AlertCircle size={40} className="text-orange-500" />
+      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 font-sans">
+        <div className="w-20 h-20 bg-gold/10 border border-gold/20 rounded-full flex items-center justify-center mb-6 text-gold">
+          <AlertCircle size={36} />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">
+        <h2 className="text-2xl font-serif text-foreground mb-2 font-medium">
           {t("order.tracking.noTableInfo")}
         </h2>
-        <p className="text-gray-400 text-center mb-6">
+        <p className="text-muted-foreground text-center mb-6 text-sm max-w-sm font-light">
           {t("order.tracking.scanQRToView")}
         </p>
         <Link
           to="/booking"
-          className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all"
+          className="min-h-11 px-8 py-3 bg-gold hover:bg-gold-soft text-ink font-sans text-xs tracking-luxe uppercase font-semibold transition-all shadow-md rounded-none inline-flex items-center justify-center"
         >
           {t("order.tracking.viewTableMap")}
         </Link>
@@ -159,42 +141,41 @@ const OrderTrackingPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gold" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4">
-        <p className="text-gray-400 mb-4">{error}</p>
+      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 font-sans">
+        <p className="text-muted-foreground mb-4 text-sm">{error}</p>
         <button
           onClick={() => navigate(-1)}
-          className="text-orange-500 hover:text-orange-400 font-medium"
+          className="text-gold hover:text-gold-soft font-sans text-xs uppercase tracking-luxe font-semibold min-h-11 inline-flex items-center cursor-pointer"
         >
-          {t("order.tracking.goBack")}
+          &larr; {t("order.tracking.goBack")}
         </button>
       </div>
     );
   }
 
-  // No orders
   if (orders.length === 0) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4">
-        <div className="w-20 h-20 bg-white dark:bg-neutral-950/5 rounded-full flex items-center justify-center mb-6">
-          <ChefHat size={40} className="text-gray-500" />
+      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 font-sans">
+        <div className="w-20 h-20 bg-card border border-border rounded-full flex items-center justify-center mb-6 text-muted-foreground">
+          <ChefHat size={36} />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">
+        <h2 className="text-2xl font-serif text-foreground mb-2 font-medium">
           {t("order.tracking.noOrders")}
         </h2>
-        <p className="text-gray-400 text-center mb-6">
+        <p className="text-muted-foreground text-center mb-6 text-sm max-w-sm font-light">
           {t("order.tracking.noOrdersDesc")}
         </p>
         <Link
           to="/menu"
-          className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all"
+          className="min-h-11 px-8 py-3 bg-gold hover:bg-gold-soft text-ink font-sans text-xs tracking-luxe uppercase font-semibold transition-all shadow-md rounded-none inline-flex items-center justify-center"
         >
           {t("order.tracking.viewMenu")}
         </Link>
@@ -207,24 +188,25 @@ const OrderTrackingPage = () => {
     summary.ready === summary.total - summary.rejected && summary.total > 0;
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white pb-24">
+    <div className="min-h-screen bg-background text-foreground pb-24 font-sans selection:bg-gold/30 selection:text-gold">
       {/* Header */}
-      <header className="bg-neutral-900 border-b border-white/10 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="bg-card border-b border-border sticky top-0 z-10 shadow-xs">
+        <div className="max-w-lg mx-auto px-4 py-3.5 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 -ml-2 hover:bg-white dark:bg-neutral-950/10 rounded-full transition-colors"
+            aria-label="Back"
+            className="w-10 h-10 -ml-2 hover:bg-muted flex items-center justify-center transition-colors cursor-pointer text-foreground"
           >
-            <ArrowLeft size={24} className="text-gray-300" />
+            <ArrowLeft size={20} />
           </button>
 
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold text-white">
+            <h1 className="text-lg font-serif font-medium text-foreground">
               {t("order.tracking.title")}
             </h1>
             {isConnected && (
               <span
-                className="w-2 h-2 bg-green-500 rounded-full animate-pulse"
+                className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"
                 title={t("order.tracking.realTimeConnected")}
               />
             )}
@@ -233,28 +215,29 @@ const OrderTrackingPage = () => {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="p-2 -mr-2 hover:bg-white dark:bg-neutral-950/10 rounded-full transition-colors disabled:opacity-50"
+            aria-label="Refresh"
+            className="w-10 h-10 -mr-2 hover:bg-muted flex items-center justify-center transition-colors disabled:opacity-50 cursor-pointer text-foreground"
           >
             <RefreshCw
-              size={20}
-              className={`text-gray-300 ${refreshing ? "animate-spin" : ""}`}
+              size={18}
+              className={`${refreshing ? "animate-spin text-gold" : ""}`}
             />
           </button>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
-        {/* Order Tabs - nếu có nhiều đơn */}
+        {/* Order Tabs */}
         {orders.length > 1 && (
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scroll-elegant">
             {orders.map((order) => (
               <button
                 key={order.id}
-                onClick={() => setSelectedOrderId(order.id)} // <-- ĐỔI: set ID thay vì object
-                className={`shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                onClick={() => setSelectedOrderId(order.id)}
+                className={`shrink-0 px-4 py-2 text-xs font-sans uppercase tracking-luxe rounded-none border transition-all cursor-pointer min-h-11 ${
                   selectedOrderId === order.id
-                    ? "bg-orange-500 text-white"
-                    : "bg-white dark:bg-neutral-950/5 text-gray-400 hover:bg-white dark:bg-neutral-950/10"
+                    ? "bg-gold text-ink font-semibold border-gold shadow-xs"
+                    : "bg-card text-muted-foreground border-border hover:border-gold/40 hover:text-foreground"
                 }`}
               >
                 {order.code}
@@ -266,21 +249,21 @@ const OrderTrackingPage = () => {
         {selectedOrder && (
           <>
             {/* Order Info Card */}
-            <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-xl p-4">
+            <div className="bg-card border border-border rounded-none p-5 shadow-xs">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium">
                     {t("order.orderCode")}
                   </p>
-                  <p className="font-semibold text-white">
+                  <p className="font-serif text-lg font-medium text-foreground">
                     {selectedOrder.code}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-400">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium">
                     {t("order.tableNumber")}
                   </p>
-                  <p className="font-semibold text-white">
+                  <p className="font-serif text-lg font-medium text-gold">
                     {selectedOrder.tableNumber}
                   </p>
                 </div>
@@ -288,17 +271,17 @@ const OrderTrackingPage = () => {
 
               {/* Overall Progress */}
               {allReady ? (
-                <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                  <CheckCircle2 className="text-green-500" size={24} />
-                  <span className="font-medium text-green-400">
+                <div className="flex items-center gap-3 p-3 bg-emerald-500/10 border border-emerald-500/25 rounded-none">
+                  <CheckCircle2 className="text-emerald-500 shrink-0" size={20} />
+                  <span className="font-serif text-sm font-medium text-emerald-400">
                     {t("order.tracking.allReady")}
                   </span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-                  <Clock className="text-orange-500" size={24} />
+                <div className="flex items-center gap-3 p-3 bg-gold/10 border border-gold/25 rounded-none">
+                  <Clock className="text-gold shrink-0" size={20} />
                   <div>
-                    <p className="font-medium text-orange-400">
+                    <p className="font-serif text-sm font-medium text-gold">
                       {t("order.tracking.preparing")} (
                       {t("order.tracking.itemsReady", {
                         ready: summary.ready,
@@ -306,7 +289,7 @@ const OrderTrackingPage = () => {
                       })}
                       )
                     </p>
-                    <p className="text-sm text-orange-300/70">
+                    <p className="text-xs text-muted-foreground font-light">
                       {t("order.tracking.estimated", {
                         time: selectedOrder.estimatedTime,
                       })}
@@ -316,29 +299,29 @@ const OrderTrackingPage = () => {
               )}
             </div>
 
-            {/* Status Summary */}
+            {/* Status Summary Metrics */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-lg p-3 text-center">
-                <p className="text-2xl font-bold text-gray-400">
+              <div className="bg-card border border-border rounded-none p-3 text-center">
+                <p className="text-2xl font-serif font-medium text-muted-foreground">
                   {summary.queued}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-[10px] font-sans uppercase tracking-luxe text-muted-foreground mt-1">
                   {t("order.tracking.queued")}
                 </p>
               </div>
-              <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-lg p-3 text-center">
-                <p className="text-2xl font-bold text-orange-500">
+              <div className="bg-card border border-border rounded-none p-3 text-center">
+                <p className="text-2xl font-serif font-medium text-gold">
                   {summary.cooking}
                 </p>
-                <p className="text-xs text-orange-400">
+                <p className="text-[10px] font-sans uppercase tracking-luxe text-gold mt-1">
                   {t("order.tracking.cooking")}
                 </p>
               </div>
-              <div className="bg-white dark:bg-neutral-950/5 border border-white/10 rounded-lg p-3 text-center">
-                <p className="text-2xl font-bold text-green-500">
+              <div className="bg-card border border-border rounded-none p-3 text-center">
+                <p className="text-2xl font-serif font-medium text-emerald-400">
                   {summary.ready}
                 </p>
-                <p className="text-xs text-green-400">
+                <p className="text-[10px] font-sans uppercase tracking-luxe text-emerald-400 mt-1">
                   {t("order.tracking.ready")}
                 </p>
               </div>
@@ -346,7 +329,7 @@ const OrderTrackingPage = () => {
 
             {/* Items List */}
             <div>
-              <h2 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-3">
+              <h2 className="text-[11px] font-sans font-medium text-gold uppercase tracking-luxe mb-3">
                 {t("order.tracking.itemDetails", {
                   count: selectedOrder.items.length,
                 })}
@@ -355,7 +338,6 @@ const OrderTrackingPage = () => {
                 {selectedOrder.items
                   .slice()
                   .sort((a, b) => {
-                    // Thứ tự ưu tiên: Ready > Cooking > Queued > Rejected
                     const statusOrder = {
                       Ready: 1,
                       Cooking: 2,
@@ -376,7 +358,7 @@ const OrderTrackingPage = () => {
         )}
 
         {/* Auto-refresh notice */}
-        <p className="text-center text-xs text-gray-500">
+        <p className="text-center text-xs text-muted-foreground font-light pt-4">
           {isConnected
             ? t("order.tracking.connected")
             : t("order.tracking.disconnected")}

@@ -25,7 +25,6 @@ export function useAdminModifiers(params) {
 
   useEffect(() => {
     fetcher();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   return { data, isLoading, error, refetch: fetcher };

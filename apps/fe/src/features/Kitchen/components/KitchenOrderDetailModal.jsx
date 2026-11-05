@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import {
   Clock,
-  Table2,
   CheckCircle2,
   PlayCircle,
   X,
@@ -9,7 +8,7 @@ import {
   Check,
   XCircle,
 } from "lucide-react";
-import { formatTime, formatMoneyVND } from "../../../utils/orders";
+import { formatTime } from "../../../utils/orders";
 import OrderTimer from "../../../Components/OrderTimer";
 
 export default function KitchenOrderDetailModal({
@@ -21,7 +20,6 @@ export default function KitchenOrderDetailModal({
 }) {
   const items = order?.items || [];
 
-  // Tính prep time và trạng thái urgent
   const { maxPrepTime, elapsed, isUrgent, overdueItems } = useMemo(() => {
     if (!order) return { maxPrepTime: 15, elapsed: 0, isUrgent: false, overdueItems: [] };
     const max = Math.max(...items.map((it) => it.prep_time_minutes || 15), 15);
@@ -39,63 +37,35 @@ export default function KitchenOrderDetailModal({
     };
   }, [order, items]);
 
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case "ready":
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/20 text-green-400 text-xs">
-            <CheckCircle2 size={12} /> Xong
-          </span>
-        );
-      case "rejected":
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-500/20 text-red-400 text-xs">
-            <X size={12} /> Từ chối
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-xs">
-            <Clock size={12} /> Đang làm
-          </span>
-        );
-    }
-  };
-
-  // Kiểm tra tất cả items đã ready hoặc rejected chưa
-  const allItemsDone = order?.items?.every(
-    (item) => item.status === "ready" || item.status === "rejected",
-  );
-
   if (!order) return null;
 
   return (
-    <div className="fixed inset-0 z-60">
+    <div className="fixed inset-0 z-60 font-sans">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-ink/80 backdrop-blur-md"
         onClick={onClose}
       />
 
       {/* Modal Container */}
       <div className="absolute left-1/2 top-1/2 w-[95%] max-w-2xl -translate-x-1/2 -translate-y-1/2">
         <div
-          className={`rounded-2xl bg-neutral-950 border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${
+          className={`rounded-none bg-card text-card-foreground border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${
             isUrgent
-              ? "border-red-500/50 ring-2 ring-red-500/20"
-              : "border-white/10"
+              ? "border-destructive/60 ring-1 ring-destructive/30"
+              : "border-border"
           }`}
         >
           {/* Urgent Banner */}
           {isUrgent && (
-            <div className="px-5 py-3 bg-red-500/20 border-b border-red-500/30 flex items-center justify-between">
+            <div className="px-5 py-3 bg-destructive/15 border-b border-destructive/30 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <AlertTriangle
-                  size={18}
-                  className="text-red-400 animate-bounce"
+                  size={16}
+                  className="text-destructive animate-bounce"
                 />
-                <span className="text-red-400 text-sm font-bold uppercase tracking-wide">
-                  Đơn trễ - {overdueItems.length} món vượt thời gian!
+                <span className="text-destructive text-xs font-semibold uppercase tracking-luxe">
+                  Đơn trễ — {overdueItems.length} món vượt thời gian quy định!
                 </span>
               </div>
               <OrderTimer
@@ -108,21 +78,20 @@ export default function KitchenOrderDetailModal({
           )}
 
           {/* Header */}
-          <div className="p-5 border-b border-white/10 flex items-start justify-between gap-4 bg-white dark:bg-neutral-950/5">
+          <div className="p-5 border-b border-border flex items-start justify-between gap-4 bg-muted/30">
             <div>
-              <div className="text-white font-black text-2xl flex items-center gap-2">
+              <div className="text-foreground font-serif text-2xl font-medium flex items-center gap-2">
                 {order.table_number || "Mang về"}
-                <span className="text-sm font-normal text-gray-400 bg-white dark:bg-neutral-950/10 px-2 py-0.5 rounded-md">
+                <span className="text-xs font-sans text-muted-foreground bg-muted border border-border px-2.5 py-0.5 rounded-none font-normal">
                   #{order.id.slice(0, 6)}
                 </span>
               </div>
-              <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-300">
-                <div className="inline-flex items-center gap-2">
-                  <Clock size={16} className="text-orange-500" />
+              <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                <div className="inline-flex items-center gap-1.5">
+                  <Clock size={14} className="text-gold" />
                   <span>Thời gian đặt: {formatTime(order.created_at)}</span>
                 </div>
 
-                {/* Timer */}
                 {!isUrgent && (
                   <OrderTimer
                     createdAt={order.created_at}
@@ -135,25 +104,26 @@ export default function KitchenOrderDetailModal({
 
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-white dark:bg-neutral-950/10 text-gray-400 hover:text-white transition-colors"
+              aria-label="Close"
+              className="w-9 h-9 rounded-full hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
-              <X size={24} />
+              <X size={20} />
             </button>
           </div>
 
           {/* Body (Scrollable) */}
           <div className="p-5 overflow-y-auto custom-scrollbar flex-1">
-            <div className="rounded-2xl bg-neutral-900/60 border border-white/10 overflow-hidden">
-              <div className="p-4 flex items-center justify-between bg-white dark:bg-neutral-950/5">
-                <div className="font-bold text-white uppercase tracking-wider text-sm">
-                  Chi tiết món ăn
+            <div className="rounded-none bg-background border border-border overflow-hidden">
+              <div className="p-3.5 flex items-center justify-between border-b border-border bg-muted/20">
+                <div className="font-sans font-semibold text-foreground uppercase tracking-luxe text-xs">
+                  Chi tiết món cần nấu
                 </div>
-                <div className="text-orange-500 font-bold text-sm">
+                <div className="text-gold font-serif text-sm font-medium">
                   {items.length} món
                 </div>
               </div>
 
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-border">
                 {items.map((it, idx) => {
                   const itemPrepTime = it.prep_time_minutes || 15;
                   const itemOverdue = elapsed >= itemPrepTime;
@@ -167,42 +137,41 @@ export default function KitchenOrderDetailModal({
                       key={it.id || idx}
                       className={`p-4 transition-colors ${
                         isItemReady
-                          ? "bg-green-500/10"
+                          ? "bg-emerald-500/10"
                           : isItemRejected
-                          ? "bg-red-500/10 opacity-50"
+                          ? "bg-destructive/10 opacity-50"
                           : itemOverdue
-                          ? "bg-red-500/10"
-                          : "hover:bg-white dark:bg-neutral-950/5"
+                          ? "bg-destructive/10"
+                          : "hover:bg-muted/30"
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         {/* Quantity Badge */}
                         <div
-                          className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-lg font-black border ${
+                          className={`shrink-0 w-10 h-10 rounded-none flex items-center justify-center font-serif text-lg font-bold border ${
                             isItemReady
-                              ? "bg-green-500/20 border-green-500/30 text-green-300"
+                              ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400"
                               : isItemRejected
-                              ? "bg-red-500/20 border-red-500/30 text-red-300"
+                              ? "bg-destructive/20 border-destructive/30 text-destructive"
                               : itemOverdue
-                              ? "bg-red-500/20 border-red-500/30 text-red-300"
-                              : "bg-white dark:bg-neutral-950/10 border-white/10 text-white"
+                              ? "bg-destructive/20 border-destructive/30 text-destructive"
+                              : "bg-muted border-border text-foreground"
                           }`}
                         >
                           {it.qty}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          {/* Tên món + Status + Overdue indicator */}
                           <div className="flex items-center gap-2 flex-wrap">
                             <div
-                              className={`text-lg font-bold leading-tight ${
+                              className={`font-serif text-lg font-medium leading-tight ${
                                 isItemReady
-                                  ? "text-green-300 line-through"
+                                  ? "text-emerald-500 line-through"
                                   : isItemRejected
-                                  ? "text-red-300 line-through"
+                                  ? "text-destructive line-through"
                                   : itemOverdue
-                                  ? "text-red-300"
-                                  : "text-gray-100"
+                                  ? "text-destructive"
+                                  : "text-foreground"
                               }`}
                             >
                               {it.item_name || it.name}
@@ -210,46 +179,43 @@ export default function KitchenOrderDetailModal({
 
                             {/* Status badge */}
                             {isItemReady && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 text-xs font-bold">
-                                <Check size={10} /> Xong
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-sans font-semibold uppercase tracking-luxe">
+                                <Check size={10} /> Đã Xong
                               </span>
                             )}
                             {isItemRejected && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold">
-                                <XCircle size={10} /> Từ chối
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none bg-destructive/20 border border-destructive/30 text-destructive text-[10px] font-sans font-semibold uppercase tracking-luxe">
+                                <XCircle size={10} /> Từ Chối
                               </span>
                             )}
                             {isItemPending && itemOverdue && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none bg-destructive/20 border border-destructive/30 text-destructive text-[10px] font-sans font-semibold uppercase tracking-luxe">
                                 <AlertTriangle size={10} />+{overtimeMinutes}m
                               </span>
                             )}
                           </div>
 
-                          {/* Prep time info */}
-                          <div className="mt-1 text-xs text-gray-500">
+                          <div className="mt-1 text-xs text-muted-foreground font-light">
                             Thời gian chuẩn bị: {itemPrepTime} phút
                           </div>
 
-                          {/* Modifiers (Topping/Size) */}
                           {it.modifiers && it.modifiers.length > 0 && (
                             <div className="mt-2 space-y-1">
                               {it.modifiers.map((mod, mIdx) => (
                                 <div
                                   key={mIdx}
-                                  className="text-sm text-gray-400 flex items-center gap-2"
+                                  className="text-xs text-muted-foreground flex items-center gap-2"
                                 >
-                                  <span className="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
+                                  <span className="w-1.5 h-1.5 bg-gold/60"></span>
                                   {mod.name || mod.modifier_name}
                                 </div>
                               ))}
                             </div>
                           )}
 
-                          {/* Ghi chú món (Item Note) */}
                           {it.note && (
-                            <div className="mt-2 text-sm text-orange-400 italic bg-orange-500/10 px-2 py-1 rounded border border-orange-500/20 inline-block">
-                              Note: {it.note}
+                            <div className="mt-2 text-xs text-gold italic bg-gold/10 px-2 py-1 rounded-none border border-gold/20 inline-block font-sans">
+                              Ghi chú: {it.note}
                             </div>
                           )}
                         </div>
@@ -257,13 +223,15 @@ export default function KitchenOrderDetailModal({
                         {/* Nút hoàn thành từng item */}
                         {isItemPending && onUpdateItemStatus && (
                           <button
+                            type="button"
                             onClick={() =>
                               onUpdateItemStatus(order.id, it.id, "ready")
                             }
-                            className="shrink-0 p-3 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 transition-colors"
+                            className="shrink-0 min-h-11 min-w-11 rounded-none bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
                             title="Đánh dấu hoàn thành món này"
+                            aria-label="Mark item ready"
                           >
-                            <Check size={20} />
+                            <Check size={18} />
                           </button>
                         )}
                       </div>
@@ -273,48 +241,48 @@ export default function KitchenOrderDetailModal({
               </div>
             </div>
 
-            {/* Ghi chú chung cho cả đơn (Order Note) */}
+            {/* Ghi chú chung toàn đơn */}
             {order.note && (
-              <div className="mt-4 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-200">
-                <div className="text-xs font-bold uppercase mb-1 opacity-70">
+              <div className="mt-4 p-4 rounded-none bg-gold/10 border border-gold/25 text-foreground">
+                <div className="text-[10px] font-sans font-semibold uppercase tracking-luxe text-gold mb-1">
                   Ghi chú toàn đơn
                 </div>
-                <div className="text-base font-medium">{order.note}</div>
+                <div className="text-sm font-medium">{order.note}</div>
               </div>
             )}
           </div>
 
           {/* Footer Actions */}
-          <div className="p-5 border-t border-white/10 bg-black/40 flex gap-3">
+          <div className="p-5 border-t border-border bg-card flex gap-3">
             <button
+              type="button"
               onClick={onClose}
-              className="px-6 py-3 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-300 font-bold transition-all"
+              className="min-h-11 px-6 py-2.5 rounded-none bg-muted hover:bg-muted/80 border border-border text-foreground font-sans text-xs uppercase tracking-luxe font-medium transition-all cursor-pointer"
             >
               Đóng
             </button>
 
-            {/* Logic nút bấm dựa trên trạng thái */}
             {order.status !== "preparing" ? (
-              // Nếu chưa nấu (accepted) -> Nút Bắt đầu
               <button
+                type="button"
                 onClick={onStart}
-                className="flex-1 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2"
+                className="flex-1 min-h-11 px-6 py-2.5 rounded-none bg-gold hover:bg-gold-soft text-ink font-sans text-xs uppercase tracking-luxe font-semibold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
-                <PlayCircle size={20} />
+                <PlayCircle size={18} />
                 Bắt đầu nấu
               </button>
             ) : (
-              // Nếu đang nấu (preparing) -> Nút Hoàn thành
               <button
+                type="button"
                 onClick={onComplete}
-                className={`flex-1 px-6 py-3 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 ${
+                className={`flex-1 min-h-11 px-6 py-2.5 rounded-none font-sans text-xs uppercase tracking-luxe font-semibold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${
                   isUrgent
-                    ? "bg-red-500 hover:bg-red-600 text-white shadow-red-900/30 animate-pulse"
-                    : "bg-green-600 hover:bg-green-500 text-white shadow-green-900/20"
+                    ? "bg-destructive hover:bg-destructive/90 text-white animate-pulse"
+                    : "bg-emerald-600 hover:bg-emerald-500 text-white"
                 }`}
               >
-                <CheckCircle2 size={20} />
-                {isUrgent ? "Hoàn thành ngay!" : "Hoàn thành đơn"}
+                <CheckCircle2 size={18} />
+                {isUrgent ? "Hoàn thành gấp!" : "Hoàn tất đơn"}
               </button>
             )}
           </div>

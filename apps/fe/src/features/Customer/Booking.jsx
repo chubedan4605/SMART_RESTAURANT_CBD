@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { MapPin, X, Users, Armchair } from "lucide-react";
+import { X, Users, Armchair } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { tableApi } from "../../services/tableApi";
+import { Reveal, SectionLabel } from "../../Components/site/primitives";
 
 const Booking = () => {
   const { t } = useTranslation();
@@ -12,7 +13,7 @@ const Booking = () => {
   const [loading, setLoading] = useState(true);
 
   // Filter & Sort
-  const [filters, setFilters] = useState({
+  const [filters] = useState({
     status: "",
     location: "",
     sort: "name_asc",
@@ -35,14 +36,12 @@ const Booking = () => {
       return acc;
     }, {});
 
-    // Convert object to array: [{ name: "Outdoor", tables: [...] }]
     return Object.keys(grouped).map((key) => ({
       name: key,
       tables: grouped[key],
     }));
   };
 
-  // Fetch tables whenever filters changes
   useEffect(() => {
     let mounted = true;
 
@@ -50,10 +49,8 @@ const Booking = () => {
       setLoading(true);
       try {
         const data = await tableApi.getTables(filters);
-
         if (!mounted) return;
 
-        // Transform the flat data into the nested structure needed for rendering
         const processedData = groupTablesByLocation(
           Array.isArray(data) ? data : [],
         );
@@ -70,11 +67,9 @@ const Booking = () => {
     return () => {
       mounted = false;
     };
-  }, [filters]); // Simplified dependency array
+  }, [filters, t]);
 
-  // click table -> open QR modal
   const handleTableClick = (table) => {
-    // Check nếu bàn đã có khách (current_session_id khác null) thì không cho chọn
     const isOccupied =
       table.status === "occupied" || table.current_session_id != null;
     if (isOccupied) {
@@ -86,78 +81,78 @@ const Booking = () => {
     setSelectedTable(table);
   };
 
-  // simulate scan
   const handleSimulateScan = () => {
     if (selectedTable) {
-      // Sửa dòng này: Thêm query param token vào URL
       navigate(`/scan/${selectedTable.id}?qrToken=${selectedTable.qr_token}`);
     }
   };
 
-  // helper: seats field fallback
   const getSeats = (table) => {
     return table.capacity ?? table.seats ?? 0;
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex items-center justify-center text-white">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-          <p>{t("table.booking.loading")}</p>
+      <div className="min-h-screen bg-background flex items-center justify-center text-foreground font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-9 h-9 border-2 border-gold border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-xs uppercase tracking-luxe text-muted-foreground">{t("table.booking.loading")}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 pt-20 pb-10 px-4">
+    <div className="min-h-screen bg-background text-foreground pt-12 pb-24 px-4 font-sans selection:bg-gold/30 selection:text-gold">
       <div className="container mx-auto max-w-5xl">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-            <MapPin className="text-orange-500" /> {t("table.booking.title")}
+        <Reveal className="mb-10 text-center flex flex-col items-center">
+          <SectionLabel align="center" className="mb-4">
+            Floor Plan & Table Map
+          </SectionLabel>
+          <h1 className="text-3xl sm:text-4xl font-serif text-foreground mb-3 font-medium">
+            {t("table.booking.title")}
           </h1>
-          <p className="text-gray-400">{t("table.booking.subtitle")}</p>
-        </div>
+          <p className="text-muted-foreground text-sm max-w-md font-light leading-relaxed">
+            {t("table.booking.subtitle")}
+          </p>
+        </Reveal>
 
         {/* Legend */}
-        <div className="flex flex-wrap justify-center gap-4 mb-10 text-sm">
+        <div className="flex flex-wrap justify-center gap-6 mb-12 text-xs font-sans uppercase tracking-luxe">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-neutral-800 border border-white/20" />
-            <span className="text-gray-300">
+            <div className="w-3.5 h-3.5 bg-card border border-border" />
+            <span className="text-muted-foreground">
               {t("table.booking.available")}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-orange-500/20 border border-orange-500" />
-            <span className="text-orange-500 font-bold">
+            <div className="w-3.5 h-3.5 bg-gold/20 border border-gold" />
+            <span className="text-gold font-semibold">
               {t("table.booking.occupied")}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-red-900/20 border border-red-500/50" />
-            <span className="text-red-400">{t("table.booking.reserved")}</span>
+            <div className="w-3.5 h-3.5 bg-destructive/20 border border-destructive/50" />
+            <span className="text-destructive font-semibold">{t("table.booking.reserved")}</span>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="space-y-10">
+        {/* Areas & Tables Content */}
+        <div className="space-y-12">
           {areas.length === 0 ? (
-            <div className="text-center text-gray-400 py-10">
+            <div className="text-center text-muted-foreground py-10 font-sans">
               {t("table.booking.noTables")}
             </div>
           ) : (
             areas.map((area) => (
-              <div key={area.name}>
-                <h2 className="text-xl font-bold text-orange-400 mb-4 border-l-4 border-orange-500 pl-3">
-                  {area.name} {/* This will be "Outdoor", "Indoor", etc. */}
+              <Reveal key={area.name}>
+                <h2 className="font-serif text-2xl text-foreground mb-4 border-l-2 border-gold pl-3 font-medium">
+                  {area.name}
                 </h2>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {(area.tables || []).map((table) => {
-                    // Logic mapping based on your API response
-                    // Check current_session_id để biết bàn có khách hay không
                     const hasActiveSession = table.current_session_id != null;
                     const isOccupied =
                       table.status === "occupied" || hasActiveSession;
@@ -169,53 +164,53 @@ const Booking = () => {
 
                     return (
                       <button
-                        key={table.id} // FIX: Changed a.id to table.id
+                        type="button"
+                        key={table.id}
                         onClick={() => handleTableClick(table)}
                         disabled={isOccupied || isReserved}
                         className={`
-                          relative group p-4 rounded-xl border-2 transition-all duration-300
-                          flex flex-col items-center justify-center gap-2 min-h-30
+                          relative group p-5 rounded-none border transition-all duration-300
+                          flex flex-col items-center justify-center gap-2 min-h-32 text-center
                           ${
                             isAvailable
-                              ? "bg-neutral-900 border-white/10 hover:border-orange-500 hover:bg-neutral-800 cursor-pointer"
+                              ? "bg-card border-border hover:border-gold/60 hover:shadow-lg cursor-pointer"
                               : ""
                           }
                           ${
                             isOccupied
-                              ? "bg-orange-500/10 border-orange-500/50 cursor-not-allowed"
+                              ? "bg-gold/10 border-gold/30 cursor-not-allowed"
                               : ""
                           }
                           ${
                             isReserved
-                              ? "bg-red-900/10 border-red-500/30 opacity-60 cursor-not-allowed"
+                              ? "bg-destructive/10 border-destructive/30 opacity-60 cursor-not-allowed"
                               : ""
                           }
                         `}
                       >
                         <Armchair
-                          size={32}
+                          size={28}
                           className={`
                             ${
                               isAvailable
-                                ? "text-gray-400 group-hover:text-orange-500"
+                                ? "text-muted-foreground group-hover:text-gold transition-colors"
                                 : ""
                             }
-                            ${isOccupied ? "text-orange-500" : ""}
-                            ${isReserved ? "text-red-500" : ""}
+                            ${isOccupied ? "text-gold" : ""}
+                            ${isReserved ? "text-destructive" : ""}
                           `}
                         />
 
                         <span
-                          className={`font-bold text-lg ${
-                            isOccupied ? "text-orange-500" : "text-white"
+                          className={`font-serif text-2xl font-medium ${
+                            isOccupied ? "text-gold" : "text-foreground"
                           }`}
                         >
-                          {/* FIX: Use table_number instead of name */}
                           {table.table_number}
                         </span>
 
-                        <div className="flex items-center gap-1 text-xs text-gray-500">
-                          <Users size={12} />
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-sans">
+                          <Users size={12} className="text-gold" />
                           <span>
                             {t("table.booking.seats", {
                               count: getSeats(table),
@@ -225,15 +220,15 @@ const Booking = () => {
 
                         {isOccupied && (
                           <>
-                            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                            <span className="text-[10px] text-orange-400 font-bold uppercase mt-1">
+                            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-gold animate-pulse" />
+                            <span className="text-[9px] text-gold font-sans font-semibold uppercase tracking-luxe mt-1">
                               {t("table.booking.occupied")}
                             </span>
                           </>
                         )}
 
                         {isReserved && (
-                          <span className="text-[10px] text-red-400 font-bold uppercase mt-1">
+                          <span className="text-[9px] text-destructive font-sans font-semibold uppercase tracking-luxe mt-1">
                             {t("table.booking.reserved")}
                           </span>
                         )}
@@ -241,7 +236,7 @@ const Booking = () => {
                     );
                   })}
                 </div>
-              </div>
+              </Reveal>
             ))
           )}
         </div>
@@ -249,40 +244,44 @@ const Booking = () => {
 
       {/* QR MODAL */}
       {selectedTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-neutral-900 border border-white/10 rounded-2xl p-6 w-full max-w-sm relative shadow-2xl shadow-orange-500/10 transform transition-all scale-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-card text-card-foreground border border-border rounded-none p-6 w-full max-w-sm relative shadow-2xl">
             <button
               onClick={() => setSelectedTable(null)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 p-2 rounded-full transition-colors"
+              aria-label="Close"
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground w-9 h-9 rounded-full flex items-center justify-center transition-colors cursor-pointer"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
 
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-white mb-1">
-                {selectedTable.table_number}
+              <p className="text-[10px] uppercase tracking-luxe text-gold font-semibold mb-1">
+                Bàn Được Chọn
+              </p>
+              <h3 className="font-serif text-3xl font-medium text-foreground mb-1">
+                Bàn {selectedTable.table_number}
               </h3>
-              <p className="text-orange-500 text-sm font-medium mb-6">
+              <p className="text-muted-foreground text-xs font-light mb-6">
                 {t("table.booking.scanToOrder")}
               </p>
 
-              <div className="bg-white dark:bg-neutral-950 p-4 rounded-xl inline-block mb-6 mx-auto">
+              <div className="bg-white p-4 rounded-none inline-block mb-6 mx-auto border border-gold/40 shadow-sm">
                 <QRCode
                   value={`${window.location.origin}/scan/${selectedTable.id}?qrToken=${selectedTable.qr_token}`}
-                  size={200}
+                  size={190}
                   level="H"
                 />
               </div>
 
-              <p className="text-gray-400 text-sm mb-6 px-4">
+              <p className="text-muted-foreground text-xs mb-6 px-4 font-light leading-relaxed">
                 {t("table.booking.scanInstruction")}
               </p>
 
               <button
                 onClick={handleSimulateScan}
-                className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition-all active:scale-95"
+                className="w-full min-h-11 py-3.5 bg-gold hover:bg-gold-soft text-ink font-sans text-xs uppercase tracking-luxe font-semibold rounded-none transition-all shadow-md active:scale-95 cursor-pointer"
               >
-                {t("table.booking.enterNow")}
+                {t("table.booking.enterNow")} &rarr;
               </button>
             </div>
           </div>

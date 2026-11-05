@@ -11,7 +11,6 @@ import {
   LogOut,
   Menu as MenuIcon,
   X,
-  Shield,
   Moon,
   Sun,
 } from "lucide-react";
@@ -53,25 +52,25 @@ export default function AdminNavbar() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 bg-neutral-950/95 backdrop-blur-xl border-b border-white/10 h-16">
+      <nav className="fixed top-0 w-full z-50 bg-card/95 backdrop-blur-md border-b border-border h-16 font-sans">
         <div className="container mx-auto max-w-7xl px-4 h-full flex items-center justify-between">
           {/* Brand */}
-          <Link to="/admin" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-linear-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-              <ShieldUser className="text-white" size={24} />
+          <Link to="/admin" className="flex items-center gap-2.5">
+            <div className="w-10 h-10 border border-gold/40 bg-gold/15 flex items-center justify-center text-gold shadow-xs">
+              <ShieldUser size={22} />
             </div>
             <div className="leading-tight">
-              <div className="text-white font-black tracking-wide font-display">
-                Lumière Bistro
+              <div className="text-foreground font-serif text-lg font-semibold tracking-wide">
+                Le Bistro
               </div>
-              <div className="text-[10px] text-gray-400 uppercase tracking-[0.3em]">
-                Admin
+              <div className="text-[10px] text-gold uppercase tracking-luxe font-medium">
+                Executive Admin
               </div>
             </div>
           </Link>
 
           {/* Desktop menu */}
-          <div className="hidden xl:flex items-center gap-2">
+          <div className="hidden xl:flex items-center gap-1.5">
             {navItems.map((it) => (
               <AdminNavLink
                 key={it.to}
@@ -86,38 +85,50 @@ export default function AdminNavbar() {
           <div className="flex items-center gap-2">
             {/* Theme Toggle */}
             <button
+              type="button"
               onClick={toggleTheme}
-              className="p-2 text-gray-400 hover:text-white transition-colors"
+              aria-label="Toggle theme"
+              className="w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
               title="Toggle Theme"
             >
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+              {theme === "dark" ? (
+                <Sun size={18} className="text-gold" />
+              ) : (
+                <Moon size={18} />
+              )}
             </button>
 
             {/* Notification Center */}
             <AdminNotificationCenter />
 
-            <Link to="/admin/profile" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-neutral-800 border border-orange-500/30 flex items-center justify-center text-orange-500">
-                <User size={24} />
-              </div>
-            </Link>
-            <button
-              onClick={logout}
-              className="hidden xl:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 transition-all active:scale-95"
+            <Link
+              to="/admin/profile"
+              aria-label="Admin Profile"
+              className="w-11 h-11 border border-border bg-card flex items-center justify-center text-foreground hover:text-gold hover:border-gold/40 transition-colors"
             >
-              <LogOut size={18} className="text-orange-400" />
+              <User size={18} />
+            </Link>
+
+            <button
+              type="button"
+              onClick={logout}
+              className="hidden xl:inline-flex items-center gap-2 min-h-11 px-4 border border-border bg-card hover:border-gold/40 hover:text-gold text-foreground text-xs uppercase tracking-luxe font-medium transition-colors cursor-pointer"
+            >
+              <LogOut size={15} className="text-gold" />
               Đăng xuất
             </button>
 
             {/* Mobile toggle */}
             <button
+              type="button"
               onClick={() => setOpen((v) => !v)}
-              className="xl:hidden p-2 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-200 active:scale-95"
+              aria-label="Toggle navigation drawer"
+              className="xl:hidden w-11 h-11 flex items-center justify-center border border-border text-foreground hover:bg-muted cursor-pointer"
             >
               {open ? (
-                <X size={22} className="text-orange-400" />
+                <X size={20} className="text-gold" />
               ) : (
-                <MenuIcon size={22} />
+                <MenuIcon size={20} />
               )}
             </button>
           </div>
@@ -126,7 +137,7 @@ export default function AdminNavbar() {
 
       {/* Mobile overlay */}
       <div
-        className={`fixed inset-0 bg-black/60 z-40 xl:hidden transition-opacity duration-300 backdrop-blur-sm ${
+        className={`fixed inset-0 bg-ink/75 z-40 xl:hidden transition-opacity duration-300 backdrop-blur-sm ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={() => setOpen(false)}
@@ -134,13 +145,13 @@ export default function AdminNavbar() {
 
       {/* Mobile drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-80 bg-neutral-900 z-40 border-l border-white/10 shadow-2xl transform transition-transform duration-300 ease-in-out pt-20 px-6 flex flex-col xl:hidden ${
+        className={`fixed top-0 right-0 h-full w-80 bg-card z-40 border-l border-border shadow-2xl transform transition-transform duration-300 ease-in-out pt-20 px-6 flex flex-col xl:hidden ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="mb-6">
-          <div className="text-white font-black text-lg">Admin Menu</div>
-          <div className="text-gray-400 text-sm mt-1">Quản trị hệ thống</div>
+          <div className="text-foreground font-serif text-xl font-medium">Bảng Điều Khiển</div>
+          <div className="text-gold text-xs uppercase tracking-luxe mt-1 font-sans">Quản trị toàn hệ thống</div>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -157,14 +168,15 @@ export default function AdminNavbar() {
 
         <div className="mt-auto mb-8">
           <button
+            type="button"
             onClick={logout}
-            className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black transition-all active:scale-95"
+            className="w-full min-h-11 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gold hover:bg-gold-soft text-ink font-sans text-xs uppercase tracking-luxe font-semibold transition-all shadow-md cursor-pointer"
           >
-            <LogOut size={18} />
+            <LogOut size={16} />
             Đăng xuất
           </button>
-          <p className="text-xs text-gray-600 mt-6 text-center">
-            Admin Console v1.0.0
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-6 text-center font-sans">
+            Admin Suite Executive v2.0
           </p>
         </div>
       </div>
@@ -181,15 +193,15 @@ function AdminNavLink({ to, label, icon: Icon }) {
     <Link
       to={to}
       className={[
-        "px-4 py-2 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-2",
+        "px-3.5 py-2 text-xs font-sans uppercase tracking-luxe transition-all inline-flex items-center gap-2 min-h-11 border",
         active
-          ? "bg-orange-500/15 border border-orange-500/20 text-orange-300"
-          : "bg-white dark:bg-neutral-950/0 border border-transparent text-gray-300 hover:bg-white dark:bg-neutral-950/5 hover:border-white/10 hover:text-white",
+          ? "bg-gold/15 border-gold/40 text-gold font-semibold shadow-xs"
+          : "bg-transparent border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50",
       ].join(" ")}
     >
       <Icon
-        size={16}
-        className={active ? "text-orange-400" : "text-gray-400"}
+        size={15}
+        className={active ? "text-gold" : "text-muted-foreground"}
       />
       {label}
     </Link>
@@ -206,15 +218,15 @@ function MobileAdminLink({ to, label, icon: Icon, onClick }) {
       to={to}
       onClick={onClick}
       className={[
-        "px-4 py-3 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-3 border",
+        "px-4 py-3 text-xs font-sans uppercase tracking-luxe transition-all inline-flex items-center gap-3 border min-h-11",
         active
-          ? "bg-orange-500/15 border-orange-500/20 text-orange-300"
-          : "bg-white dark:bg-neutral-950/0 border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/5",
+          ? "bg-gold/15 border-gold/40 text-gold font-semibold shadow-xs"
+          : "bg-background border-border text-foreground hover:border-gold/40",
       ].join(" ")}
     >
       <Icon
-        size={18}
-        className={active ? "text-orange-400" : "text-gray-400"}
+        size={17}
+        className={active ? "text-gold" : "text-muted-foreground"}
       />
       {label}
     </Link>

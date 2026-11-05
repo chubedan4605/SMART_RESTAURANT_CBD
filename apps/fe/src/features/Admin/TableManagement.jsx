@@ -389,100 +389,100 @@ const TableManagement = () => {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20">
-            <MdOutlineTableBar className="w-4 h-4 text-orange-500" />
-            <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
-              Table Management
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-gold/15 border border-gold/30">
+            <MdOutlineTableBar className="w-3.5 h-3.5 text-gold" />
+            <span className="text-gold font-sans font-semibold text-xs uppercase tracking-luxe">
+              Table & QR Operations
             </span>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-black mt-3">
-            Quản lý{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
-              bàn ăn
-            </span>
+          <h1 className="text-2xl md:text-3xl font-serif font-medium text-foreground mt-2">
+            Quản Lý <span className="text-gold italic font-normal">Sơ Đồ Bàn Ăn</span>
           </h1>
 
-          <div className="text-sm text-gray-400 mt-2">
-            Tổng: <span className="text-white font-bold">{tables.length}</span>{" "}
-            bàn • Active:{" "}
-            <span className="text-white font-bold">{totalActive}</span> • Đang
-            phục vụ:{" "}
-            <span className="text-blue-400 font-bold">{totalOccupied}</span>
+          <div className="text-xs font-sans text-muted-foreground mt-1.5">
+            Tổng cộng: <span className="text-foreground font-serif text-sm font-semibold">{tables.length}</span>{" "}
+            bàn • Hoạt động:{" "}
+            <span className="text-foreground font-serif text-sm font-semibold">{totalActive}</span> • Đang phục vụ:{" "}
+            <span className="text-gold font-serif text-sm font-semibold">{totalOccupied}</span>
           </div>
         </div>
 
         {/* Actions */}
         <div className="flex flex-wrap items-center gap-2">
           <button
+            type="button"
             onClick={handleBulkRegenerate}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-red-500/10 border border-red-500/20 text-red-200 hover:bg-red-500/20 transition text-sm font-bold"
+            className="inline-flex items-center gap-2 px-4 min-h-11 rounded-none
+              bg-destructive/10 border border-destructive/30 text-destructive hover:bg-destructive/20 transition text-xs font-sans uppercase tracking-luxe font-medium cursor-pointer"
             title="Vô hiệu hóa tất cả QR cũ và tạo mới"
           >
-            <RefreshCw size={16} />
+            <RefreshCw size={14} />
             Reset All
           </button>
 
           <button
+            type="button"
             onClick={handleDownloadZip}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition text-sm"
+            className="inline-flex items-center gap-2 px-4 min-h-11 rounded-none
+              bg-card border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-sans uppercase tracking-luxe cursor-pointer"
             title="Tải tất cả ảnh (ZIP)"
           >
-            <Archive size={16} />
-            ZIP
+            <Archive size={14} className="text-gold" />
+            Tải ZIP
           </button>
 
           <button
+            type="button"
             onClick={() => handleGeneratePDF("grid")}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition text-sm"
+            className="inline-flex items-center gap-2 px-4 min-h-11 rounded-none
+              bg-card border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-sans uppercase tracking-luxe cursor-pointer"
             title="In lưới 4 bàn/trang"
           >
-            <Grid size={16} />
+            <Grid size={14} className="text-gold" />
             PDF Lưới
           </button>
 
           <button
+            type="button"
             onClick={() => handleGeneratePDF("single")}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition text-sm"
+            className="inline-flex items-center gap-2 px-4 min-h-11 rounded-none
+              bg-card border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-sans uppercase tracking-luxe cursor-pointer"
             title="In 1 bàn/trang"
           >
-            <Square size={16} />
+            <Square size={14} className="text-gold" />
             PDF Đơn
           </button>
 
           <button
+            type="button"
             onClick={openCreate}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30 transition text-sm font-bold"
+            className="inline-flex items-center gap-2 px-5 min-h-11 rounded-none
+              bg-gold hover:bg-gold-soft border border-gold text-ink transition text-xs font-sans uppercase tracking-luxe font-semibold shadow-md cursor-pointer"
           >
             <Plus size={16} />
-            Thêm bàn
+            Thêm Bàn
           </button>
         </div>
       </div>
 
       {/* Filters panel */}
-      <div className="mt-6 rounded-2xl bg-neutral-900/60 border border-white/10 p-4">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
-            <Filter className="text-orange-500" size={18} />
+      <div className="mt-6 rounded-none bg-card text-card-foreground border border-border p-5 shadow-xs">
+        <div className="flex items-start gap-4">
+          <div className="w-11 h-11 rounded-none bg-gold/15 border border-gold/30 flex items-center justify-center text-gold shrink-0">
+            <Filter size={18} />
           </div>
 
           <div className="w-full">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
               {/* Status */}
               <div className="md:col-span-3">
-                <label className="text-xs text-gray-400 mb-1 block">
+                <label className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium mb-1 block">
                   Trạng thái
                 </label>
                 <select
-                  className="w-full rounded-xl px-3 py-2.5 text-sm bg-neutral-950 text-white
-                    border border-white/10 focus:outline-none focus:border-orange-500/40 transition
-                    [&>option]:bg-neutral-950 [&>option]:text-white"
+                  className="w-full rounded-none px-3 min-h-11 text-xs uppercase tracking-wider bg-background text-foreground
+                    border border-border focus:outline-none focus:border-gold transition cursor-pointer"
                   value={filters.status}
                   onChange={(e) =>
                     setFilters((s) => ({ ...s, status: e.target.value }))
@@ -496,18 +496,17 @@ const TableManagement = () => {
 
               {/* Location */}
               <div className="md:col-span-4">
-                <label className="text-xs text-gray-400 mb-1 block">
+                <label className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium mb-1 block">
                   Khu vực
                 </label>
                 <div className="relative">
                   <MapPin
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-                    size={18}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gold"
+                    size={16}
                   />
                   <select
-                    className="w-full rounded-xl pl-10 pr-3 py-2.5 text-sm bg-neutral-950 text-white
-                      border border-white/10 focus:outline-none focus:border-orange-500/40 transition
-                      [&>option]:bg-neutral-950 [&>option]:text-white"
+                    className="w-full rounded-none pl-9 pr-3 min-h-11 text-xs uppercase tracking-wider bg-background text-foreground
+                      border border-border focus:outline-none focus:border-gold transition cursor-pointer"
                     value={filters.location}
                     onChange={(e) =>
                       setFilters((s) => ({ ...s, location: e.target.value }))
@@ -524,13 +523,12 @@ const TableManagement = () => {
 
               {/* Sort */}
               <div className="md:col-span-5">
-                <label className="text-xs text-gray-400 mb-1 block">
+                <label className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium mb-1 block">
                   Sắp xếp
                 </label>
                 <select
-                  className="w-full rounded-xl px-3 py-2.5 text-sm bg-neutral-950 text-white
-                    border border-white/10 focus:outline-none focus:border-orange-500/40 transition
-                    [&>option]:bg-neutral-950 [&>option]:text-white"
+                  className="w-full rounded-none px-3 min-h-11 text-xs uppercase tracking-wider bg-background text-foreground
+                    border border-border focus:outline-none focus:border-gold transition cursor-pointer"
                   value={filters.sort}
                   onChange={(e) =>
                     setFilters((s) => ({ ...s, sort: e.target.value }))
@@ -544,21 +542,16 @@ const TableManagement = () => {
                   <option value="oldest">Cũ nhất</option>
                 </select>
               </div>
-
-              <div className="md:col-span-12 text-xs text-gray-500">
-                Tip: Click card để mở panel chi tiết dạng popup. Card inactive
-                sẽ mờ đi.
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Left grid (full width) */}
+      {/* Table grid */}
       <div className="mt-6">
         {loading ? (
-          <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-10 text-center text-gray-500">
-            Đang tải dữ liệu...
+          <div className="rounded-none bg-card border border-border p-10 text-center text-muted-foreground text-sm font-sans">
+            Đang tải dữ liệu bàn ăn...
           </div>
         ) : (
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -569,25 +562,25 @@ const TableManagement = () => {
                 <div
                   key={table.id}
                   onClick={() => setSelectedTable(table)}
-                  className={`group relative rounded-2xl border p-5 cursor-pointer transition
-                ${hasCustomer
-                      ? "bg-blue-500/10 border-blue-500/30 hover:bg-blue-500/15 hover:border-blue-500/40"
-                      : "bg-white dark:bg-neutral-950/5 border-white/10 hover:bg-white dark:bg-neutral-950/10 hover:border-orange-500/20"
-                    }
-                ${selectedTable?.id === table.id
-                      ? "border-orange-500/40 ring-1 ring-orange-500/30 bg-white dark:bg-neutral-950/10"
-                      : ""
-                    }
-                ${table.status === "inactive" ? "opacity-60 grayscale" : ""}
+                  className={`group relative rounded-none border p-5 cursor-pointer transition-all duration-300 font-sans shadow-xs
+                ${
+                  hasCustomer
+                    ? "bg-gold/10 border-gold/40 hover:border-gold"
+                    : "bg-card border-border hover:border-gold/50"
+                }
+                ${
+                  selectedTable?.id === table.id
+                    ? "border-gold ring-1 ring-gold/40 bg-card"
+                    : ""
+                }
+                ${table.status === "inactive" ? "opacity-50 grayscale" : ""}
               `}
                 >
                   {/* Badge "Có khách" */}
                   {hasCustomer && (
                     <div className="absolute -top-2 -right-2 z-10">
-                      <div className="relative">
-                        <div className="px-3 py-1 rounded-full bg-blue-500 text-white text-xs font-bold shadow-lg">
-                          Có khách
-                        </div>
+                      <div className="px-2.5 py-0.5 rounded-none bg-gold text-ink text-[10px] font-sans uppercase tracking-luxe font-semibold shadow-md">
+                        Có khách
                       </div>
                     </div>
                   )}
@@ -595,29 +588,31 @@ const TableManagement = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg
-                      ${hasCustomer
-                            ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                            : table.status === "active"
-                              ? "bg-orange-500/10 text-orange-300 border border-orange-500/20"
-                              : "bg-white dark:bg-neutral-950/5 text-gray-400 border border-white/10"
-                          }`}
+                        className={`w-11 h-11 rounded-none flex items-center justify-center font-serif text-lg font-bold border
+                      ${
+                        hasCustomer
+                          ? "bg-gold/20 text-gold border-gold/40"
+                          : table.status === "active"
+                            ? "bg-muted text-foreground border-border"
+                            : "bg-muted text-muted-foreground border-border"
+                      }`}
                       >
                         {String(table.table_number || "").replace(/\D/g, "") ||
                           "—"}
                       </div>
 
                       <div>
-                        <div className="text-white font-black text-lg">
-                          {table.table_number}
+                        <div className="text-foreground font-serif text-xl font-medium">
+                          Bàn {table.table_number}
                         </div>
                         <div
-                          className={`text-[10px] uppercase tracking-wider font-bold mt-0.5 ${hasCustomer
-                              ? "text-blue-400"
+                          className={`text-[10px] uppercase tracking-luxe font-semibold mt-0.5 ${
+                            hasCustomer
+                              ? "text-gold"
                               : table.status === "active"
-                                ? "text-green-400"
-                                : "text-red-400"
-                            }`}
+                                ? "text-emerald-400"
+                                : "text-destructive"
+                          }`}
                         >
                           {hasCustomer
                             ? "Đang phục vụ"
@@ -629,66 +624,58 @@ const TableManagement = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 space-y-1 text-sm text-gray-400">
+                  <div className="mt-4 space-y-1.5 text-xs text-muted-foreground font-sans">
                     <div className="flex items-center gap-2">
-                      <Users
-                        size={14}
-                        className={
-                          hasCustomer ? "text-blue-400" : "text-orange-400"
-                        }
-                      />
-                      {table.capacity} khách
+                      <Users size={14} className="text-gold" />
+                      <span>{table.capacity} khách</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin
-                        size={14}
-                        className={
-                          hasCustomer ? "text-blue-400" : "text-orange-400"
-                        }
-                      />
-                      {table.location || "—"}
+                      <MapPin size={14} className="text-gold" />
+                      <span>{table.location || "—"}</span>
                     </div>
                   </div>
 
-                  <div className="mt-4 flex gap-2 pt-4 border-t border-white/10">
+                  <div className="mt-4 flex gap-2 pt-4 border-t border-border">
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         openEdit(table);
                       }}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl
-                    bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
-                      title="Edit"
+                      className="flex-1 min-h-11 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-none
+                    bg-muted hover:bg-muted/80 border border-border text-foreground transition cursor-pointer"
+                      title="Chỉnh sửa bàn"
                     >
-                      <Edit size={16} />
+                      <Edit size={15} className="text-gold" />
                     </button>
 
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleToggleStatus(table);
                       }}
-                      className={`flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl border transition
-                    ${table.status === "active"
-                          ? "bg-red-500/10 border-red-500/20 text-red-200 hover:bg-red-500/20"
-                          : "bg-green-500/10 border-green-500/20 text-green-200 hover:bg-green-500/20"
-                        }`}
+                      className={`flex-1 min-h-11 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-none border transition cursor-pointer
+                    ${
+                      table.status === "active"
+                        ? "bg-destructive/10 border-destructive/30 text-destructive hover:bg-destructive/20"
+                        : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                    }`}
                       title={table.status === "active" ? "Tắt bàn" : "Bật bàn"}
                       disabled={hasCustomer}
                     >
-                      <Power size={16} />
+                      <Power size={15} />
                     </button>
                   </div>
                 </div>
               );
             })}
 
-            {/* Kiểm tra nếu không có bàn nào thì hiện thông báo */}
             {tables.length === 0 && (
-              <div className="col-span-full rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-10 text-center">
-                <div className="text-white font-black">Chưa có bàn</div>
-                <div className="text-gray-400 text-sm mt-1">
-                  Bấm “Thêm bàn” để tạo mới.
+              <div className="col-span-full rounded-none bg-card border border-border p-10 text-center">
+                <div className="text-foreground font-serif text-lg font-medium">Chưa có bàn nào</div>
+                <div className="text-muted-foreground text-xs mt-1 font-sans">
+                  Nhấn “Thêm Bàn” để tạo bàn phục vụ mới.
                 </div>
               </div>
             )}
@@ -696,23 +683,23 @@ const TableManagement = () => {
         )}
       </div>
 
-
       {/* MODAL FORM (Create/Edit) */}
       {showModal && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 font-sans">
           <div
-            className="absolute inset-0 bg-black/70"
+            className="absolute inset-0 bg-ink/80 backdrop-blur-md"
             onClick={() => setShowModal(false)}
           />
           <div className="absolute inset-0 flex items-center justify-center p-4">
-            <div className="w-full max-w-md rounded-3xl border border-white/10 bg-neutral-950 overflow-hidden">
-              <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
-                <div className="text-white font-black">
-                  {isEditing ? "Cập nhật bàn" : "Thêm bàn mới"}
+            <div className="w-full max-w-md rounded-none border border-border bg-card text-card-foreground shadow-2xl overflow-hidden">
+              <div className="px-5 py-4 border-b border-border flex items-center justify-between bg-muted/20">
+                <div className="text-foreground font-serif text-xl font-medium">
+                  {isEditing ? "Cập Nhật Bàn" : "Thêm Bàn Mới"}
                 </div>
                 <button
+                  type="button"
                   onClick={() => setShowModal(false)}
-                  className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200"
+                  className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   <X size={18} />
                 </button>
@@ -720,15 +707,16 @@ const TableManagement = () => {
 
               <form onSubmit={handleSubmit} className="p-5 space-y-4">
                 <div>
-                  <label className="text-xs text-gray-400">Số bàn / Tên</label>
+                  <label className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium">Số bàn / Tên bàn</label>
                   <input
                     name="table_number"
                     type="text"
                     placeholder="VD: T-01"
-                    className={`mt-1 w-full px-4 py-2.5 rounded-xl bg-neutral-950/60 text-white outline-none border transition
-                      ${errors.table_number
-                        ? "border-red-500/60 focus:border-red-500"
-                        : "border-white/10 focus:border-orange-500/40"
+                    className={`mt-1 w-full px-3.5 py-2.5 rounded-none bg-background text-foreground outline-none border transition min-h-11 text-sm
+                      ${
+                        errors.table_number
+                          ? "border-destructive focus:border-destructive"
+                          : "border-border focus:border-gold"
                       }`}
                     value={formData.table_number}
                     onChange={(e) => {
@@ -738,7 +726,7 @@ const TableManagement = () => {
                     }}
                   />
                   {errors.table_number ? (
-                    <div className="text-xs text-red-300 mt-1">
+                    <div className="text-xs text-destructive mt-1">
                       {errors.table_number}
                     </div>
                   ) : null}
@@ -746,14 +734,15 @@ const TableManagement = () => {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs text-gray-400">Sức chứa</label>
+                    <label className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium">Sức chứa (Khách)</label>
                     <input
                       name="capacity"
                       type="number"
-                      className={`mt-1 w-full px-4 py-2.5 rounded-xl bg-neutral-950/60 text-white outline-none border transition
-                        ${errors.capacity
-                          ? "border-red-500/60 focus:border-red-500"
-                          : "border-white/10 focus:border-orange-500/40"
+                      className={`mt-1 w-full px-3.5 py-2.5 rounded-none bg-background text-foreground outline-none border transition min-h-11 text-sm
+                        ${
+                          errors.capacity
+                            ? "border-destructive focus:border-destructive"
+                            : "border-border focus:border-gold"
                         }`}
                       value={formData.capacity}
                       onChange={(e) => {
@@ -763,21 +752,21 @@ const TableManagement = () => {
                       }}
                     />
                     {errors.capacity ? (
-                      <div className="text-xs text-red-300 mt-1">
+                      <div className="text-xs text-destructive mt-1">
                         {errors.capacity}
                       </div>
                     ) : null}
                   </div>
 
                   <div>
-                    <label className="text-xs text-gray-400">Vị trí</label>
+                    <label className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium">Khu vực</label>
                     <select
                       name="location"
-                      className={`mt-1 w-full px-4 py-2.5 rounded-xl bg-neutral-950/60 text-white outline-none border transition
-                        [&>option]:bg-neutral-950 [&>option]:text-white
-                        ${errors.location
-                          ? "border-red-500/60 focus:border-red-500"
-                          : "border-white/10 focus:border-orange-500/40"
+                      className={`mt-1 w-full px-3 py-2.5 rounded-none bg-background text-foreground outline-none border transition min-h-11 text-xs uppercase tracking-wider cursor-pointer
+                        ${
+                          errors.location
+                            ? "border-destructive focus:border-destructive"
+                            : "border-border focus:border-gold"
                         }`}
                       value={formData.location}
                       onChange={(e) => {
@@ -786,14 +775,14 @@ const TableManagement = () => {
                           setErrors((s) => ({ ...s, location: "" }));
                       }}
                     >
-                      <option value="">Chọn...</option>
+                      <option value="">Chọn khu vực...</option>
                       <option value="Indoor">Indoor</option>
                       <option value="Outdoor">Outdoor</option>
                       <option value="Patio">Patio</option>
                       <option value="VIP Room">VIP Room</option>
                     </select>
                     {errors.location ? (
-                      <div className="text-xs text-red-300 mt-1">
+                      <div className="text-xs text-destructive mt-1">
                         {errors.location}
                       </div>
                     ) : null}
@@ -801,30 +790,30 @@ const TableManagement = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs text-gray-400">Ghi chú</label>
+                  <label className="text-[10px] text-muted-foreground uppercase tracking-luxe font-medium">Ghi chú bàn</label>
                   <textarea
                     name="description"
                     rows="3"
-                    className="mt-1 w-full px-4 py-2.5 rounded-xl bg-neutral-950/60 text-white outline-none border border-white/10 focus:border-orange-500/40 transition resize-none"
+                    className="mt-1 w-full px-3.5 py-2.5 rounded-none bg-background text-foreground outline-none border border-border focus:border-gold transition resize-none text-sm"
                     value={formData.description}
                     onChange={handleChange}
                   />
                 </div>
 
-                <div className="pt-2 flex gap-2">
+                <div className="pt-2 flex gap-2.5">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+                    className="flex-1 min-h-11 px-4 py-2.5 rounded-none bg-muted hover:bg-muted/80 border border-border text-foreground font-sans text-xs uppercase tracking-luxe font-medium transition cursor-pointer"
                   >
                     Huỷ
                   </button>
 
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2.5 rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30 transition font-bold"
+                    className="flex-1 min-h-11 px-4 py-2.5 rounded-none bg-gold hover:bg-gold-soft border border-gold text-ink transition font-sans text-xs uppercase tracking-luxe font-semibold shadow-md cursor-pointer"
                   >
-                    {isEditing ? "Lưu thay đổi" : "Tạo mới"}
+                    {isEditing ? "Lưu Thay Đổi" : "Tạo Mới"}
                   </button>
                 </div>
               </form>

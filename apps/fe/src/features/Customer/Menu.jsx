@@ -141,8 +141,6 @@ export default function Menu() {
     setActiveCategoryId(cat);
     setSort(s === "popularity" ? "popularity" : "newest");
     setOnlyChef(chef);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ===== load categories =====
@@ -278,7 +276,6 @@ export default function Menu() {
 
     // load page 1
     fetchPage(1, { reason: "user" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appliedSearch, activeCategoryId, sort, onlyChef]);
 
   // ===== observer =====
@@ -425,8 +422,8 @@ export default function Menu() {
   );
 
   return (
-    <div className="min-h-screen bg-bistro-cream dark:bg-neutral-900 text-bistro-charcoal dark:text-gray-100 pb-24 font-sans selection:bg-bistro-wine selection:text-white">
-      <Navbar></Navbar>
+    <div className="min-h-screen bg-background text-foreground pb-24 font-sans selection:bg-gold/30 selection:text-gold">
+      <Navbar />
 
       {/* HEADER */}
       <MenuHeader

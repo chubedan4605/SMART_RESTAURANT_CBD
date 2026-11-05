@@ -7,20 +7,20 @@ export default function ToggleSwitch({ checked, disabled, onChange, label }) {
       disabled={disabled}
       onClick={(e) => {
         e.preventDefault();
-        e.stopPropagation();     // ✅ chặn không cho bubble lên <tr>
+        e.stopPropagation();
         onChange(!checked);
       }}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full border transition
+      className={`relative inline-flex h-6 w-11 items-center rounded-full border transition cursor-pointer
         ${checked
-          ? "bg-orange-500/20 border-orange-500/30"
-          : "bg-white dark:bg-neutral-950/5 border-white/10"}
-        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-white dark:bg-neutral-950/10"}`}
+          ? "bg-gold/20 border-gold/40"
+          : "bg-secondary border-border"}
+        ${disabled ? "opacity-40 cursor-not-allowed" : "hover:border-gold/30"}`}
       aria-pressed={checked}
       aria-label={label || "toggle"}
     >
       <span
-        className={`inline-block h-5 w-5 transform rounded-full transition
-          ${checked ? "translate-x-5 bg-orange-400" : "translate-x-1 bg-gray-300"}`}
+        className={`inline-block h-5 w-5 transform rounded-full transition shadow-xs
+          ${checked ? "translate-x-5.5 bg-gold" : "translate-x-0.5 bg-muted-foreground/60"}`}
       />
     </button>
   );

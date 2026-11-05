@@ -2,26 +2,26 @@ import React from "react";
 
 export default function StatCard({ icon: Icon, label, value, hint }) {
   return (
-    <div className="rounded-2xl bg-neutral-900/60 border border-white/10 shadow-2xl overflow-hidden">
+    <div className="rounded-none bg-card text-card-foreground border border-border shadow-xs overflow-hidden font-sans">
       <div className="p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-gray-400 text-xs uppercase tracking-wider font-bold">
+            <div className="text-[10px] uppercase tracking-luxe text-gold font-medium font-sans">
               {label}
             </div>
-            <div className="mt-2 text-white font-black text-3xl">{value}</div>
-            {hint ? <div className="mt-2 text-gray-500 text-sm">{hint}</div> : null}
+            <div className="mt-2 text-foreground font-serif text-3xl font-medium">{value}</div>
+            {hint ? <div className="mt-1 text-xs text-muted-foreground font-light">{hint}</div> : null}
           </div>
 
           {Icon ? (
-            <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-              <Icon className="text-orange-500" size={22} />
+            <div className="w-12 h-12 rounded-none bg-gold/15 border border-gold/30 flex items-center justify-center text-gold">
+              <Icon size={20} />
             </div>
           ) : null}
         </div>
       </div>
 
-      <div className="h-1 bg-linear-to-r from-orange-500/40 to-red-500/20" />
+      <div className="h-0.5 bg-gold/30" />
     </div>
   );
 }

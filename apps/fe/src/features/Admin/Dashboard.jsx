@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { LayoutDashboard, Users, Table2, Wallet, Star } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { LayoutDashboard, Users, Table2, Wallet } from "lucide-react";
 import { useAdminDashboard } from "./hooks/useAdminDashboard";
 import StatCard from "../../Components/StatCard";
 import TopListCard from "../../Components/TopListCard";
@@ -29,9 +29,8 @@ function stringToColor(str) {
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-
   const h = Math.abs(hash) % 360;
-  return `hsl(${h}, 60%, 50%)`;
+  return `hsl(${h}, 55%, 45%)`;
 }
 
 function buildRange(period) {
@@ -63,11 +62,11 @@ function buildRange(period) {
 const DarkTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="px-3 py-2 rounded-xl bg-neutral-900/95 border border-white/10 shadow-xl">
-        <div className="text-white text-sm font-bold">
+      <div className="px-3.5 py-2.5 rounded-none bg-card border border-border shadow-xl font-sans">
+        <div className="text-foreground text-xs font-semibold">
           {label}h
         </div>
-        <div className="text-orange-300 text-xs mt-0.5">
+        <div className="text-gold font-serif text-sm mt-0.5 font-medium">
           {payload[0].value} đơn
         </div>
       </div>
@@ -81,12 +80,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!error) return;
-
     const msg =
-      error?.response?.data?.message || error
+      error?.response?.data?.message ||
       error?.message ||
-      "Tải trang chủ thất bại"
-
+      "Tải dữ liệu tổng quan thất bại";
     toast.error(msg);
   }, [error]);
 
@@ -97,8 +94,6 @@ export default function AdminDashboard() {
     { value: "week", label: "Tuần" },
     { value: "month", label: "Tháng" },
   ];
-
-
 
   const [revenuePeriod, setRevenuePeriod] = useState("month");
   const [ordersDailyPeriod, setOrdersDailyPeriod] = useState("month");
@@ -133,7 +128,7 @@ export default function AdminDashboard() {
         setRevenueValue(Number(res?.total || 0));
       } catch (e) {
         if (cancelled) return;
-        toast.error(e || "Không tải được doanh thu");
+        toast.error(e?.message || "Không tải được doanh thu");
         setRevenueValue(0);
       } finally {
         if (!cancelled) setRevenueLoading(false);
@@ -159,7 +154,7 @@ export default function AdminDashboard() {
         if (cancelled) return;
         setOrdersDaily(res?.series || []);
       } catch (e) {
-        toast.error(e || "Không tải được đơn hàng hằng ngày");
+        toast.error(e?.message || "Không tải được đơn hàng hằng ngày");
         if (cancelled) return;
         setOrdersDaily([]);
       } finally {
@@ -183,7 +178,7 @@ export default function AdminDashboard() {
         if (cancelled) return;
         setPeakHours(res?.series || []);
       } catch (e) {
-        toast.error(e || "Không tải được khung giờ đông khách");
+        toast.error(e?.message || "Không tải được khung giờ đông khách");
         if (cancelled) return;
         setPeakHours([]);
       } finally {
@@ -211,7 +206,7 @@ export default function AdminDashboard() {
         if (cancelled) return;
         setPopularItems(res?.items || []);
       } catch (e) {
-        toast.error(e || "Không tải được món ăn phổ biến");
+        toast.error(e?.message || "Không tải được món ăn phổ biến");
         if (cancelled) return;
         setPopularItems([]);
       } finally {
@@ -223,82 +218,82 @@ export default function AdminDashboard() {
   }, [popularItemsPeriod]);
 
   return (
-    <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-6 md:py-8">
+    <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-6 md:py-8 font-sans selection:bg-gold/30 selection:text-gold">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20">
-            <LayoutDashboard className="w-4 h-4 text-orange-500" />
-            <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
-              Admin Dashboard
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-gold/15 border border-gold/30">
+            <LayoutDashboard className="w-3.5 h-3.5 text-gold" />
+            <span className="text-gold font-sans font-semibold text-xs uppercase tracking-luxe">
+              Executive Analytics
             </span>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-black mt-3">
-            Tổng quan{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
-              Lumière Bistro
+          <h1 className="text-2xl md:text-3xl font-serif font-medium text-foreground mt-2">
+            Tổng Quan Điều Hành{" "}
+            <span className="text-gold italic font-normal">
+              Le Bistro
             </span>
           </h1>
         </div>
 
         <div className="flex items-center gap-3">
-          {/* period selector */}
-          <div className="px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm ">
-            <span className="text-gray-400">Doanh thu:</span>
+          {/* Revenue period selector */}
+          <div className="px-3 py-2 rounded-none bg-card border border-border text-foreground text-xs uppercase tracking-luxe min-h-11 flex items-center gap-2">
+            <span className="text-muted-foreground">Doanh thu:</span>
             <select
               value={revenuePeriod}
               onChange={(e) => setRevenuePeriod(e.target.value)}
-              className="bg-transparent outline-none text-white
-              focus:outline-none focus:border-orange-500/40 transition [&>option]:bg-neutral-900 [&>option]:text-white"
+              className="bg-transparent outline-none text-gold font-semibold cursor-pointer [&>option]:bg-card [&>option]:text-foreground"
             >
               {PERIODS.map((p) => (
-                <option key={p.value} value={p.value} className="text-black">
+                <option key={p.value} value={p.value}>
                   {p.label}
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm">
-            Dữ liệu ngày: <span className="text-white font-bold">{today}</span>
+          <div className="px-4 py-2 rounded-none bg-card border border-border text-xs uppercase tracking-luxe min-h-11 flex items-center">
+            <span className="text-muted-foreground mr-1">Ngày:</span>{" "}
+            <span className="text-foreground font-serif text-sm font-medium">{today}</span>
           </div>
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats Cards */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard
           icon={Table2}
-          label="Số bàn"
+          label="Số bàn hiện có"
           value={isLoading ? "—" : formatInt(data?.stats?.totalTables)}
-          hint="Tổng số bàn đang quản lý"
+          hint="Tổng số bàn trong sơ đồ nhà hàng"
         />
         <StatCard
           icon={Users}
-          label="Người dùng"
+          label="Tài khoản khách hàng"
           value={isLoading ? "—" : formatInt(data?.stats?.totalUsers)}
-          hint="Tổng tài khoản đã đăng ký"
+          hint="Tổng thành viên đã ghi nhận"
         />
         <StatCard
           icon={Wallet}
           label={
             revenuePeriod === "day"
-              ? "Doanh thu ngày"
+              ? "Doanh thu trong ngày"
               : revenuePeriod === "week"
-                ? "Doanh thu tuần"
-                : "Doanh thu tháng"
+                ? "Doanh thu tuần này"
+                : "Doanh thu tháng này"
           }
           value={revenueLoading ? "—" : formatVND(revenueValue)}
-          hint="Tổng doanh thu"
+          hint="Thống kê doanh thu thực tế"
         />
       </div>
 
-      {/* Lists */}
+      {/* Top Lists */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <TopListCard
           title="Top 5 món được gọi nhiều nhất"
-          subtitle="Tính theo số lần gọi trong tháng"
+          subtitle="Tính theo lượt gọi món trong tháng"
           badge="Most Ordered"
           columns={[
             { label: "", span: 2 },
@@ -319,8 +314,8 @@ export default function AdminDashboard() {
         />
 
         <TopListCard
-          title="Top 5 món đánh giá cao nhất"
-          subtitle="Dựa trên rating trung bình và số lượt review"
+          title="Top 5 món được đánh giá cao nhất"
+          subtitle="Dựa trên đánh giá và cảm nhận của thực khách"
           badge="Top Rated"
           columns={[
             { label: "", span: 2 },
@@ -341,89 +336,86 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* Analytics Charts */}
-      <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3 sm:p-4 lg:col-span-3 mt-6">
+      {/* Analytics Charts Section */}
+      <div className="rounded-none bg-card text-card-foreground border border-border p-4 sm:p-6 lg:col-span-3 mt-6 shadow-xs">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="text-white font-black text-xl">
-              Biểu đồ phân tích
+            <div className="text-foreground font-serif text-2xl font-medium">
+              Biểu Đồ Phân Tích Hoạt Động
             </div>
+            <p className="text-muted-foreground text-xs font-light mt-1">
+              Dữ liệu đơn hàng, khung giờ cao điểm và tỷ trọng danh mục món ăn
+            </p>
           </div>
           {(ordersDailyLoading || peakLoading || popularLoading) ? (
-            <div className="text-xs text-gray-400">Đang tải charts...</div>
+            <div className="text-xs text-gold font-sans uppercase tracking-luxe">Đang cập nhật biểu đồ...</div>
           ) : null}
         </div>
 
-        <div className="mt-4 grid grid-cols-1 lg:grid-cols-5 gap-4">
-          {/* Line */}
-          <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-4 lg:col-span-3">
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-5 gap-4">
+          {/* Orders Daily Line Chart */}
+          <div className="rounded-none bg-background border border-border p-4 lg:col-span-3">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-white font-bold">Số đơn theo ngày</div>
-                <div className="text-xs text-gray-400 mt-1">
+                <div className="text-foreground font-serif text-lg font-medium">Số đơn theo ngày</div>
+                <div className="text-xs text-muted-foreground mt-0.5">
                   Theo {PERIODS.find((p) => p.value === ordersDailyPeriod)?.label?.toLowerCase()}
                 </div>
               </div>
-            </div>
 
+              <select
+                value={ordersDailyPeriod}
+                onChange={(e) => setOrdersDailyPeriod(e.target.value)}
+                className="px-3 py-1.5 rounded-none bg-card border border-border text-foreground text-xs uppercase tracking-luxe outline-none cursor-pointer"
+              >
+                {PERIODS.map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div className="mt-4 sm:mt-6 h-56 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={ordersDaily}>
-                  <defs>
-                    <linearGradient id="lineGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#fb923c" stopOpacity={0.4} />
-                      <stop offset="100%" stopColor="#fb923c" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-
                   <XAxis
                     dataKey="date"
-                    tick={{ fill: "#9ca3af", fontSize: 11 }}
+                    tick={{ fill: "#a1a1aa", fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
                   />
-
                   <YAxis
                     width={26}
-                    tick={{ fill: "#9ca3af", fontSize: 11 }}
+                    tick={{ fill: "#a1a1aa", fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
                   />
-
-                  <Tooltip
-                    content={<DarkTooltip />}
-                    cursor={{
-                      stroke: "rgba(251,146,60,0.3)",
-                      strokeWidth: 1,
-                    }}
-                  />
-
+                  <Tooltip content={<DarkTooltip />} />
                   <Line
                     type="monotone"
                     dataKey="orders"
-                    stroke="#fb923c"
-                    strokeWidth={3}
+                    stroke="#CAA052"
+                    strokeWidth={2.5}
                     dot={false}
                     activeDot={{
-                      r: 6,
-                      fill: "#fb923c",
-                      stroke: "#fff",
+                      r: 5,
+                      fill: "#CAA052",
+                      stroke: "#141416",
                       strokeWidth: 2,
                     }}
                   />
                 </LineChart>
               </ResponsiveContainer>
-
             </div>
           </div>
 
-          {/* Pie */}
-          <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3 lg:col-span-2">
+          {/* Popular Items Pie Chart */}
+          <div className="rounded-none bg-background border border-border p-4 lg:col-span-2">
             <div className="flex justify-between gap-3">
               <div>
-                <div className="text-white font-bold">Mặt hàng phổ biến</div>
-                <div className="text-xs text-gray-400 mt-1">
+                <div className="text-foreground font-serif text-lg font-medium">Mặt hàng phổ biến</div>
+                <div className="text-xs text-muted-foreground mt-0.5">
                   Theo {PERIODS.find((p) => p.value === popularItemsPeriod)?.label?.toLowerCase()}
                 </div>
               </div>
@@ -431,18 +423,17 @@ export default function AdminDashboard() {
               <select
                 value={popularItemsPeriod}
                 onChange={(e) => setPopularItemsPeriod(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 text-sm
-                focus:outline-none focus:border-orange-500/40 transition [&>option]:bg-neutral-900 [&>option]:text-white"
+                className="px-3 py-1.5 rounded-none bg-card border border-border text-foreground text-xs uppercase tracking-luxe outline-none cursor-pointer"
               >
                 {PERIODS.map((p) => (
-                  <option key={p.value} value={p.value} className="text-black">
+                  <option key={p.value} value={p.value}>
                     {p.label}
                   </option>
                 ))}
               </select>
             </div>
 
-            <div className="mt-3 h-90 ">
+            <div className="mt-3 h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -451,9 +442,9 @@ export default function AdminDashboard() {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    outerRadius={90}
-                    innerRadius={50}
-                    paddingAngle={2}
+                    outerRadius={85}
+                    innerRadius={45}
+                    paddingAngle={3}
                     labelLine={false}
                     label={({ percent }) => `${Math.round(percent * 100)}%`}
                   >
@@ -464,23 +455,22 @@ export default function AdminDashboard() {
                       />
                     ))}
                   </Pie>
-
                   <Tooltip
                     contentStyle={{
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: 12,
-                      color: "#fff",
+                      backgroundColor: "var(--color-card, #1c1c1f)",
+                      borderColor: "var(--color-border, #2a2a2e)",
+                      borderRadius: 0,
+                      color: "var(--color-foreground, #fff)",
                       fontSize: 12,
                     }}
                   />
-
                   <Legend
                     layout="horizontal"
                     align="center"
                     verticalAlign="bottom"
                     wrapperStyle={{
-                      fontSize: 12,
-                      color: "#e5e7eb",
+                      fontSize: 11,
+                      color: "#a1a1aa",
                     }}
                   />
                 </PieChart>
@@ -488,98 +478,66 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Bar */}
-          <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3 sm:p-4 lg:col-span-5">
+          {/* Peak Hours Bar Chart */}
+          <div className="rounded-none bg-background border border-border p-4 lg:col-span-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-white font-bold">Giờ cao điểm</div>
-                <div className="text-xs text-gray-400 mt-1">
-                  Orders theo giờ (0–23) • Theo {PERIODS.find((p) => p.value === peakHoursPeriod)?.label?.toLowerCase()}
+                <div className="text-foreground font-serif text-lg font-medium">Khung Giờ Cao Điểm</div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  Lượng đơn theo giờ (0h – 23h) • Theo {PERIODS.find((p) => p.value === peakHoursPeriod)?.label?.toLowerCase()}
                 </div>
               </div>
 
               <select
                 value={peakHoursPeriod}
                 onChange={(e) => setPeakHoursPeriod(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 text-sm
-                focus:outline-none focus:border-orange-500/40 transition [&>option]:bg-neutral-900 [&>option]:text-white"
+                className="px-3 py-1.5 rounded-none bg-card border border-border text-foreground text-xs uppercase tracking-luxe outline-none cursor-pointer"
               >
                 {PERIODS.map((p) => (
-                  <option key={p.value} value={p.value} className="text-black">
+                  <option key={p.value} value={p.value}>
                     {p.label}
                   </option>
                 ))}
               </select>
             </div>
 
-
-            <div className="mt-3 h-56 sm:h-72">
+            <div className="mt-4 h-56 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={peakHours}
-                  barSize={16}
-                >
-                  <defs>
-                    <linearGradient id="barGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#fb923c" stopOpacity={0.9} />
-                      <stop offset="100%" stopColor="#ef4444" stopOpacity={0.85} />
-                    </linearGradient>
-                  </defs>
-
+                <BarChart data={peakHours} barSize={14}>
                   <CartesianGrid
-                    stroke="rgba(255,255,255,0.06)"
+                    stroke="rgba(255,255,255,0.05)"
                     strokeDasharray="3 3"
                     vertical={false}
                   />
-
                   <XAxis
                     dataKey="hour"
                     tickFormatter={(h) => `${h}h`}
-                    stroke="rgba(255,255,255,0.4)"
-                    tick={{ fill: "#9ca3af", fontSize: 12 }}
+                    tick={{ fill: "#a1a1aa", fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
                   />
-
                   <YAxis
                     width={26}
-                    stroke="rgba(255,255,255,0.4)"
-                    tick={{ fill: "#9ca3af", fontSize: 12 }}
+                    tick={{ fill: "#a1a1aa", fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
                   />
-
-                  <Tooltip
-                    content={<DarkTooltip />}
-                    cursor={{
-                      fill: "rgba(249, 115, 22, 0.2)"
-                    }} />
-
-                  <Bar
-                    dataKey="orders"
-                    fill="url(#barGlow)"
-                  >
-                    {peakHours.map((_, i) => (
-                      <Cell
-                        key={i}
-                        fillOpacity={0.85}
-                      />
-                    ))}
-                  </Bar>
+                  <Tooltip content={<DarkTooltip />} />
+                  <Bar dataKey="orders" fill="#CAA052" radius={[0, 0, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 
 function skeletonRows(type) {
   return Array.from({ length: 5 }).map((_, i) => ({
     key: `${type}-${i}`,
-    title: "Loading...",
+    title: "Đang tải dữ liệu...",
     subtitle: "—",
     value: "—",
     valueHint: "",

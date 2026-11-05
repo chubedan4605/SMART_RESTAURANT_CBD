@@ -1,18 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Calendar, User, ArrowRight, BookOpen } from "lucide-react";
+import { Calendar, User, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-// Import Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
+import { Reveal, SectionLabel } from "../../../Components/site/primitives";
+
 import "swiper/css";
 import "swiper/css/pagination";
 
 const BlogSection = () => {
   const { t } = useTranslation();
 
-  // Blog posts data with i18n
   const blogPosts = [
     {
       id: 1,
@@ -67,29 +66,25 @@ const BlogSection = () => {
   ];
 
   return (
-    <section className="py-24 px-4 bg-bistro-cream dark:bg-neutral-900/50 font-sans">
+    <section className="py-24 px-4 bg-background/50 border-t border-border/50 font-sans">
       <div className="container mx-auto max-w-7xl">
         {/* HEADER SECTION */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-bistro-wine/5 border border-bistro-wine/10 mb-6">
-            <BookOpen className="w-4 h-4 text-bistro-wine" />
-            <span className="text-bistro-wine font-sans text-xs uppercase tracking-[0.2em]">
-              {t("blog.ourStories")}
-            </span>
-          </div>
-          <h2 className="font-display text-4xl md:text-6xl text-bistro-charcoal dark:text-gray-100 mb-6">
-            {t("blog.corner")}{" "}
-            <span className="italic text-bistro-wine">
-              {t("blog.culinary")}
-            </span>
+        <Reveal className="text-center mb-16 flex flex-col items-center">
+          <SectionLabel align="center" className="mb-4">
+            {t("blog.ourStories")}
+          </SectionLabel>
+
+          <h2 className="font-serif text-4xl md:text-6xl text-foreground mb-4 font-normal">
+            Góc <span className="italic text-gold">Ẩm Thực & Cảm Hứng</span>
           </h2>
-          <p className="text-bistro-charcoal dark:text-gray-100/70 font-sans text-lg max-w-2xl mx-auto leading-relaxed">
+
+          <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
             {t("blog.description")}
           </p>
-        </div>
+        </Reveal>
 
         {/* SWIPER CAROUSEL */}
-        <div className="mb-16">
+        <Reveal delay={150} className="mb-16">
           <Swiper
             modules={[Autoplay, Pagination]}
             spaceBetween={32}
@@ -105,78 +100,85 @@ const BlogSection = () => {
             }}
             breakpoints={{
               640: {
-                slidesPerView: 2, // Tablet: 2 cột
+                slidesPerView: 2,
               },
               1024: {
-                slidesPerView: 3, // PC: 3 cột
+                slidesPerView: 3,
               },
             }}
-            className="pb-16 px-2" // Padding bottom cho dấu chấm pagination
+            className="pb-16 px-2"
           >
             {blogPosts.map((post) => (
-              <SwiperSlide key={post.id} className="h-auto">
-                <article className="group h-[420px] flex flex-col bg-white dark:bg-neutral-950 overflow-hidden border border-black/5 hover:border-bistro-wine/30 transition-all duration-500 hover:shadow-xl rounded-sm">
-                  {/* ẢNH THUMBNAIL */}
-                  <div className="relative h-56 overflow-hidden shrink-0">
+              <SwiperSlide key={post.id} className="!h-auto flex flex-col">
+                <article className="group w-full flex-1 flex flex-col bg-card text-card-foreground overflow-hidden border border-border hover:border-gold/40 transition-all duration-500 hover:shadow-xl rounded-none">
+                  {/* Thumbnail */}
+                  <div className="relative h-56 overflow-hidden shrink-0 bg-muted">
                     <img
                       src={post.image}
                       alt={t(post.titleKey)}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     {/* Badge Category */}
-                    <div className="absolute top-4 left-4 bg-bistro-wine text-white text-[10px] font-sans uppercase tracking-widest px-3 py-1 shadow-md">
+                    <div className="absolute top-4 left-4 bg-ink/90 text-gold border border-gold/30 text-[10px] font-sans uppercase tracking-luxe px-3 py-1 shadow-md backdrop-blur-xs">
                       {t(post.categoryKey)}
                     </div>
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-500" />
                   </div>
 
-                  {/* NỘI DUNG */}
-                  <div className="p-8 flex flex-col grow bg-white dark:bg-neutral-950">
+                  {/* Body */}
+                  <div className="p-6 flex flex-col flex-1 bg-card">
                     {/* Metadata */}
-                    <div className="flex items-center gap-4 text-xs text-bistro-charcoal dark:text-gray-100/50 mb-4 font-sans tracking-wide">
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3 font-sans tracking-wide">
                       <div className="flex items-center gap-1.5">
-                        <Calendar size={14} className="text-bistro-wine" />
+                        <Calendar size={13} className="text-gold" />
                         <span>{post.date}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <User size={14} className="text-bistro-wine" />
+                        <User size={13} className="text-gold" />
                         <span>{post.author}</span>
                       </div>
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-display text-2xl text-bistro-charcoal dark:text-gray-100 mb-3 line-clamp-2 group-hover:text-bistro-wine transition-colors">
+                    <h3 className="font-serif text-2xl text-foreground mb-3 line-clamp-2 min-h-[4rem] group-hover:text-gold transition-colors font-medium flex items-start">
                       <Link to={`/blog/${post.id}`}>{t(post.titleKey)}</Link>
                     </h3>
 
                     {/* Excerpt */}
-                    <p className="text-bistro-charcoal dark:text-gray-100/60 font-sans text-sm mb-6 line-clamp-3 grow leading-relaxed">
+                    <p className="text-muted-foreground font-sans text-sm mb-6 line-clamp-3 leading-relaxed font-light flex-1 min-h-[4.5rem]">
                       {t(post.excerptKey)}
                     </p>
 
                     {/* Button */}
-                    <button className="inline-flex items-center gap-2 text-bistro-wine font-sans text-xs uppercase tracking-widest group/link mt-auto hover:text-bistro-wine-light transition-colors">
-                      {t("blog.viewDetails")}
-                      <ArrowRight
-                        size={16}
-                        className="transition-transform duration-300 group-hover/link:translate-x-2"
-                      />
-                    </button>
+                    <div className="pt-4 border-t border-border/40 mt-auto flex items-center">
+                      <Link
+                        to={`/blog/${post.id}`}
+                        className="inline-flex items-center gap-2 text-gold font-sans text-xs uppercase tracking-luxe group/link hover:text-gold-soft transition-colors min-h-11 font-medium"
+                      >
+                        {t("blog.viewDetails")}
+                        <ArrowRight
+                          size={15}
+                          className="transition-transform duration-300 group-hover/link:translate-x-1.5"
+                        />
+                      </Link>
+                    </div>
                   </div>
                 </article>
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
+        </Reveal>
 
         {/* BUTTON XEM TẤT CẢ */}
-        <div className="text-center">
-          <button className="inline-flex items-center gap-3 px-10 py-4 bg-transparent border border-bistro-charcoal hover:bg-bistro-charcoal hover:text-white text-bistro-charcoal dark:text-gray-100 font-sans text-sm tracking-[0.2em] uppercase transition-all duration-300">
+        <Reveal delay={250} className="text-center">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-3 min-h-11 px-8 py-3.5 bg-transparent border border-border hover:border-gold text-foreground hover:text-gold font-sans text-xs tracking-luxe uppercase transition-all duration-300 cursor-pointer"
+          >
             {t("blog.viewAllPosts")}
-            <ArrowRight size={18} />
-          </button>
-        </div>
+            <ArrowRight size={16} />
+          </Link>
+        </Reveal>
       </div>
     </section>
   );
