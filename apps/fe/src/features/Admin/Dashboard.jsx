@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { LayoutDashboard, Users, Table2, Wallet, Star } from "lucide-react";
-import { useAdminDashboard } from "../../hooks/useAdminDashboard";
+import { useAdminDashboard } from "./hooks/useAdminDashboard";
 import StatCard from "../../Components/StatCard";
 import TopListCard from "../../Components/TopListCard";
 import { formatInt, formatVND } from "../../utils/adminFormat";

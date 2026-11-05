@@ -1,4 +1,4 @@
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 const BASE_API_URL =
   `${import.meta.env.VITE_APP_BASE_URL || "http://localhost:5000"}/api`;

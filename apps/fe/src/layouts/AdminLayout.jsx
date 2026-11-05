@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import AdminNavbar from "../Components/AdminNavbar";
+import AdminNavbar from "../features/Admin/components/AdminNavbar";
 import { AdminSocketProvider } from "../context/AdminSocketContext";
 
 export default function AdminLayout() {

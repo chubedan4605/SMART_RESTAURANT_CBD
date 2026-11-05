@@ -1,7 +1,7 @@
 // src/services/menuApi.js
 // Nếu bạn đã có axiosClient sẵn thì cứ import nó.
 // Nếu chưa, bạn có thể thay axiosClient bằng axios.create({ baseURL: ... })
-import axiosClient from '../store/axiosClient';
+import axiosClient from "./axiosClient";
 
 function cleanParams(params = {}) {
   const out = {};

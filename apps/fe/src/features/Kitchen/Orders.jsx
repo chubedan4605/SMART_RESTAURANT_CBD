@@ -13,8 +13,8 @@ import { useSocket } from "../../context/SocketContext";
 import { useNotificationSound } from "../../hooks/useNotificationSound";
 // import { formatMoneyVND } from "../../utils/orders";
 
-import KitchenOrderCard from "../../Components/KitchenOrderCard";
-import KitchenOrderDetailModal from "../../Components/KitchenOrderDetailModal";
+import KitchenOrderCard from "./components/KitchenOrderCard";
+import KitchenOrderDetailModal from "./components/KitchenOrderDetailModal";
 
 export default function KitchenPage() {
   const socket = useSocket();

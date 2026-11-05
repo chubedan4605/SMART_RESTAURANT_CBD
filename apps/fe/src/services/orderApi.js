@@ -1,5 +1,5 @@
 // src/services/orderApi.js
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 export const orderApi = {
   getMyOrders(params) {

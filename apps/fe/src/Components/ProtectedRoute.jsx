@@ -1,20 +1,2 @@
-import { Navigate, Outlet } from "react-router-dom";
-
-const ProtectedRoute = ({ roles }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = localStorage.getItem("accessToken");
-
-  console.log("User in ProtectedRoute:", user); // Debug thông tin user
-
-  if (!token || !user) {
-    return <Navigate to="/signin" replace />;
-  }
-
-  if (roles && !roles.includes(user.role)) {
-    return <Navigate to="/" replace />;
-  }
-
-  return <Outlet />;
-};
-
-export default ProtectedRoute;
+// Backward compatibility re-export
+export { default } from "../router/guards/ProtectedRoute";

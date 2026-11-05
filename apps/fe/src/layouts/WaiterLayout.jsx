@@ -4,7 +4,7 @@ import Header from "../Components/Header";
 import BottomNav from "../Components/BottomNav";
 import Navbar from "../Components/NavBar";
 import BillRequestNotification from "../Components/BillRequestNotification";
-import WaiterNavbar from "../Components/WaiterNavbar";
+import WaiterNavbar from "../features/Waiter/components/WaiterNavbar";
 
 const WaiterLayout = () => {
   return (

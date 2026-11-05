@@ -1,5 +1,5 @@
 // src/services/tableApi.js
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 // Kiểm tra bàn và tạo session mới khi quét QR
 export const checkAndCreateSession = async (tableCode, qrToken, userId = null) => {

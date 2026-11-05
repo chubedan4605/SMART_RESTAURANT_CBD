@@ -10,8 +10,8 @@ import {
   Star,
 } from "lucide-react";
 
-import { useAdminMenuItems } from "../../hooks/useAdminMenuItems";
-import { useAdminMenuCategories } from "../../hooks/useAdminMenuCategories";
+import { useAdminMenuItems } from "./hooks/useAdminMenuItems";
+import { useAdminMenuCategories } from "./hooks/useAdminMenuCategories";
 import { formatVND } from "../../utils/adminFormat";
 import AdminMenuItemDetailModal from "./components/AdminMenuItemDetailModal";
 import PaginationBar from "../../Components/PaginationBar";

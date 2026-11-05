@@ -11,11 +11,11 @@ import {
   Users,
   Wine,
 } from "lucide-react";
-import WhyChooseUs from "../../Components/WhyChooseUs";
-import SignatureDishes from "../../Components/SignatureDishes";
-import HeroTitle from "../../Components/HeroTitle";
-import { WelcomeCurtain } from "../../Components/WelcomeCurtain";
-import BlogSection from "../../Components/BlogSection";
+import WhyChooseUs from "./components/WhyChooseUs";
+import SignatureDishes from "./components/SignatureDishes";
+import HeroTitle from "./components/HeroTitle";
+import { WelcomeCurtain } from "./components/WelcomeCurtain";
+import BlogSection from "./components/BlogSection";
 import { useEffect } from "react";
 import { useState } from "react";
 import { menuApi } from "../../services/menuApi";

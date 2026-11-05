@@ -1,5 +1,5 @@
 // src/services/couponApi.js
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 export const couponApi = {
   /**

@@ -1,5 +1,5 @@
 // src/services/userApi.js
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 export const userApi = {
   // lấy profile hiện tại (nếu cần)

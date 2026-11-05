@@ -1,4 +1,4 @@
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 export const billApi = {
   async previewBill(tableId, billData) {

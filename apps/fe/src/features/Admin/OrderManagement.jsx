@@ -9,10 +9,10 @@ import {
 } from "lucide-react";
 import { toast } from "react-toastify";
 
-import { useAdminOrders } from "../../hooks/useAdminOrders";
+import { useAdminOrders } from "./hooks/useAdminOrders";
 import { formatVND } from "../../utils/adminFormat";
 import OrderDetailModal from "./components/AdminOrderDetailModal";
-import { useAdminOrderDetail } from "../../hooks/useAdminOrderDetail";
+import { useAdminOrderDetail } from "./hooks/useAdminOrderDetail";
 import PaginationBar from "../../Components/PaginationBar";
 
 const STATUS_META = {
