@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import {
   ChefHat,
@@ -11,6 +11,7 @@ import {
 import axiosClient from "../../store/axiosClient";
 import { useSocket } from "../../context/SocketContext";
 import { useNotificationSound } from "../../hooks/useNotificationSound";
+import { SOCKET_EVENTS } from "../../constants/socketEvents";
 // import { formatMoneyVND } from "../../utils/orders";
 
 import KitchenOrderCard from "./components/KitchenOrderCard";
@@ -27,6 +28,12 @@ export default function KitchenPage() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(null);
   const [soundEnabled, setSoundEnabled] = useState(true); // Toggle âm thanh
+
+  // Ref lưu trạng thái soundEnabled để không re-subscribe socket khi bấm toggle
+  const soundEnabledRef = useRef(soundEnabled);
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
 
   // 1. Fetch Orders (Chỉ lấy status = preparing)
   const fetchOrders = async () => {
@@ -52,9 +59,13 @@ export default function KitchenPage() {
     }
   };
 
+  // 1. Chỉ fetch orders khi component mount
   useEffect(() => {
     fetchOrders();
+  }, []);
 
+  // 2. Lắng nghe Socket Events độc lập, không bị re-trigger khi đổi soundEnabled
+  useEffect(() => {
     if (!socket) return;
 
     const handleUpdateOrder = (updatedOrder) => {
@@ -64,12 +75,10 @@ export default function KitchenPage() {
       );
 
       if (updatedOrder.status === "preparing") {
-        // Filter chỉ lấy items có status = "preparing" (giống fetchOrders)
         const preparingItems = (updatedOrder.items || []).filter(
           (item) => item.status === "preparing",
         );
 
-        // Nếu không còn item nào cần nấu thì bỏ qua
         if (preparingItems.length === 0) {
           console.log("🍳 [Kitchen] No preparing items, skip this order");
           return;
@@ -81,19 +90,16 @@ export default function KitchenPage() {
         };
 
         setOrders((prev) => {
-          // Nếu đã có order này, cập nhật items
           const existingIndex = prev.findIndex((o) => o.id === updatedOrder.id);
           if (existingIndex !== -1) {
             const newOrders = [...prev];
             newOrders[existingIndex] = orderWithFilteredItems;
             return newOrders;
           }
-          // Nếu chưa có, thêm mới vào đầu danh sách
           return [orderWithFilteredItems, ...prev];
         });
 
-        // 🔔 Phát âm thanh thông báo
-        if (soundEnabled) {
+        if (soundEnabledRef.current) {
           playNotificationSound();
         }
 
@@ -104,21 +110,19 @@ export default function KitchenPage() {
     };
 
     const handlePaymentCompleted = (data) => {
-      // setOrders((prev) => prev.filter((o) => o.id !== data.orderId));
       fetchOrders();
       toast.success(`💰 Thanh toán xong: ${data.table_number || "Mang về"}`);
-
       console.log("🍽️ [Kitchen] Payment completed:", data);
     };
 
-    socket.on("update_order", handleUpdateOrder);
-    socket.on("payment_completed", handlePaymentCompleted);
+    socket.on(SOCKET_EVENTS.UPDATE_ORDER, handleUpdateOrder);
+    socket.on(SOCKET_EVENTS.PAYMENT_COMPLETED, handlePaymentCompleted);
 
     return () => {
-      socket.off("update_order", handleUpdateOrder);
-      socket.off("payment_completed", handlePaymentCompleted);
+      socket.off(SOCKET_EVENTS.UPDATE_ORDER, handleUpdateOrder);
+      socket.off(SOCKET_EVENTS.PAYMENT_COMPLETED, handlePaymentCompleted);
     };
-  }, [socket, soundEnabled, playNotificationSound]); // <--- Dependency
+  }, [socket, playNotificationSound]); // <--- Dependency
 
   // Tính số đơn urgent (vượt prep time)
   const { urgentCount, filteredAndSorted } = useMemo(() => {

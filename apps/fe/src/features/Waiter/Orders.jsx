@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import {
   Receipt,
@@ -14,6 +14,7 @@ import {
 import axiosClient from "../../store/axiosClient";
 import { useSocket } from "../../context/SocketContext";
 import { useNotificationSound } from "../../hooks/useNotificationSound";
+import { SOCKET_EVENTS } from "../../constants/socketEvents";
 
 // Import Components
 import OrderCard from "../../Components/OrderCard";
@@ -32,6 +33,17 @@ export default function WaiterOrdersPage() {
   // State dữ liệu
   const [myTables, setMyTables] = useState([]);
   const [orders, setOrders] = useState([]);
+
+  // Refs để truy cập state mới nhất trong socket listener mà không gây re-subscribe thrashing
+  const ordersRef = useRef(orders);
+  useEffect(() => {
+    ordersRef.current = orders;
+  }, [orders]);
+
+  const soundEnabledRef = useRef(soundEnabled);
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
 
   // Loading
   const [loading, setLoading] = useState(true);
@@ -87,29 +99,24 @@ export default function WaiterOrdersPage() {
     const handleNewOrder = (newOrder) => {
       console.log("Received new_order via Socket.IO:", newOrder);
 
-      newOrder.items = newOrder.items.filter(
+      newOrder.items = (newOrder.items || []).filter(
         (item) => item.status === "received",
       );
-      // lọc lấy những items có trạng thái là received
-      setOrders((prev) => {
-        // Kiểm tra xem đơn hàng này đã có trong danh sách chưa
-        const exists = prev.find((o) => o.id === newOrder.id);
 
+      setOrders((prev) => {
+        const exists = prev.find((o) => o.id === newOrder.id);
         if (exists) {
-          // TRƯỜNG HỢP 1: Đơn đã tồn tại (khách gọi thêm món) -> Cập nhật lại đơn đó
           return prev.map((o) => (o.id === newOrder.id ? newOrder : o));
         } else {
-          // TRƯỜNG HỢP 2: Đơn hoàn toàn mới -> Thêm vào đầu danh sách
           return [newOrder, ...prev];
         }
       });
 
-      // 🔔 Phát âm thanh thông báo
-      if (soundEnabled) {
+      if (soundEnabledRef.current) {
         playNotificationSound();
       }
 
-      const isUpdate = orders.some((o) => o.id === newOrder.id);
+      const isUpdate = ordersRef.current.some((o) => o.id === newOrder.id);
       toast.info(
         isUpdate
           ? `🔔 Bàn ${newOrder.table_number} vừa cập nhật/gọi thêm món!`
@@ -117,7 +124,6 @@ export default function WaiterOrdersPage() {
       );
     };
 
-    // 🆕 Handler cho event khi khách gọi thêm món vào đơn đang preparing
     const handleOrderItemsAdded = (orderData) => {
       console.log("Received order_items_added via Socket.IO:", orderData);
 
@@ -125,8 +131,7 @@ export default function WaiterOrdersPage() {
         prev.map((o) => (o.id === orderData.id ? orderData : o)),
       );
 
-      // 🔔 Phát âm thanh thông báo đặc biệt
-      if (soundEnabled) {
+      if (soundEnabledRef.current) {
         playNotificationSound();
       }
 
@@ -141,26 +146,21 @@ export default function WaiterOrdersPage() {
         prev.map((o) => (o.id === updatedOrder.id ? updatedOrder : o)),
       );
       if (updatedOrder.status === "ready") {
-        // 🔔 Phát âm thanh khi món xong
-        if (soundEnabled) {
+        if (soundEnabledRef.current) {
           playNotificationSound();
         }
         toast.success(`✅ Món bàn ${updatedOrder.table_number} đã xong!`);
       }
     };
 
-    // 💰 Handler cho thanh toán thành công
     const handlePaymentCompleted = (data) => {
       console.log("Received payment_completed via Socket.IO:", data);
+      const { table_id, table_number, message } = data;
 
-      const { table_id, table_number, total_amount, message } = data;
-
-      // 🔔 Phát âm thanh thông báo thanh toán
-      if (soundEnabled) {
+      if (soundEnabledRef.current) {
         playNotificationSound();
       }
 
-      // Hiển thị thông báo thanh toán thành công
       toast.success(
         message || `💰 Bàn ${table_number} đã thanh toán thành công!`,
         {
@@ -169,7 +169,6 @@ export default function WaiterOrdersPage() {
         },
       );
 
-      // Cập nhật trực tiếp orders của bàn vừa thanh toán thành "completed"
       setOrders((prev) =>
         prev.map((order) => {
           if (
@@ -184,26 +183,19 @@ export default function WaiterOrdersPage() {
         }),
       );
 
-      // Cũng refresh lại danh sách bàn
       fetchAllData();
     };
 
-    // 🏷️ Handler cho cập nhật phân công bàn từ admin
     const handleTableAssignmentUpdate = (data) => {
       console.log("Received table_assignment_update via Socket.IO:", data);
-
-      // Lấy userId từ localStorage để kiểm tra có phải waiter này không
       const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
       const currentUserId = currentUser?.id;
 
-      // Nếu là waiter này được cập nhật
       if (String(data.waiterId) === String(currentUserId)) {
-        // 🔔 Phát âm thanh thông báo
-        if (soundEnabled) {
+        if (soundEnabledRef.current) {
           playNotificationSound();
         }
 
-        // Cập nhật trực tiếp danh sách bàn nếu có data
         if (data.tables && Array.isArray(data.tables)) {
           setMyTables(data.tables);
           toast.info(
@@ -211,7 +203,6 @@ export default function WaiterOrdersPage() {
             { autoClose: 5000 },
           );
         } else {
-          // Nếu không có tables chi tiết, fetch lại
           fetchAllData();
           toast.info(`📋 Danh sách bàn phụ trách đã được cập nhật!`, {
             autoClose: 5000,
@@ -220,20 +211,20 @@ export default function WaiterOrdersPage() {
       }
     };
 
-    socket.on("new_order", handleNewOrder);
-    socket.on("order_items_added", handleOrderItemsAdded);
-    socket.on("update_order", handleUpdateOrder);
-    socket.on("payment_completed", handlePaymentCompleted);
-    socket.on("table_assignment_update", handleTableAssignmentUpdate);
+    socket.on(SOCKET_EVENTS.NEW_ORDER, handleNewOrder);
+    socket.on(SOCKET_EVENTS.ORDER_ITEMS_ADDED, handleOrderItemsAdded);
+    socket.on(SOCKET_EVENTS.UPDATE_ORDER, handleUpdateOrder);
+    socket.on(SOCKET_EVENTS.PAYMENT_COMPLETED, handlePaymentCompleted);
+    socket.on(SOCKET_EVENTS.TABLE_ASSIGNMENT_UPDATE, handleTableAssignmentUpdate);
 
     return () => {
-      socket.off("new_order", handleNewOrder);
-      socket.off("order_items_added", handleOrderItemsAdded);
-      socket.off("update_order", handleUpdateOrder);
-      socket.off("payment_completed", handlePaymentCompleted);
-      socket.off("table_assignment_update", handleTableAssignmentUpdate);
+      socket.off(SOCKET_EVENTS.NEW_ORDER, handleNewOrder);
+      socket.off(SOCKET_EVENTS.ORDER_ITEMS_ADDED, handleOrderItemsAdded);
+      socket.off(SOCKET_EVENTS.UPDATE_ORDER, handleUpdateOrder);
+      socket.off(SOCKET_EVENTS.PAYMENT_COMPLETED, handlePaymentCompleted);
+      socket.off(SOCKET_EVENTS.TABLE_ASSIGNMENT_UPDATE, handleTableAssignmentUpdate);
     };
-  }, [socket, soundEnabled, playNotificationSound, orders]);
+  }, [socket, playNotificationSound]);
 
   // 3. Logic Filter (Giữ nguyên)
   const filteredOrders = useMemo(() => {

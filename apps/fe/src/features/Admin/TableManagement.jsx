@@ -6,7 +6,8 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import { MdOutlineTableBar } from "react-icons/md";
-import { useSocket } from "../../context/SocketContext";
+import { useSocketEvent } from "../../hooks/useSocketEvent";
+import { SOCKET_EVENTS } from "../../constants/socketEvents";
 
 import {
   Plus,
@@ -56,7 +57,6 @@ function TableDetailPopup({ open, table, onClose, onRefresh }) {
 }
 
 const TableManagement = () => {
-  const socket = useSocket();
 
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -104,70 +104,55 @@ const TableManagement = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  useEffect(() => {
-    if (!socket) return;
+  const updateTableInState = (table) => {
+    if (!table?.id) return;
+    setTables((prev) => {
+      const exists = prev.some((t) => t.id === table.id);
+      if (exists) {
+        return prev.map((t) => (t.id === table.id ? { ...t, ...table } : t));
+      }
+      return [...prev, table];
+    });
+  };
 
-    const updateTableInState = (table) => {
-      if (!table?.id) return;
-      setTables((prev) => {
-        const exists = prev.some((t) => t.id === table.id);
-        if (exists) {
-          return prev.map((t) => (t.id === table.id ? { ...t, ...table } : t));
-        }
-        return [...prev, table];
+  useSocketEvent(SOCKET_EVENTS.TABLE_UPDATE, (payload) => {
+    console.log("TableManagement: table_update", payload);
+    const { type, table } = payload || {};
+    if (!table?.id) return;
+
+    if (type === "update") {
+      setTables((prev) => prev.map((t) => (t.id === table.id ? table : t)));
+      toast.info(`Bàn ${table.table_number} vừa cập nhật!`);
+      setSelectedTable((cur) => (cur?.id === table.id ? table : cur));
+    } else if (type === "create") {
+      setTables((prev) => [...prev, table]);
+    }
+  });
+
+  useSocketEvent(SOCKET_EVENTS.TABLE_SESSION_UPDATE, (payload) => {
+    console.log("TableManagement: table_session_update", payload);
+    const { type, table } = payload || {};
+    if (!table?.id) return;
+
+    updateTableInState(table);
+
+    if (type === "session_started") {
+      toast.info(`🟢 Bàn ${table.table_number} có khách mới!`, {
+        icon: "🪑",
       });
-    };
+    } else if (type === "session_ended") {
+      toast.info(`⚪ Bàn ${table.table_number} đã trống`, {
+        icon: "✅",
+      });
+    }
+  });
 
-    socket.on("table_update", (payload) => {
-      console.log("TableManagement: table_update", payload);
-      const { type, table } = payload || {};
-      if (!table?.id) return;
-
-      if (type === "update") {
-        setTables((prev) => prev.map((t) => (t.id === table.id ? table : t)));
-        toast.info(`Bàn ${table.table_number} vừa cập nhật!`);
-
-        setSelectedTable((cur) => (cur?.id === table.id ? table : cur));
-      } else if (type === "create") {
-        setTables((prev) => [...prev, table]);
-      }
-    });
-
-    socket.on("table_session_update", (payload) => {
-      console.log("TableManagement: table_session_update", payload);
-      const { type, table } = payload || {};
-      if (!table?.id) return;
-
-      updateTableInState(table);
-
-      if (type === "session_started") {
-        toast.info(`🟢 Bàn ${table.table_number} có khách mới!`, {
-          icon: "🪑",
-        });
-      } else if (type === "session_ended") {
-        toast.info(`⚪ Bàn ${table.table_number} đã trống`, {
-          icon: "✅",
-        });
-      }
-    });
-
-    socket.on("admin_table_update", (payload) => {
-      console.log("TableManagement: admin_table_update", payload);
-      const { type, table } = payload || {};
-      if (!table?.id) return;
-
-      updateTableInState(table);
-
-      if (type === "table_session") {
-      }
-    });
-
-    return () => {
-      socket.off("table_update");
-      socket.off("table_session_update");
-      socket.off("admin_table_update");
-    };
-  }, [socket]);
+  useSocketEvent(SOCKET_EVENTS.ADMIN_TABLE_UPDATE, (payload) => {
+    console.log("TableManagement: admin_table_update", payload);
+    const { table } = payload || {};
+    if (!table?.id) return;
+    updateTableInState(table);
+  });
 
   const fetchTables = async () => {
     setLoading(true);

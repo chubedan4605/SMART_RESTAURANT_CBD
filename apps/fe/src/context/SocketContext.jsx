@@ -1,9 +1,11 @@
+// apps/fe/src/context/SocketContext.jsx
 import React, {
   createContext,
   useContext,
   useEffect,
   useState,
   useCallback,
+  useRef,
 } from "react";
 import io from "socket.io-client";
 import { useSelector } from "react-redux";
@@ -12,34 +14,43 @@ const SocketContext = createContext();
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
-  // State để trigger reconnect khi qrToken thay đổi
+  const socketRef = useRef(null);
+
+  // State thông tin bàn & qrToken
   const [tableInfo, setTableInfo] = useState({
     tableCode: localStorage.getItem("tableCode"),
     qrToken: localStorage.getItem("qrToken"),
   });
 
-  // Lấy user để biết role (Redux example)
-  const { user } = useSelector((state) => state.auth);
+  // Lấy user & accessToken từ Redux
+  const { user, accessToken } = useSelector((state) => state.auth);
 
-  console.log("User in SocketProvider:", user); // Debug thông tin user
-
-  // Hàm để cập nhật tableInfo khi qrToken thay đổi (gọi từ bên ngoài nếu cần)
+  // Hàm cập nhật tableInfo
   const updateTableInfo = useCallback(() => {
-    setTableInfo({
-      tableCode: localStorage.getItem("tableCode"),
-      qrToken: localStorage.getItem("qrToken"),
+    const currentTableCode = localStorage.getItem("tableCode");
+    const currentQrToken = localStorage.getItem("qrToken");
+    setTableInfo((prev) => {
+      if (
+        prev.tableCode === currentTableCode &&
+        prev.qrToken === currentQrToken
+      ) {
+        return prev;
+      }
+      return {
+        tableCode: currentTableCode,
+        qrToken: currentQrToken,
+      };
     });
   }, []);
 
   // Lắng nghe sự thay đổi của localStorage (cross-tab hoặc custom event)
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === "qrToken" || e.key === "tableCode") {
+      if (e.key === "qrToken" || e.key === "tableCode" || e.key === "accessToken") {
         updateTableInfo();
       }
     };
 
-    // Custom event để component khác có thể trigger reconnect
     const handleQrTokenSet = () => {
       updateTableInfo();
     };
@@ -47,104 +58,95 @@ export const SocketProvider = ({ children }) => {
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("qrTokenSet", handleQrTokenSet);
 
-    // Check lại sau một khoảng ngắn để đảm bảo localStorage đã được set
-    const checkInterval = setInterval(() => {
-      const currentQrToken = localStorage.getItem("qrToken");
-      const currentTableCode = localStorage.getItem("tableCode");
-      if (
-        currentQrToken !== tableInfo.qrToken ||
-        currentTableCode !== tableInfo.tableCode
-      ) {
-        updateTableInfo();
-      }
-    }, 1000); // Check mỗi giây
-
-    // Dừng check sau 10 giây (đủ thời gian cho việc quét QR)
-    setTimeout(() => clearInterval(checkInterval), 10000);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("qrTokenSet", handleQrTokenSet);
-      clearInterval(checkInterval);
     };
-  }, [tableInfo.qrToken, tableInfo.tableCode, updateTableInfo]);
+  }, [updateTableInfo]);
 
+  // Cập nhật auth token vào socket đang mở khi token được refresh
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.auth = {
+        ...socketRef.current.auth,
+        token: accessToken || localStorage.getItem("accessToken") || undefined,
+        qrToken: tableInfo.qrToken || undefined,
+        tableCode: tableInfo.tableCode || undefined,
+      };
+    }
+  }, [accessToken, tableInfo]);
+
+  // Quản lý khởi tạo & vòng đời kết nối Socket
   useEffect(() => {
     const { tableCode, qrToken } = tableInfo;
+    const token = accessToken || localStorage.getItem("accessToken");
 
-    // Điều kiện kết nối: có user HOẶC có qrToken (khách quét QR không cần đăng nhập)
+    // Chỉ kết nối nếu có user đã đăng nhập HOẶC khách đã quét QR
     const shouldConnect = user || qrToken;
 
     if (!shouldConnect) {
-      // Nếu không cần kết nối, đóng socket cũ nếu có
-      if (socket) {
-        socket.close();
+      if (socketRef.current) {
+        socketRef.current.close();
+        socketRef.current = null;
         setSocket(null);
       }
       return;
     }
 
-    // Nếu đã có socket và đang kết nối, không tạo lại
-    if (socket?.connected) {
-      // Chỉ join lại room nếu tableCode thay đổi
+    // Nếu đã có socket kết nối
+    if (socketRef.current?.connected) {
       if (tableCode && !user) {
-        socket.emit("join_table", { tableCode: tableCode });
+        socketRef.current.emit("join_table", { tableCode });
         console.log("🪑 Re-joined table:", tableCode);
       }
       return;
     }
 
     // Đóng socket cũ nếu có
-    if (socket) {
-      socket.close();
+    if (socketRef.current) {
+      socketRef.current.close();
     }
 
-    // Kết nối mới
-
+    // Khởi tạo kết nối Socket.IO kèm Auth Payload
     const newSocket = io(import.meta.env.VITE_APP_BASE_URL, {
       transports: ["websocket"],
       withCredentials: true,
+      auth: {
+        token: token || undefined,
+        qrToken: qrToken || undefined,
+        tableCode: tableCode || undefined,
+      },
     });
 
+    socketRef.current = newSocket;
     setSocket(newSocket);
 
-    // Join Room logic...
     newSocket.on("connect", () => {
       console.log("🟢 Socket Connected:", newSocket.id);
 
+      // Backend đã tự động join room qua handshake middleware,
+      // emit dưới đây nhằm tương thích ngược và thông báo chủ động
       if (user) {
-        // User đã đăng nhập
-        if (user.role === "admin" || user.role === "superadmin") {
+        const role = (user.role || "").toLowerCase();
+        if (role === "admin" || role === "superadmin") {
           newSocket.emit("join_admin");
-          console.log("🛡️ Admin joined admin room");
-        } else if (user.role === "kitchen") {
-          // Bếp chỉ cần tham gia phòng bếp
+        } else if (role === "kitchen") {
           newSocket.emit("join_kitchen");
-          console.log("👩‍🍳 Kitchen joined kitchen room");
-        } else if (user.role === "waiter") {
+        } else if (role === "waiter") {
           newSocket.emit("join_waiter");
-          console.log("👩‍🍳 Waiter joined waiter room");
-        } else if (user.role === "customer") {
-          // Khách hàng đã đăng nhập tham gia phòng khách
-          if (tableCode) {
-            newSocket.emit("join_table", {
-              tableCode: tableCode,
-              userId: user.id,
-            });
-            console.log("🪑 Customer joined table:", tableCode);
-          }
+        } else if (role === "customer" && tableCode) {
+          newSocket.emit("join_table", { tableCode, userId: user.id });
         }
       } else if (qrToken && tableCode) {
-        // Khách quét QR không đăng nhập - vẫn join room bàn
-        newSocket.emit("join_table", { tableCode: tableCode });
-        console.log("🪑 Guest joined table via QR:", tableCode);
+        newSocket.emit("join_table", { tableCode });
       }
     });
 
     return () => {
       newSocket.close();
+      socketRef.current = null;
     };
-  }, [user, tableInfo]);
+  }, [user, tableInfo, accessToken]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
@@ -152,3 +154,4 @@ export const SocketProvider = ({ children }) => {
 };
 
 export const useSocket = () => useContext(SocketContext);
+export default SocketContext;

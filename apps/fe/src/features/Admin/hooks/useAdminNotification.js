@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSocket } from "../../../context/SocketContext";
 import { useNotificationSound } from "../../../hooks/useNotificationSound";
+import { SOCKET_EVENTS } from "../../../constants/socketEvents";
 
 /**
  * Hook quản lý thông báo real-time cho Admin
@@ -194,22 +195,22 @@ export function useAdminNotification() {
       });
     };
 
-    // Đăng ký listeners
-    socket.on("admin_new_order", handleNewOrder);
-    socket.on("admin_order_update", handleOrderUpdate);
-    socket.on("admin_table_update", handleTableUpdate);
-    socket.on("bill_request", handleBillRequest);
-    socket.on("table_session_update", handleTableSession);
-    socket.on("admin_payment_completed", handlePaymentCompleted);
+    // Đăng ký listeners chuẩn hóa
+    socket.on(SOCKET_EVENTS.ADMIN_NEW_ORDER, handleNewOrder);
+    socket.on(SOCKET_EVENTS.ADMIN_ORDER_UPDATE, handleOrderUpdate);
+    socket.on(SOCKET_EVENTS.ADMIN_TABLE_UPDATE, handleTableUpdate);
+    socket.on(SOCKET_EVENTS.BILL_REQUEST, handleBillRequest);
+    socket.on(SOCKET_EVENTS.TABLE_SESSION_UPDATE, handleTableSession);
+    socket.on(SOCKET_EVENTS.ADMIN_PAYMENT_COMPLETED, handlePaymentCompleted);
 
     // Cleanup
     return () => {
-      socket.off("admin_new_order", handleNewOrder);
-      socket.off("admin_order_update", handleOrderUpdate);
-      socket.off("admin_table_update", handleTableUpdate);
-      socket.off("bill_request", handleBillRequest);
-      socket.off("table_session_update", handleTableSession);
-      socket.off("admin_payment_completed", handlePaymentCompleted);
+      socket.off(SOCKET_EVENTS.ADMIN_NEW_ORDER, handleNewOrder);
+      socket.off(SOCKET_EVENTS.ADMIN_ORDER_UPDATE, handleOrderUpdate);
+      socket.off(SOCKET_EVENTS.ADMIN_TABLE_UPDATE, handleTableUpdate);
+      socket.off(SOCKET_EVENTS.BILL_REQUEST, handleBillRequest);
+      socket.off(SOCKET_EVENTS.TABLE_SESSION_UPDATE, handleTableSession);
+      socket.off(SOCKET_EVENTS.ADMIN_PAYMENT_COMPLETED, handlePaymentCompleted);
     };
   }, [socket, addNotification, playNewOrderSound, playUpdateSound]);
 

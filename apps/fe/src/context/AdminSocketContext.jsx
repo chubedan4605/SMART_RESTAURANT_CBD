@@ -1,15 +1,19 @@
+// apps/fe/src/context/AdminSocketContext.jsx
 import React, {
   createContext,
   useContext,
   useEffect,
   useState,
   useCallback,
+  useRef,
 } from "react";
 import { useSocket } from "./SocketContext";
+import { SOCKET_EVENTS } from "../constants/socketEvents";
 
 /**
- * Context để quản lý tất cả socket events cho Admin
- * Chỉ cần setup 1 lần trong AdminLayout, tất cả các trang/hook sẽ nhận được updates
+ * AdminSocketContext
+ * Quản lý tập trung các socket events cho phân hệ Admin / Management.
+ * Sử dụng Set Subscriber Refs để loại bỏ hoàn toàn hiện tượng Effect Thrashing (re-subscribe vòng lặp).
  */
 const AdminSocketContext = createContext(null);
 
@@ -17,41 +21,44 @@ export const AdminSocketProvider = ({ children }) => {
   const socket = useSocket();
   const [isConnected, setIsConnected] = useState(false);
 
-  // State lưu trữ các loại update khác nhau
+  // State lưu trữ bản ghi cập nhật gần nhất
   const [orderUpdate, setOrderUpdate] = useState(null);
   const [tableUpdate, setTableUpdate] = useState(null);
   const [paymentUpdate, setPaymentUpdate] = useState(null);
   const [billRequestUpdate, setBillRequestUpdate] = useState(null);
 
-  // Subscribers cho từng loại event
-  const [orderSubscribers, setOrderSubscribers] = useState([]);
-  const [tableSubscribers, setTableSubscribers] = useState([]);
-  const [paymentSubscribers, setPaymentSubscribers] = useState([]);
-  const [dashboardSubscribers, setDashboardSubscribers] = useState([]);
+  // Dùng Ref dạng Set để lưu subscriber callbacks, tránh re-trigger Effect khi thêm/bớt subscriber
+  const orderSubscribersRef = useRef(new Set());
+  const tableSubscribersRef = useRef(new Set());
+  const paymentSubscribersRef = useRef(new Set());
+  const dashboardSubscribersRef = useRef(new Set());
 
-  // Hàm để subscribe vào các events
   const subscribeToOrders = useCallback((callback) => {
-    setOrderSubscribers((prev) => [...prev, callback]);
-    return () =>
-      setOrderSubscribers((prev) => prev.filter((cb) => cb !== callback));
+    orderSubscribersRef.current.add(callback);
+    return () => {
+      orderSubscribersRef.current.delete(callback);
+    };
   }, []);
 
   const subscribeToTables = useCallback((callback) => {
-    setTableSubscribers((prev) => [...prev, callback]);
-    return () =>
-      setTableSubscribers((prev) => prev.filter((cb) => cb !== callback));
+    tableSubscribersRef.current.add(callback);
+    return () => {
+      tableSubscribersRef.current.delete(callback);
+    };
   }, []);
 
   const subscribeToPayments = useCallback((callback) => {
-    setPaymentSubscribers((prev) => [...prev, callback]);
-    return () =>
-      setPaymentSubscribers((prev) => prev.filter((cb) => cb !== callback));
+    paymentSubscribersRef.current.add(callback);
+    return () => {
+      paymentSubscribersRef.current.delete(callback);
+    };
   }, []);
 
   const subscribeToDashboard = useCallback((callback) => {
-    setDashboardSubscribers((prev) => [...prev, callback]);
-    return () =>
-      setDashboardSubscribers((prev) => prev.filter((cb) => cb !== callback));
+    dashboardSubscribersRef.current.add(callback);
+    return () => {
+      dashboardSubscribersRef.current.delete(callback);
+    };
   }, []);
 
   useEffect(() => {
@@ -70,23 +77,32 @@ export const AdminSocketProvider = ({ children }) => {
       setIsConnected(false);
     };
 
+    // Helper phát tin cho các subscribers
+    const notifySubscribers = (subscribersSet, update) => {
+      subscribersSet.forEach((cb) => {
+        try {
+          cb(update);
+        } catch (err) {
+          console.error("AdminSocketContext subscriber error:", err);
+        }
+      });
+    };
+
     // === ORDER EVENTS ===
     const handleNewOrder = (data) => {
       console.log("📢 [AdminSocket] New Order:", data);
       const update = { type: "new_order", data, timestamp: Date.now() };
       setOrderUpdate(update);
-      // Notify all order subscribers
-      orderSubscribers.forEach((cb) => cb(update));
-      // Notify dashboard subscribers
-      dashboardSubscribers.forEach((cb) => cb(update));
+      notifySubscribers(orderSubscribersRef.current, update);
+      notifySubscribers(dashboardSubscribersRef.current, update);
     };
 
     const handleOrderUpdate = (data) => {
       console.log("📢 [AdminSocket] Order Update:", data);
       const update = { type: "order_update", data, timestamp: Date.now() };
       setOrderUpdate(update);
-      orderSubscribers.forEach((cb) => cb(update));
-      dashboardSubscribers.forEach((cb) => cb(update));
+      notifySubscribers(orderSubscribersRef.current, update);
+      notifySubscribers(dashboardSubscribersRef.current, update);
     };
 
     // === TABLE EVENTS ===
@@ -94,8 +110,8 @@ export const AdminSocketProvider = ({ children }) => {
       console.log("📢 [AdminSocket] Table Update:", data);
       const update = { type: "table_update", data, timestamp: Date.now() };
       setTableUpdate(update);
-      tableSubscribers.forEach((cb) => cb(update));
-      dashboardSubscribers.forEach((cb) => cb(update));
+      notifySubscribers(tableSubscribersRef.current, update);
+      notifySubscribers(dashboardSubscribersRef.current, update);
     };
 
     const handleTableSessionUpdate = (data) => {
@@ -106,8 +122,8 @@ export const AdminSocketProvider = ({ children }) => {
         timestamp: Date.now(),
       };
       setTableUpdate(update);
-      tableSubscribers.forEach((cb) => cb(update));
-      dashboardSubscribers.forEach((cb) => cb(update));
+      notifySubscribers(tableSubscribersRef.current, update);
+      notifySubscribers(dashboardSubscribersRef.current, update);
     };
 
     // === PAYMENT EVENTS ===
@@ -115,10 +131,9 @@ export const AdminSocketProvider = ({ children }) => {
       console.log("📢 [AdminSocket] Payment Completed:", data);
       const update = { type: "payment_completed", data, timestamp: Date.now() };
       setPaymentUpdate(update);
-      paymentSubscribers.forEach((cb) => cb(update));
-      dashboardSubscribers.forEach((cb) => cb(update));
-      // Cũng notify orders vì thanh toán ảnh hưởng đến orders
-      orderSubscribers.forEach((cb) => cb(update));
+      notifySubscribers(paymentSubscribersRef.current, update);
+      notifySubscribers(dashboardSubscribersRef.current, update);
+      notifySubscribers(orderSubscribersRef.current, update);
     };
 
     // === BILL REQUEST EVENTS ===
@@ -126,64 +141,54 @@ export const AdminSocketProvider = ({ children }) => {
       console.log("📢 [AdminSocket] Bill Request:", data);
       const update = { type: "bill_request", data, timestamp: Date.now() };
       setBillRequestUpdate(update);
-      // Bill request cũng liên quan đến orders
-      orderSubscribers.forEach((cb) => cb(update));
+      notifySubscribers(orderSubscribersRef.current, update);
     };
 
-    // Đăng ký tất cả listeners
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", handleDisconnect);
+    // Đăng ký listeners
+    socket.on(SOCKET_EVENTS.CONNECT, handleConnect);
+    socket.on(SOCKET_EVENTS.DISCONNECT, handleDisconnect);
 
-    // Order events
-    socket.on("admin_new_order", handleNewOrder);
-    socket.on("admin_order_update", handleOrderUpdate);
+    // Orders
+    socket.on(SOCKET_EVENTS.ADMIN_NEW_ORDER, handleNewOrder);
+    socket.on(SOCKET_EVENTS.ADMIN_ORDER_UPDATE, handleOrderUpdate);
 
-    // Table events
-    socket.on("table_update", handleTableUpdate);
-    socket.on("admin_table_update", handleTableUpdate);
-    socket.on("table_session_update", handleTableSessionUpdate);
+    // Tables
+    socket.on(SOCKET_EVENTS.TABLE_UPDATE, handleTableUpdate);
+    socket.on(SOCKET_EVENTS.ADMIN_TABLE_UPDATE, handleTableUpdate);
+    socket.on(SOCKET_EVENTS.TABLE_SESSION_UPDATE, handleTableSessionUpdate);
 
-    // Payment events
-    socket.on("admin_payment_completed", handlePaymentCompleted);
-    socket.on("payment_completed", handlePaymentCompleted);
+    // Payments
+    socket.on(SOCKET_EVENTS.ADMIN_PAYMENT_COMPLETED, handlePaymentCompleted);
+    socket.on(SOCKET_EVENTS.PAYMENT_COMPLETED, handlePaymentCompleted);
 
-    // Bill request
-    // socket.on("bill_request", handleBillRequest);
+    // Bill Request
+    socket.on(SOCKET_EVENTS.BILL_REQUEST, handleBillRequest);
 
-    // Check trạng thái hiện tại
     if (socket.connected) {
       setIsConnected(true);
     }
 
     return () => {
-      socket.off("connect", handleConnect);
-      socket.off("disconnect", handleDisconnect);
-      socket.off("admin_new_order", handleNewOrder);
-      socket.off("admin_order_update", handleOrderUpdate);
-      socket.off("table_update", handleTableUpdate);
-      socket.off("admin_table_update", handleTableUpdate);
-      socket.off("table_session_update", handleTableSessionUpdate);
-      socket.off("admin_payment_completed", handlePaymentCompleted);
-      socket.off("payment_completed", handlePaymentCompleted);
-    //   socket.off("bill_request", handleBillRequest);
+      socket.off(SOCKET_EVENTS.CONNECT, handleConnect);
+      socket.off(SOCKET_EVENTS.DISCONNECT, handleDisconnect);
+      socket.off(SOCKET_EVENTS.ADMIN_NEW_ORDER, handleNewOrder);
+      socket.off(SOCKET_EVENTS.ADMIN_ORDER_UPDATE, handleOrderUpdate);
+      socket.off(SOCKET_EVENTS.TABLE_UPDATE, handleTableUpdate);
+      socket.off(SOCKET_EVENTS.ADMIN_TABLE_UPDATE, handleTableUpdate);
+      socket.off(SOCKET_EVENTS.TABLE_SESSION_UPDATE, handleTableSessionUpdate);
+      socket.off(SOCKET_EVENTS.ADMIN_PAYMENT_COMPLETED, handlePaymentCompleted);
+      socket.off(SOCKET_EVENTS.PAYMENT_COMPLETED, handlePaymentCompleted);
+      socket.off(SOCKET_EVENTS.BILL_REQUEST, handleBillRequest);
     };
-  }, [
-    socket,
-    orderSubscribers,
-    tableSubscribers,
-    paymentSubscribers,
-    dashboardSubscribers,
-  ]);
+  }, [socket]); // Chỉ phụ thuộc vào socket instance duy nhất
 
   const value = {
     socket,
     isConnected,
-    // Last updates
     orderUpdate,
     tableUpdate,
     paymentUpdate,
     billRequestUpdate,
-    // Subscribe functions
     subscribeToOrders,
     subscribeToTables,
     subscribeToPayments,
@@ -197,13 +202,9 @@ export const AdminSocketProvider = ({ children }) => {
   );
 };
 
-// Hook để sử dụng AdminSocketContext
 export const useAdminSocketContext = () => {
   const context = useContext(AdminSocketContext);
   if (!context) {
-    console.warn(
-      "useAdminSocketContext must be used within AdminSocketProvider",
-    );
     return {
       socket: null,
       isConnected: false,
@@ -219,3 +220,5 @@ export const useAdminSocketContext = () => {
   }
   return context;
 };
+
+export default AdminSocketContext;
