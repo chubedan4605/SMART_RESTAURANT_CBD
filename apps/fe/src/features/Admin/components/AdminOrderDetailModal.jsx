@@ -6,65 +6,65 @@ import ScrollArea from "../../../Components/ScrollArea";
 const STATUS_META = {
   received: {
     label: "Chờ xử lý",
-    className: "bg-yellow-500/10 text-yellow-300 border-yellow-500/20",
+    className: "bg-amber-500/10 text-amber-500 dark:text-amber-400 border-amber-500/20",
   },
   preparing: {
     label: "Đang chuẩn bị",
-    className: "bg-indigo-500/10 text-indigo-300 border-indigo-500/20",
+    className: "bg-blue-500/10 text-blue-500 dark:text-blue-400 border-blue-500/20",
   },
   ready: {
     label: "Sẵn sàng",
-    className: "bg-green-500/10 text-green-300 border-green-500/20",
+    className: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20",
   },
   completed: {
     label: "Hoàn tất",
-    className: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
+    className: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20",
   },
   cancelled: {
     label: "Đã hủy",
-    className: "bg-red-500/10 text-red-300 border-red-500/20",
+    className: "bg-destructive/10 text-destructive border-destructive/20",
   },
   rejected: {
     label: "Từ chối",
-    className: "bg-red-500/10 text-red-300 border-red-500/20",
+    className: "bg-destructive/10 text-destructive border-destructive/20",
   },
 };
 
 const ITEM_STATUS_STYLES = {
   received: {
-    row: "bg-yellow-500/5 border-l-4 border-l-yellow-500",
-    text: "text-yellow-300",
+    row: "bg-amber-500/5 border-l-4 border-l-amber-500",
+    text: "text-amber-500 dark:text-amber-400",
   },
   preparing: {
-    row: "bg-indigo-500/5 border-l-4 border-l-indigo-500",
-    text: "text-indigo-300",
+    row: "bg-blue-500/5 border-l-4 border-l-blue-500",
+    text: "text-blue-500 dark:text-blue-400",
   },
   ready: {
-    row: "bg-green-500/5 border-l-4 border-l-green-500",
-    text: "text-green-300",
+    row: "bg-emerald-500/5 border-l-4 border-l-emerald-500",
+    text: "text-emerald-500 dark:text-emerald-400",
   },
   completed: {
     row: "bg-emerald-500/5 border-l-4 border-l-emerald-500/50",
-    text: "text-emerald-300",
+    text: "text-emerald-500 dark:text-emerald-400",
   },
   cancelled: {
-    row: "bg-red-500/5 border-l-4 border-l-red-500 opacity-60",
-    text: "text-red-300 line-through",
+    row: "bg-destructive/5 border-l-4 border-l-destructive opacity-60",
+    text: "text-destructive line-through",
   },
   rejected: {
-    row: "bg-red-500/5 border-l-4 border-l-red-500 opacity-60",
-    text: "text-red-300 line-through",
+    row: "bg-destructive/5 border-l-4 border-l-destructive opacity-60",
+    text: "text-destructive line-through",
   },
 };
 
 function StatusPill({ status }) {
   const meta = STATUS_META[status] || {
     label: status || "—",
-    className: "bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10",
+    className: "bg-muted text-muted-foreground border-border",
   };
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold ${meta.className}`}
+      className={`inline-flex items-center px-2.5 py-1 rounded-full border text-[11px] font-bold tracking-wider uppercase ${meta.className}`}
     >
       {meta.label}
     </span>
@@ -82,11 +82,11 @@ function formatDateTime(dt) {
   return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
 }
 
-function InfoRow({ label, value }) {
+function InfoRow({ label, value, isPrice = false }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-2">
-      <div className="text-xs text-gray-400">{label}</div>
-      <div className="text-sm text-gray-100 font-semibold text-right">
+    <div className="flex items-start justify-between gap-4 py-2.5">
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className={`text-sm font-semibold text-right ${isPrice ? "font-sans font-bold text-gold text-base tabular-nums" : "text-foreground"}`}>
         {value ?? "—"}
       </div>
     </div>
@@ -117,27 +117,27 @@ export default function OrderDetailModal({
     <div className="fixed inset-0 z-50">
       {/* overlay */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-ink/70 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* modal */}
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="w-full max-w-3xl rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl overflow-hidden">
+        <div className="w-full max-w-3xl rounded-3xl border border-border bg-card text-foreground shadow-2xl overflow-hidden animate-scale-in">
           {/* header */}
-          <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-card">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-                <ReceiptText className="text-orange-500" size={18} />
+              <div className="w-10 h-10 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold">
+                <ReceiptText size={18} />
               </div>
               <div>
-                <div className="text-white font-black leading-tight">
+                <div className="font-serif text-lg font-bold text-foreground leading-tight">
                   Chi tiết đơn{" "}
-                  <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
-                    #{order?.id.slice(0, 8) ?? "—"}
+                  <span className="text-gold">
+                    #{order?.id?.slice(0, 8) ?? "—"}
                   </span>
                 </div>
-                <div className="text-xs text-gray-400 mt-0.5">
+                <div className="text-xs text-muted-foreground mt-0.5">
                   Xem thông tin & danh sách món trong order
                 </div>
               </div>
@@ -145,7 +145,7 @@ export default function OrderDetailModal({
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+              className="min-h-11 min-w-11 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition flex items-center justify-center"
               type="button"
               aria-label="Close"
             >
@@ -155,21 +155,22 @@ export default function OrderDetailModal({
 
           {/* content states */}
           {loading ? (
-            <div className="p-10 text-center">
-              <div className="text-white font-bold">
+            <div className="p-12 text-center">
+              <div className="w-10 h-10 rounded-full border-2 border-gold border-t-transparent animate-spin mx-auto mb-3" />
+              <div className="font-serif text-base font-bold text-foreground">
                 Đang tải chi tiết đơn...
               </div>
-              <div className="text-gray-400 text-sm mt-1">Vui lòng chờ</div>
+              <div className="text-muted-foreground text-xs mt-1">Vui lòng chờ giây lát</div>
             </div>
           ) : error ? (
             <div className="p-6">
-              <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-200 text-sm">
+              <div className="p-4 rounded-xl border border-destructive/20 bg-destructive/10 text-destructive text-sm">
                 {error}
               </div>
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+                  className="min-h-11 px-6 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-sm font-medium"
                   type="button"
                 >
                   Đóng
@@ -179,17 +180,17 @@ export default function OrderDetailModal({
           ) : (
             /* body */
             <ScrollArea>
-              <div className="max-h-[80vh] overflow-x-auto p-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
+              <div className="max-h-[80vh] overflow-x-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
                 {/* left: meta */}
-                <div className="lg:col-span-5 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="text-white font-bold">Thông tin đơn</div>
+                <div className="lg:col-span-5 rounded-2xl bg-background border border-border p-5">
+                  <div className="flex items-center justify-between pb-3 border-b border-border">
+                    <div className="font-serif font-bold text-foreground text-base">Thông tin đơn</div>
                     <StatusPill status={order?.status} />
                   </div>
 
-                  <div className="mt-3 divide-y divide-white/10">
+                  <div className="mt-2 divide-y divide-border/60">
                     <InfoRow label="Mã đơn" value={`#${order?.id?.slice(0, 8)}`} />
-                    <InfoRow label="Bàn" value={order?.tableName} />
+                    <InfoRow label="Bàn phục vụ" value={order?.tableName} />
                     <InfoRow
                       label="Tạo lúc"
                       value={formatDateTime(order?.createdAt)}
@@ -202,7 +203,7 @@ export default function OrderDetailModal({
                           : "—"
                       }
                     />
-                    <InfoRow label="Số items" value={order?.totalItems} />
+                    <InfoRow label="Số lượng món" value={order?.totalItems} />
                     <InfoRow
                       label="Tổng tiền"
                       value={
@@ -210,6 +211,7 @@ export default function OrderDetailModal({
                           ? formatVND(order.totalAmount)
                           : "—"
                       }
+                      isPrice
                     />
                     <InfoRow label="Thanh toán" value={order?.paymentMethod} />
                     <InfoRow label="Ghi chú" value={order?.note || "—"} />
@@ -217,118 +219,92 @@ export default function OrderDetailModal({
                 </div>
 
                 {/* right: items */}
-                <div className="lg:col-span-7 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-                    <div className="text-white font-bold">Danh sách món</div>
-                    <div className="text-xs text-gray-400">
-                      {items.length} món
+                <div className="lg:col-span-7 rounded-2xl bg-background border border-border overflow-hidden flex flex-col justify-between">
+                  <div>
+                    <div className="px-5 py-3.5 border-b border-border flex items-center justify-between bg-card">
+                      <div className="font-serif font-bold text-foreground text-base">Danh sách món</div>
+                      <div className="text-xs text-muted-foreground font-serif">
+                        {items.length} món
+                      </div>
                     </div>
-                  </div>
 
-                  <ScrollArea>
-                    <div className="sm:max-h-[60vh] overflow-auto">
-                      {items.length === 0 ? (
-                        <div className="p-6 text-center">
-                          <div className="text-white font-bold">
-                            Chưa có item
+                    <ScrollArea>
+                      <div className="sm:max-h-[50vh] overflow-auto">
+                        {items.length === 0 ? (
+                          <div className="p-8 text-center">
+                            <div className="font-serif font-bold text-foreground">
+                              Chưa có món ăn
+                            </div>
+                            <div className="text-muted-foreground text-xs mt-1">
+                              API chưa trả về món ăn hoặc order này không có món.
+                            </div>
                           </div>
-                          <div className="text-gray-400 text-sm mt-1">
-                            API chưa trả về items hoặc order này không có món.
-                          </div>
-                        </div>
-                      ) : (
-                        <table className="w-full min-w-50">
-                          <thead className="bg-neutral-950/60 border-b border-white/10">
-                            <tr className="text-left text-xs text-gray-400">
-                              <th className="py-3 pl-4 pr-3 w-[60%]">Món</th>
-                              <th className="py-3 px-3 w-[12%]">Số lượng</th>
-                            </tr>
-                          </thead>
+                        ) : (
+                          <table className="w-full min-w-50">
+                            <thead className="bg-secondary/30 border-b border-border text-xs text-muted-foreground">
+                              <tr className="text-left">
+                                <th className="py-2.5 pl-4 pr-3 w-[65%]">Món</th>
+                                <th className="py-2.5 px-3 w-[35%] text-right">SL / Đơn giá</th>
+                              </tr>
+                            </thead>
 
-                          <tbody>
-                            {items.map((it, idx) => {
-                              const key = it.id ?? `${order?.id}-item-${idx}`;
-                              const total =
-                                typeof it.totalPrice === "number"
-                                  ? it.totalPrice
-                                  : typeof it.unitPrice === "number" &&
-                                      typeof it.quantity === "number"
-                                    ? it.unitPrice * it.quantity
-                                    : null;
+                            <tbody>
+                              {items.map((it, idx) => {
+                                const key = it.id ?? `${order?.id}-item-${idx}`;
+                                const total =
+                                  typeof it.totalPrice === "number"
+                                    ? it.totalPrice
+                                    : typeof it.unitPrice === "number" &&
+                                        typeof it.quantity === "number"
+                                      ? it.unitPrice * it.quantity
+                                      : null;
 
-                              // Get item status styles
-                              const itemStyle = ITEM_STATUS_STYLES[
-                                it.status
-                              ] || {
-                                row: "bg-white dark:bg-neutral-950/5",
-                                text: "text-gray-100",
-                              };
-                              const statusMeta = STATUS_META[it.status] || {
-                                label: it.status || "—",
-                                className:
-                                  "bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10",
-                              };
+                                const itemStyle = ITEM_STATUS_STYLES[it.status] || {
+                                  row: "bg-background",
+                                  text: "text-foreground",
+                                };
+                                const statusMeta = STATUS_META[it.status] || {
+                                  label: it.status || "—",
+                                  className: "bg-muted text-muted-foreground border-border",
+                                };
 
-                              return (
-                                <React.Fragment key={key}>
-                                  {/* Row 1: tên món + qty */}
-                                  <tr
-                                    className={`border-b border-white/5 ${itemStyle.row} transition-all`}
-                                  >
-                                    <td className="py-3 pl-4 pr-3 align-top">
-                                      <div className="flex items-center gap-2 flex-wrap">
-                                        <span
-                                          className={`font-semibold ${itemStyle.text}`}
-                                        >
-                                          {it.name ?? "—"}
-                                        </span>
-                                        {/* Item status badge */}
-                                        <span
-                                          className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[10px] font-bold ${statusMeta.className}`}
-                                        >
-                                          {statusMeta.label}
-                                        </span>
-                                      </div>
-                                      <div className="text-xs text-gray-500 mt-1">
-                                        {/* Note */}
+                                return (
+                                  <React.Fragment key={key}>
+                                    <tr className={`border-b border-border/40 ${itemStyle.row} transition-all`}>
+                                      <td className="py-3 pl-4 pr-3 align-top">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                          <span className={`font-medium ${itemStyle.text}`}>
+                                            {it.name ?? "—"}
+                                          </span>
+                                          <span
+                                            className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[10px] font-bold ${statusMeta.className}`}
+                                          >
+                                            {statusMeta.label}
+                                          </span>
+                                        </div>
+
                                         {it.note ? (
-                                          <div className="text-xs text-gray-500 mt-1">
-                                            Note: {it.note}
+                                          <div className="text-xs text-muted-foreground mt-1 italic">
+                                            Ghi chú: {it.note}
                                           </div>
                                         ) : null}
 
-                                        {/* Modifiers */}
-                                        {Array.isArray(it.modifiers) &&
-                                        it.modifiers.length > 0 ? (
+                                        {Array.isArray(it.modifiers) && it.modifiers.length > 0 ? (
                                           <div className="mt-2 space-y-1">
-                                            <div className="text-xs text-gray-400 font-semibold">
-                                              Modifiers đã chọn:
-                                            </div>
-
-                                            <div className="flex flex-wrap gap-2">
+                                            <div className="flex flex-wrap gap-1.5">
                                               {it.modifiers.map((m, mi) => {
-                                                const mKey =
-                                                  m.id ?? `${key}-m-${mi}`;
-                                                const price =
-                                                  typeof m.price === "number"
-                                                    ? m.price
-                                                    : Number(m.price || 0);
-                                                // Support cả "name" (từ service) và "modifier_name" (từ DB raw)
-                                                const modName =
-                                                  m.name ||
-                                                  m.modifier_name ||
-                                                  "—";
+                                                const mKey = m.id ?? `${key}-m-${mi}`;
+                                                const price = typeof m.price === "number" ? m.price : Number(m.price || 0);
+                                                const modName = m.name || m.modifier_name || "—";
 
                                                 return (
                                                   <span
                                                     key={mKey}
-                                                    className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-white/10 bg-white dark:bg-neutral-950/5 text-xs text-gray-200"
+                                                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-border bg-card text-[11px] text-muted-foreground"
                                                   >
-                                                    <span className="font-semibold">
-                                                      {modName}
-                                                    </span>
+                                                    <span>{modName}</span>
                                                     {price > 0 ? (
-                                                      <span className="text-orange-300">
+                                                      <span className="font-sans text-gold font-medium tabular-nums">
                                                         +{formatVND(price)}
                                                       </span>
                                                     ) : null}
@@ -337,45 +313,32 @@ export default function OrderDetailModal({
                                               })}
                                             </div>
                                           </div>
-                                        ) : (
-                                          <div className="text-xs text-gray-600 mt-2">
-                                            Không có modifiers
-                                          </div>
-                                        )}
-                                      </div>
-                                    </td>
+                                        ) : null}
+                                      </td>
 
-                                    <td className="py-3 px-3 align-top text-center">
-                                      <div className="text-gray-200 font-bold">
-                                        {it.quantity ?? "—"}
-                                      </div>
-                                    </td>
-                                  </tr>
+                                      <td className="py-3 px-3 align-top text-right">
+                                        <div className="text-foreground font-sans font-bold text-sm sm:text-base tabular-nums">
+                                          x{it.quantity ?? 1}
+                                        </div>
+                                        <div className="text-xs font-sans font-bold text-gold tabular-nums mt-1">
+                                          {typeof total === "number" ? formatVND(total) : "—"}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </React.Fragment>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        )}
+                      </div>
+                    </ScrollArea>
+                  </div>
 
-                                  {/* Row 2: giá */}
-                                  <tr className="border-b border-white/50 bg-white dark:bg-neutral-950/3 text-right">
-                                    <td colSpan={3} className="py-2 pl-4 pr-4">
-                                      <div className="text-sm text-gray-400 font-bold">
-                                        {typeof it.unitPrice === "number" &&
-                                        typeof it.quantity === "number"
-                                          ? `Giá: ${formatVND(total)}`
-                                          : "Giá: —"}
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </React.Fragment>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      )}
-                    </div>
-                  </ScrollArea>
-
-                  <div className="px-4 py-3 border-t border-white/10 flex items-center justify-end">
+                  <div className="px-5 py-3.5 border-t border-border flex items-center justify-end bg-card">
                     <button
                       onClick={onClose}
-                      className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+                      className="min-h-11 px-6 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-sm cursor-pointer"
                       type="button"
                     >
                       Đóng

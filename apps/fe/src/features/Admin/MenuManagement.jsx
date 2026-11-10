@@ -8,10 +8,11 @@ import {
   Tag,
   ArrowUpDown,
   Star,
+  Plus,
 } from "lucide-react";
 
-import { useAdminMenuItems } from "../../hooks/useAdminMenuItems";
-import { useAdminMenuCategories } from "../../hooks/useAdminMenuCategories";
+import { useAdminMenuItems } from "./hooks/useAdminMenuItems";
+import { useAdminMenuCategories } from "./hooks/useAdminMenuCategories";
 import { formatVND } from "../../utils/adminFormat";
 import AdminMenuItemDetailModal from "./components/AdminMenuItemDetailModal";
 import PaginationBar from "../../Components/PaginationBar";
@@ -23,20 +24,27 @@ import ConfirmModal from "../../Components/ConfirmModal";
 import CategoryManagerPanel from "./components/CategoryManagerPanel";
 import ModifierManagerPanel from "./components/ModifierManagerPanel";
 import { adminMenuApi } from "../../services/adminMenuApi";
+import { SectionLabel } from "@/Components/site/primitives";
 
 const STATUS_META = {
-  available: { label: "Available", className: "bg-green-500/10 text-green-300 border-green-500/20" },
-  unavailable: { label: "Unavailable", className: "bg-yellow-500/10 text-yellow-300 border-yellow-500/20" },
-  sold_out: { label: "Sold out", className: "bg-red-500/10 text-red-300 border-red-500/20" },
+  available: { label: "Có sẵn", className: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20" },
+  unavailable: { label: "Tạm ngưng", className: "bg-amber-500/10 text-amber-500 dark:text-amber-400 border-amber-500/20" },
+  sold_out: { label: "Hết hàng", className: "bg-destructive/10 text-destructive border-destructive/20" },
 };
 
 function StatusPill({ status }) {
-  const meta = STATUS_META[status] || { label: status || "—", className: "bg-white dark:bg-neutral-950/5 text-gray-200 border-white/10" };
+  const meta = STATUS_META[status] || { label: status || "—", className: "bg-muted text-muted-foreground border-border" };
   return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold ${meta.className}`}>
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-full border text-[11px] font-bold tracking-wider uppercase ${meta.className}`}>
       {meta.label}
     </span>
   );
+}
+
+function formatDate(dt) {
+  if (!dt) return "—";
+  const d = new Date(dt);
+  return d.toLocaleDateString("vi-VN");
 }
 
 function MenuItemCard({
@@ -51,50 +59,33 @@ function MenuItemCard({
 }) {
   return (
     <div
-      className="p-4 transition cursor-pointer"
+      className="p-4 transition cursor-pointer hover:bg-accent/40 bg-card border-b border-border/50"
       onClick={onOpenDetail}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-white font-bold truncate flex items-center gap-2">
-            <span>{it.name}</span>
-            {Boolean(it.trackInventory || it.track_inventory) && (
-              Number(it.stockQuantity ?? it.stock_quantity ?? 0) === 0 ? (
-                <span className="text-[10px] bg-red-500/20 text-red-300 border border-red-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
-                  Hết hàng (0)
-                </span>
-              ) : Number(it.stockQuantity ?? it.stock_quantity ?? 0) <= Number(it.lowStockThreshold ?? it.low_stock_threshold ?? 3) ? (
-                <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
-                  ⚠️ Còn {it.stockQuantity ?? it.stock_quantity}
-                </span>
-              ) : (
-                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
-                  📦 Còn {it.stockQuantity ?? it.stock_quantity}
-                </span>
-              )
-            )}
-          </div>
-          <div className="text-xs text-gray-400 mt-1 truncate">{it.categoryName || "—"}</div>
-          <div className="text-[11px] text-gray-500 mt-1">
+          <div className="font-serif font-bold text-foreground truncate text-base">{it.name}</div>
+          <div className="text-xs text-muted-foreground mt-0.5 truncate">{it.categoryName || "—"}</div>
+          <div className="text-[11px] text-muted-foreground/80 mt-1">
             Ngày tạo: {formatDate(it.createdAt || it.created_at)}
           </div>
         </div>
 
         <div className="text-right">
-          <div className="text-white font-black">
+          <div className="font-serif font-bold text-gold text-base">
             {typeof it.price === "number" ? formatVND(it.price) : "—"}
           </div>
-          <div className="text-xs text-gray-500 mt-1">Prep: {it.prepTimeMinutes ?? 0} phút</div>
+          <div className="text-[11px] text-muted-foreground mt-0.5">Prep: {it.prepTimeMinutes ?? 0} phút</div>
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3" onClick={(e) => e.stopPropagation()}>
+      <div className="mt-3 flex flex-wrap items-center gap-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2">
           <ToggleSwitch
             checked={it.status === "available"}
             disabled={statusLoading || it.status === "sold_out"}
             onChange={onToggleStatus}
-            label="Status"
+            label="Trạng thái món"
           />
           <StatusPill status={it.status} />
         </div>
@@ -104,10 +95,10 @@ function MenuItemCard({
             checked={!!it.isChefRecommended}
             disabled={chefLoading}
             onChange={onToggleChef}
-            label="Chef"
+            label="Chef recommend"
           />
-          <span className={`text-xs ${it.isChefRecommended ? "text-orange-300" : "text-gray-500"}`}>
-            {it.isChefRecommended ? "Yes" : "No"}
+          <span className={`text-xs font-medium ${it.isChefRecommended ? "text-gold" : "text-muted-foreground"}`}>
+            {it.isChefRecommended ? "Chef Pick" : "Thường"}
           </span>
         </div>
       </div>
@@ -115,18 +106,18 @@ function MenuItemCard({
       <div className="mt-3 flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
-          className="px-3 py-1.5 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
+          className="min-h-9 px-3 rounded-lg bg-background border border-border text-xs font-medium text-foreground hover:border-gold/40 hover:text-gold transition cursor-pointer"
           onClick={onEdit}
         >
-          Edit
+          Sửa
         </button>
 
         <button
           type="button"
-          className="px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-200 hover:bg-red-500/20"
+          className="min-h-9 px-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium hover:bg-destructive/20 transition cursor-pointer"
           onClick={onDelete}
         >
-          Delete
+          Xoá
         </button>
       </div>
     </div>
@@ -135,26 +126,26 @@ function MenuItemCard({
 
 function MenuItemCardSkeleton() {
   return (
-    <div className="p-4 border-b border-white/5">
+    <div className="p-4 border-b border-border/50 bg-card">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="h-4 w-40 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
-          <div className="mt-2 h-3 w-24 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+          <div className="h-4 w-40 bg-muted/40 rounded-sm animate-pulse" />
+          <div className="mt-2 h-3 w-24 bg-muted/40 rounded-sm animate-pulse" />
         </div>
         <div className="text-right">
-          <div className="h-4 w-20 bg-white dark:bg-neutral-950/5 rounded animate-pulse ml-auto" />
-          <div className="mt-2 h-3 w-16 bg-white dark:bg-neutral-950/5 rounded animate-pulse ml-auto" />
+          <div className="h-4 w-20 bg-muted/40 rounded-sm animate-pulse ml-auto" />
+          <div className="mt-2 h-3 w-16 bg-muted/40 rounded-sm animate-pulse ml-auto" />
         </div>
       </div>
 
       <div className="mt-3 flex gap-3">
-        <div className="h-6 w-28 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse" />
-        <div className="h-6 w-24 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse" />
+        <div className="h-6 w-28 bg-muted/40 rounded-full animate-pulse" />
+        <div className="h-6 w-24 bg-muted/40 rounded-full animate-pulse" />
       </div>
 
       <div className="mt-3 flex justify-end gap-2">
-        <div className="h-8 w-16 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
-        <div className="h-8 w-16 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+        <div className="h-8 w-16 bg-muted/40 rounded-sm animate-pulse" />
+        <div className="h-8 w-16 bg-muted/40 rounded-sm animate-pulse" />
       </div>
     </div>
   );
@@ -162,30 +153,29 @@ function MenuItemCardSkeleton() {
 
 function SkeletonRow() {
   return (
-    <tr className="border-b border-white/5">
-      <td className="py-3 pr-3 pl-4">
-        <div className="h-4 w-40 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
-        <div className="mt-2 h-3 w-24 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+    <tr className="border-b border-border/50">
+      <td className="py-4 pr-3 pl-5">
+        <div className="h-4 w-40 bg-muted/40 rounded-sm animate-pulse" />
+        <div className="mt-2 h-3 w-24 bg-muted/40 rounded-sm animate-pulse" />
       </td>
-      <td className="py-3 px-3">
-        <div className="h-6 w-24 bg-white dark:bg-neutral-950/5 rounded-full animate-pulse" />
+      <td className="py-4 px-3">
+        <div className="h-6 w-24 bg-muted/40 rounded-full animate-pulse" />
       </td>
-      <td className="py-3 px-3">
-        <div className="h-4 w-16 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+      <td className="py-4 px-3">
+        <div className="h-6 w-20 bg-muted/40 rounded-full animate-pulse" />
       </td>
-      <td className="py-3 pl-3 pr-4 text-right">
-        <div className="ml-auto h-4 w-24 bg-white dark:bg-neutral-950/5 rounded animate-pulse" />
+      <td className="py-4 px-3">
+        <div className="h-4 w-16 bg-muted/40 rounded-sm animate-pulse" />
+      </td>
+      <td className="py-4 px-3">
+        <div className="h-8 w-24 bg-muted/40 rounded-sm animate-pulse" />
+      </td>
+      <td className="py-4 pl-3 pr-5 text-right">
+        <div className="ml-auto h-4 w-24 bg-muted/40 rounded-sm animate-pulse" />
       </td>
     </tr>
   );
 }
-
-function formatDate(dt) {
-  if (!dt) return "—";
-  const d = new Date(dt);
-  return d.toLocaleDateString("vi-VN"); // 20/01/2026
-}
-
 
 export default function MenuManagement() {
   const [q, setQ] = useState("");
@@ -207,7 +197,7 @@ export default function MenuManagement() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
 
-  const { toggle: toggleChef, isLoading: toggleLoading } = useToggleChefRecommended();
+  const { toggle: toggleChef } = useToggleChefRecommended();
 
   const toggleStatus = async (it, nextChecked) => {
     const id = it.id;
@@ -221,13 +211,12 @@ export default function MenuManagement() {
 
     try {
       await adminMenuApi.updateMenuItem(id, { status: nextStatus });
-
-      toast.success(`Đã đổi status: ${nextStatus}`);
+      toast.success(`Đã đổi trạng thái: ${nextStatus === "available" ? "Có sẵn" : "Tạm ngưng"}`);
     } catch (err) {
       setUiItems((cur) =>
         cur.map((x) => (x.id === id ? { ...x, status: prevStatus } : x))
       );
-      toast.error(err?.response?.data?.message || "Đổi status thất bại");
+      toast.error(err?.response?.data?.message || "Đổi trạng thái thất bại");
     } finally {
       setStatusMap((m) => {
         const clone = { ...m };
@@ -236,7 +225,6 @@ export default function MenuManagement() {
       });
     }
   };
-
 
   const params = useMemo(
     () => ({
@@ -256,7 +244,7 @@ export default function MenuManagement() {
     isLoading: catLoading,
     refetch: refetchCategories,
   } = useAdminMenuCategories();
-  const { data, isLoading, error, refetch } = useAdminMenuItems(params);
+  const { data, isLoading, refetch } = useAdminMenuItems(params);
 
   const items = data?.items ?? [];
   const pagination = data?.pagination ?? { page, limit, total: 0, totalPages: 1 };
@@ -288,25 +276,17 @@ export default function MenuManagement() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20">
-            <UtensilsCrossed className="w-4 h-4 text-orange-500" />
-            <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
-              Menu Management
-            </span>
-          </div>
+          <SectionLabel icon={UtensilsCrossed}>Menu Catalog</SectionLabel>
 
-          <h1 className="text-2xl md:text-3xl font-black mt-3">
-            Quản lý{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500">
-              menu
-            </span>
+          <h1 className="text-2xl md:text-3xl font-serif font-bold text-foreground mt-2 tracking-tight">
+            Quản lý <span className="text-gold">thực đơn</span>
           </h1>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-300 text-sm">
-            Tổng:{" "}
-            <span className="text-white font-bold">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="px-4 py-2.5 rounded-xl bg-card border border-border text-muted-foreground text-xs">
+            Tổng cộng:{" "}
+            <span className="font-serif font-bold text-gold text-sm">
               {isLoading ? "—" : pagination.total}
             </span>{" "}
             món
@@ -314,68 +294,67 @@ export default function MenuManagement() {
 
           <button
             onClick={() => setOpenCreateItem(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl 
-               bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30 transition"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs min-h-11 cursor-pointer"
           >
-            + New item
+            <Plus size={16} />
+            Thêm món mới
           </button>
 
           <button
             onClick={refreshAll}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl 
-               bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-semibold min-h-11 cursor-pointer"
           >
-            <RefreshCcw size={16} />
-            Refresh
+            <RefreshCcw size={15} />
+            Làm mới
           </button>
         </div>
-
       </div>
 
       {/* Filters */}
-      <div className="mt-6 rounded-2xl bg-neutral-900/60 border border-white/10 p-4">
-        <div className="flex items-start gap-3">
+      <div className="mt-6 rounded-2xl bg-card border border-border p-5 shadow-xs">
+        <div className="flex items-start gap-4">
           <div className="w-full">
-            <div className="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-              <Filter className="text-orange-500" size={18} />
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold">
+                <Filter size={15} />
+              </div>
+              <span className="text-xs uppercase tracking-luxe text-muted-foreground font-semibold">
+                Bộ lọc tìm kiếm
+              </span>
             </div>
 
-            <div className="mt-3 grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
               {/* Search */}
               <div className="md:col-span-4">
-                <label className="text-xs text-gray-400 mb-1 block">Tìm theo tên</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Tìm theo tên</label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                   <input
                     value={q}
                     onChange={(e) => {
                       setQ(e.target.value);
                       resetPage();
                     }}
-                    placeholder="VD: Pasta / Mojito..."
-                    className="w-full bg-neutral-950/60 border border-white/10 rounded-xl pl-10 pr-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition"
+                    placeholder="VD: Wagyu, Pasta, Rượu vang..."
+                    className="w-full bg-background border border-border rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition min-h-11"
                   />
                 </div>
               </div>
 
               {/* Category */}
               <div className="md:col-span-3">
-                <label className="text-xs text-gray-400 mb-1 block">Category</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Danh mục</label>
                 <div className="relative">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  <Tag className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={15} />
                   <select
                     value={categoryId}
                     onChange={(e) => {
                       setCategoryId(e.target.value);
                       resetPage();
                     }}
-                    className="w-full rounded-xl pl-10 pr-3 py-2.5 text-sm
-                              bg-neutral-950 text-white
-                              border border-white/10
-                              focus:outline-none focus:border-orange-500/40 transition
-                              [&>option]:bg-neutral-950 [&>option]:text-white"
+                    className="w-full bg-background border border-border rounded-xl pl-10 pr-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 transition min-h-11 cursor-pointer"
                   >
-                    <option value="ALL">Tất cả</option>
+                    <option value="ALL">Tất cả danh mục</option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
@@ -387,45 +366,37 @@ export default function MenuManagement() {
 
               {/* Status */}
               <div className="md:col-span-3">
-                <label className="text-xs text-gray-400 mb-1 block">Status</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Trạng thái</label>
                 <div className="relative">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  <Tag className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={15} />
                   <select
                     value={status}
                     onChange={(e) => {
                       setStatus(e.target.value);
                       resetPage();
                     }}
-                    className="w-full rounded-xl pl-10 pr-3 py-2.5 text-sm
-                              bg-neutral-950 text-white
-                              border border-white/10
-                              focus:outline-none focus:border-orange-500/40 transition
-                              [&>option]:bg-neutral-950 [&>option]:text-white"
+                    className="w-full bg-background border border-border rounded-xl pl-10 pr-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 transition min-h-11 cursor-pointer"
                   >
-                    <option value="ALL">Tất cả</option>
-                    <option value="available">Available</option>
-                    <option value="unavailable">Unavailable</option>
-                    <option value="sold_out">Sold out</option>
+                    <option value="ALL">Tất cả trạng thái</option>
+                    <option value="available">Có sẵn</option>
+                    <option value="unavailable">Tạm ngưng</option>
+                    <option value="sold_out">Hết hàng</option>
                   </select>
                 </div>
               </div>
 
               {/* Sort */}
               <div className="md:col-span-2">
-                <label className="text-xs text-gray-400 mb-1 block">Sort</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Sắp xếp</label>
                 <div className="relative">
-                  <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  <ArrowUpDown className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={15} />
                   <select
                     value={sort}
                     onChange={(e) => {
                       setSort(e.target.value);
                       resetPage();
                     }}
-                    className="w-full rounded-xl pl-10 pr-3 py-2.5 text-sm
-                              bg-neutral-950 text-white
-                              border border-white/10
-                              focus:outline-none focus:border-orange-500/40 transition
-                              [&>option]:bg-neutral-950 [&>option]:text-white"
+                    className="w-full bg-background border border-border rounded-xl pl-10 pr-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 transition min-h-11 cursor-pointer"
                   >
                     <option value="NEWEST">Mới nhất</option>
                     <option value="OLDEST">Cũ nhất</option>
@@ -439,24 +410,24 @@ export default function MenuManagement() {
               </div>
 
               {/* Chef */}
-              <div className="md:col-span-12 flex items-center justify-between gap-3 pt-1">
+              <div className="md:col-span-12 flex items-center justify-between gap-3 pt-2 border-t border-border mt-1">
                 <button
                   type="button"
                   onClick={() => {
                     setChefOnly((v) => !v);
                     resetPage();
                   }}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border transition
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl border text-xs font-medium transition cursor-pointer min-h-10
                     ${chefOnly
-                      ? "bg-orange-500/15 border-orange-500/30 text-orange-200"
-                      : "bg-white dark:bg-neutral-950/5 border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"}`}
+                      ? "bg-gold/15 border-gold/40 text-gold"
+                      : "bg-background border-border text-foreground hover:border-gold/40 hover:text-gold"}`}
                 >
-                  <Star size={16} className={chefOnly ? "text-orange-400" : "text-gray-400"} />
-                  Chef recommended
+                  <Star size={15} className={chefOnly ? "text-gold fill-gold" : "text-muted-foreground"} />
+                  Chỉ món Chef khuyên dùng
                 </button>
 
-                <div className="text-xs text-gray-400">
-                  {catLoading ? "Đang tải categories..." : `Có ${categories.length} categories`}
+                <div className="text-xs text-muted-foreground">
+                  {catLoading ? "Đang tải danh mục..." : `${categories.length} danh mục khả dụng`}
                 </div>
               </div>
             </div>
@@ -465,75 +436,55 @@ export default function MenuManagement() {
       </div>
 
       {/* Table */}
-      <div className="mt-6 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
-        <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-          <div className="text-white font-bold">Danh sách menu items</div>
-          <div className="text-xs text-gray-400">Click 1 dòng để xem chi tiết</div>
+      <div className="mt-6 rounded-2xl bg-card border border-border overflow-hidden shadow-xs">
+        <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+          <div className="font-serif font-bold text-foreground text-base">Danh sách món ăn</div>
+          <div className="text-xs text-muted-foreground">Nhấp vào dòng để xem chi tiết & modifiers</div>
         </div>
 
         <div className="hidden sm:block overflow-x-auto">
           <table className="w-full min-w-245">
-            <thead className="bg-neutral-950/60 border-b border-white/10">
-              <tr className="text-left text-xs text-gray-400">
-                <th className="py-3 pr-3 pl-4 w-[40%]">Món / Category</th>
-                <th className="py-3 px-3 w-[15%]">Status</th>
-                <th className="py-3 px-3 w-[12%]">Chef</th>
-                <th className="py-3 px-3 w-[13%]">Ngày tạo</th>
-                <th className="py-3 px-3 w-[10%]">Actions</th>
-                <th className="py-3 pl-3 pr-4 text-right w-[10%]">Giá</th>
+            <thead className="bg-secondary/30 border-b border-border">
+              <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                <th className="py-3.5 pr-3 pl-5 w-[38%]">Món / Danh mục</th>
+                <th className="py-3.5 px-3 w-[16%]">Trạng thái</th>
+                <th className="py-3.5 px-3 w-[14%]">Chef Pick</th>
+                <th className="py-3.5 px-3 w-[12%]">Ngày tạo</th>
+                <th className="py-3.5 px-3 w-[10%] text-center">Thao tác</th>
+                <th className="py-3.5 pl-3 pr-5 text-right w-[10%]">Đơn giá</th>
               </tr>
             </thead>
 
-            <tbody>
+            <tbody className="divide-y divide-border/40">
               {isLoading
                 ? Array.from({ length: limit }).slice(0, 8).map((_, i) => <SkeletonRow key={i} />)
                 : uiItems.map((it) => (
                   <tr
                     key={it.id}
                     onClick={() => setDetailItem(it)}
-                    className="border-b border-white/5 hover:bg-white dark:bg-neutral-950/5 transition cursor-pointer"
+                    className="hover:bg-accent/40 transition cursor-pointer group"
                   >
-                    <td className="py-3 pr-3 pl-4 align-top">
-                      <div className="flex items-center gap-2">
-                        <span className="text-white font-bold">{it.name}</span>
-                        {Boolean(it.trackInventory || it.track_inventory) && (
-                          Number(it.stockQuantity ?? it.stock_quantity ?? 0) === 0 ? (
-                            <span className="text-[10px] bg-red-500/20 text-red-300 border border-red-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
-                              Hết hàng (0)
-                            </span>
-                          ) : Number(it.stockQuantity ?? it.stock_quantity ?? 0) <= Number(it.lowStockThreshold ?? it.low_stock_threshold ?? 3) ? (
-                            <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
-                              ⚠️ Còn {it.stockQuantity ?? it.stock_quantity}
-                            </span>
-                          ) : (
-                            <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-medium shrink-0">
-                              📦 Còn {it.stockQuantity ?? it.stock_quantity}
-                            </span>
-                          )
-                        )}
-                      </div>
-                      <div className="text-xs text-gray-400 mt-1">{it.categoryName || "—"}</div>
+                    <td className="py-4 pr-3 pl-5 align-top">
+                      <div className="font-serif font-bold text-foreground group-hover:text-gold transition text-base">{it.name}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">{it.categoryName || "—"}</div>
                     </td>
 
                     <td
-                      className="py-3 px-3 align-top"
+                      className="py-4 px-3 align-top"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <div className="flex items-center gap-3">
-
-                        <div className="flex items-center gap-2">
-                          <ToggleSwitch
-                            checked={it.status === "available"}
-                            disabled={!!statusMap[it.id] || it.status === "sold_out"}
-                            onChange={(nextChecked) => toggleStatus(it, nextChecked)}
-                            label="Status"
-                          />
-                          <StatusPill status={it.status} />
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <ToggleSwitch
+                          checked={it.status === "available"}
+                          disabled={!!statusMap[it.id] || it.status === "sold_out"}
+                          onChange={(nextChecked) => toggleStatus(it, nextChecked)}
+                          label="Trạng thái món"
+                        />
+                        <StatusPill status={it.status} />
                       </div>
                     </td>
 
-                    <td className="py-3 px-3 align-top">
+                    <td className="py-4 px-3 align-top">
                       <div
                         className="inline-flex items-center gap-2"
                         onClick={(e) => e.stopPropagation()}
@@ -545,7 +496,6 @@ export default function MenuManagement() {
                             const id = it.id;
                             const prev = !!it.isChefRecommended;
 
-                            // optimistic UI
                             setUiItems((cur) =>
                               cur.map((x) =>
                                 x.id === id ? { ...x, isChefRecommended: next } : x
@@ -555,7 +505,7 @@ export default function MenuManagement() {
 
                             try {
                               await toggleChef(id, next);
-                            } catch (err) {
+                            } catch {
                               setUiItems((cur) =>
                                 cur.map((x) =>
                                   x.id === id ? { ...x, isChefRecommended: prev } : x
@@ -573,56 +523,55 @@ export default function MenuManagement() {
                         />
 
                         <span
-                          className={`text-xs ${it.isChefRecommended ? "text-orange-300" : "text-gray-500"
-                            }`}
+                          className={`text-xs font-medium ${
+                            it.isChefRecommended ? "text-gold" : "text-muted-foreground"
+                          }`}
                         >
-                          {it.isChefRecommended ? "Yes" : "No"}
+                          {it.isChefRecommended ? "Có" : "Không"}
                         </span>
                       </div>
                     </td>
 
-                    <td className="py-3 px-3 align-top">
-                      <div className="text-sm text-gray-200">
+                    <td className="py-4 px-3 align-top">
+                      <div className="text-xs text-foreground">
                         {formatDate(it.createdAt || it.created_at)}
                       </div>
                     </td>
 
                     <td
-                      className="py-3 px-3 align-top"
+                      className="py-4 px-3 align-top text-center"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <div className="inline-flex items-center gap-2 justify-end"
-                        onClick={(e) => e.stopPropagation()}>
+                      <div className="inline-flex items-center gap-1.5 justify-center">
                         <button
                           type="button"
-                          className="px-3 py-1.5 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
+                          className="px-2.5 py-1 rounded-lg bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-medium cursor-pointer"
                           onClick={() => {
                             setEditItem(it);
                             setEditOpen(true);
                           }}
                         >
-                          Edit
+                          Sửa
                         </button>
 
                         <button
                           type="button"
-                          className="px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-200 hover:bg-red-500/20"
+                          className="px-2.5 py-1 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive hover:bg-destructive/20 transition text-xs font-medium cursor-pointer"
                           onClick={() => {
                             setDeleteItem(it);
                             setConfirmOpen(true);
                           }}
                         >
-                          Delete
+                          Xoá
                         </button>
                       </div>
                     </td>
 
-
-                    <td className="py-3 pl-3 pr-4 align-top text-right">
-                      <div className="text-white font-bold">
+                    <td className="py-4 pl-3 pr-5 align-top text-right">
+                      <div className="font-serif font-bold text-gold text-base">
                         {typeof it.price === "number" ? formatVND(it.price) : "—"}
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-[11px] text-muted-foreground mt-0.5">
                         Prep: {it.prepTimeMinutes ?? 0} phút
                       </div>
                     </td>
@@ -631,10 +580,10 @@ export default function MenuManagement() {
 
               {!isLoading && items.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-10 text-center">
-                    <div className="text-white font-bold">Không có món phù hợp</div>
-                    <div className="text-gray-400 text-sm mt-1">
-                      Thử đổi filter hoặc từ khóa tìm kiếm.
+                  <td colSpan={6} className="py-12 text-center">
+                    <div className="font-serif font-bold text-foreground text-base">Không có món phù hợp</div>
+                    <div className="text-muted-foreground text-xs mt-1">
+                      Thử đổi bộ lọc hoặc từ khóa tìm kiếm.
                     </div>
                   </td>
                 </tr>
@@ -643,7 +592,7 @@ export default function MenuManagement() {
           </table>
         </div>
 
-        <div className="sm:hidden divide-y divide-white/10">
+        <div className="sm:hidden divide-y divide-border/50">
           {isLoading
             ? Array.from({ length: 6 }).map((_, i) => <MenuItemCardSkeleton key={i} />)
             : uiItems.map((it) => (
@@ -725,7 +674,7 @@ export default function MenuManagement() {
         danger
         title="Xoá món ăn"
         description={`Bạn có chắc muốn xoá món "${deleteItem?.name}" không?`}
-        confirmText="Xoá"
+        confirmText="Xoá món"
         cancelText="Huỷ"
         loading={deleting}
         onClose={() => {
@@ -738,7 +687,7 @@ export default function MenuManagement() {
             setDeleting(true);
             await adminMenuApi.deleteMenuItem(deleteItem.id);
             setUiItems((cur) => cur.filter((x) => x.id !== deleteItem.id));
-            toast.success("Đã xoá món");
+            toast.success("Đã xoá món ăn thành công");
             setConfirmOpen(false);
             setDeleteItem(null);
           } catch (e) {

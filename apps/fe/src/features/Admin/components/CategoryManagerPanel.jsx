@@ -3,12 +3,12 @@ import { toast } from "react-toastify";
 import ConfirmModal from "../../../Components/ConfirmModal";
 import CreateCategoryModal from "./CreateCategoryModal";
 import { adminMenuApi } from "../../../services/adminMenuApi";
-import { Archive, RefreshCcw, Search } from "lucide-react";
+import { Archive, RefreshCcw, Search, Plus } from "lucide-react";
 
 function Field({ label, children }) {
   return (
     <div>
-      <div className="text-xs text-gray-400 mb-1">{label}</div>
+      <div className="text-xs text-muted-foreground mb-1 font-medium">{label}</div>
       {children}
     </div>
   );
@@ -31,10 +31,8 @@ function CategoryEditModal({ open, initial, onClose, onSuccess }) {
 
   useEffect(() => {
     if (!open) return;
-
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
     return () => {
       document.body.style.overflow = prev || "";
     };
@@ -45,18 +43,17 @@ function CategoryEditModal({ open, initial, onClose, onSuccess }) {
   return (
     <ConfirmModal
       open={open}
-      title="Sửa category"
-      confirmText="Lưu"
+      title="Chỉnh sửa danh mục"
+      confirmText="Lưu thay đổi"
       cancelText="Huỷ"
       loading={loading}
       description={
-        <div className="space-y-3">
-          <Field label="Tên">
+        <div className="space-y-3 mt-3">
+          <Field label="Tên danh mục">
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white
-              focus:outline-none focus:border-orange-500/40"
+              className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
             />
           </Field>
 
@@ -64,34 +61,28 @@ function CategoryEditModal({ open, initial, onClose, onSuccess }) {
             <input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white
-              focus:outline-none focus:border-orange-500/40"
+              className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
             />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Display order">
+            <Field label="Thứ tự hiển thị">
               <input
                 type="number"
                 value={displayOrder}
                 onChange={(e) => setDisplayOrder(Number(e.target.value || 0))}
-                className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white
-                focus:outline-none focus:border-orange-500/40"
+                className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
               />
             </Field>
 
-            <Field label="Status">
+            <Field label="Trạng thái">
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full rounded-xl px-3 py-2.5 text-sm
-                           bg-neutral-950 text-white
-                           border border-white/10
-                           focus:outline-none focus:border-orange-500/40 transition
-                           [&>option]:bg-neutral-900 [&>option]:text-white"
+                className="w-full rounded-xl px-3.5 py-2 text-xs bg-background text-foreground border border-border focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
               >
-                <option value="active">active</option>
-                <option value="inactive">inactive</option>
+                <option value="active">Hoạt động (active)</option>
+                <option value="inactive">Ngưng hoạt động (inactive)</option>
               </select>
             </Field>
           </div>
@@ -103,8 +94,8 @@ function CategoryEditModal({ open, initial, onClose, onSuccess }) {
       }}
       onConfirm={async () => {
         try {
-          if (!initial?.id) return toast.error("Thiếu category id");
-          if (!name.trim()) return toast.error("Tên category không được rỗng");
+          if (!initial?.id) return toast.error("Thiếu ID danh mục");
+          if (!name.trim()) return toast.error("Tên danh mục không được để trống");
 
           setLoading(true);
 
@@ -116,7 +107,7 @@ function CategoryEditModal({ open, initial, onClose, onSuccess }) {
           };
 
           await adminMenuApi.updateCategory(initial.id, payload);
-          toast.success("Đã cập nhật category");
+          toast.success("Đã cập nhật danh mục thành công");
           onSuccess?.();
         } catch (e) {
           toast.error(e?.response?.data?.message || "Thao tác thất bại");
@@ -139,12 +130,10 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
   const [openEdit, setOpenEdit] = useState(false);
   const [editCat, setEditCat] = useState(null);
 
-  // ===== DELETE STATE (updated) =====
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteCat, setDeleteCat] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  // when backend says "category còn món" -> require moveToCategoryId
   const [requireMove, setRequireMove] = useState(false);
   const [moveToCategoryId, setMoveToCategoryId] = useState("");
 
@@ -155,8 +144,8 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
         status: statusFilter !== "ALL" ? statusFilter : undefined,
       });
       setCategories(res?.categories || res || []);
-    } catch (e) {
-      toast.error("Không tải được categories");
+    } catch {
+      toast.error("Không tải được danh sách danh mục");
     } finally {
       setLoading(false);
     }
@@ -188,8 +177,6 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
     onReloadMenuItems?.();
   };
 
-  // Try delete without moveToCategoryId first.
-  // If backend says need move -> switch UI to requireMove.
   const handleDeleteConfirm = async () => {
     if (!deleteCat?.id) return;
 
@@ -197,34 +184,29 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
       setDeleting(true);
 
       if (!requireMove) {
-        // ✅ attempt delete directly
-        await adminMenuApi.deleteCategory(deleteCat.id); // no body
-        toast.success("Đã xoá category");
+        await adminMenuApi.deleteCategory(deleteCat.id);
+        toast.success("Đã xoá danh mục");
         closeDeleteModal();
         await afterDeleted();
         return;
       }
 
-      // requireMove mode
       if (!moveToCategoryId) {
-        toast.error("Vui lòng chọn category thay thế");
+        toast.error("Vui lòng chọn danh mục thay thế");
         return;
       }
 
       await adminMenuApi.deleteCategory(deleteCat.id, { moveToCategoryId });
-      toast.success("Đã xoá category & chuyển món");
+      toast.success("Đã xoá danh mục & chuyển món");
       closeDeleteModal();
       await afterDeleted();
     } catch (e) {
-      const msg = e?.response?.data?.message || "Không thể xoá category";
-
-      // ✅ backend message indicates category still has items and needs move
-      const needMove =
-        /chọn category thay thế|còn món|chuyển món/i.test(String(msg));
+      const msg = e?.response?.data?.message || "Không thể xoá danh mục";
+      const needMove = /chọn category thay thế|còn món|chuyển món/i.test(String(msg));
 
       if (needMove) {
         setRequireMove(true);
-        toast.info("Category còn món — hãy chọn category thay thế để chuyển món trước khi xoá.");
+        toast.info("Danh mục còn món ăn — hãy chọn danh mục thay thế để chuyển món trước khi xoá.");
       } else {
         toast.error(msg);
       }
@@ -234,102 +216,98 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
   };
 
   return (
-    <div className="mt-6 rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 overflow-hidden">
-      <div className="px-4 py-3 border-b border-white/10 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div className="flex gap-2 items-center">
-          <div className="w-9 h-9 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-            <Archive className="text-orange-500" size={18} />
+    <div className="mt-8 rounded-2xl bg-card border border-border overflow-hidden shadow-xs">
+      <div className="px-5 py-4 border-b border-border flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex gap-3 items-center">
+          <div className="w-10 h-10 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold">
+            <Archive size={18} />
           </div>
-          <div className="min-w-0">
-            <div className="text-white font-bold leading-tight">Category</div>
-            <div className="text-xs text-gray-400">
-              {loading ? "Đang tải..." : `Có ${categories.length} categories`}
+          <div>
+            <div className="font-serif font-bold text-foreground text-base leading-tight">Danh mục thực đơn</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              {loading ? "Đang tải..." : `${categories.length} danh mục đã tạo`}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={15} />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Tìm theo tên category..."
-              className="w-full bg-neutral-950/60 border border-white/10 rounded-xl pl-10 pr-3 py-2.5 text-sm
-              text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition"
+              placeholder="Tìm danh mục..."
+              className="bg-background border border-border rounded-xl pl-9 pr-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50 min-h-10"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white 
-                       focus:outline-none focus:border-orange-500/40
-                       [&>option]:bg-neutral-900 [&>option]:text-white"
+            className="bg-background border border-border rounded-xl px-3 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-10 cursor-pointer"
           >
-            <option value="ALL">ALL</option>
-            <option value="active">active</option>
-            <option value="inactive">inactive</option>
+            <option value="ALL">Tất cả</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
           </select>
 
           <button
             onClick={() => setOpenCreate(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30 transition"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs min-h-10 cursor-pointer"
           >
-            + Category
+            <Plus size={15} />
+            Thêm danh mục
           </button>
           <button
             onClick={() => fetchCategories()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-              bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-medium min-h-10 cursor-pointer"
           >
-            <RefreshCcw size={16} />
-            Refresh
+            <RefreshCcw size={14} />
+            Làm mới
           </button>
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="p-5">
         {loading ? (
-          <div className="text-gray-400 text-sm">Đang tải...</div>
+          <div className="text-muted-foreground text-xs py-4 text-center">Đang tải danh mục...</div>
         ) : filtered.length === 0 ? (
-          <div className="text-gray-400 text-sm">Không có category</div>
+          <div className="text-muted-foreground text-xs py-4 text-center">Không tìm thấy danh mục phù hợp</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
             {filtered.map((c) => (
               <div
                 key={c.id}
-                className="rounded-xl bg-neutral-950/60 border border-white/10 p-4 flex items-center justify-between"
+                className="rounded-xl bg-background border border-border p-4 flex items-center justify-between hover:border-gold/30 transition group"
               >
                 <div>
-                  <div className="text-white font-bold">{c.name}</div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {c.status} • order {c.display_order ?? 0}
+                  <div className="font-serif font-bold text-foreground text-base group-hover:text-gold transition">{c.name}</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
+                    Trạng thái: <span className="font-medium text-foreground">{c.status}</span> • Thứ tự: {c.display_order ?? 0}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <button
-                    className="px-3 py-1.5 rounded-lg bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10"
+                    className="px-2.5 py-1 rounded-lg bg-card border border-border text-xs font-medium text-foreground hover:border-gold/40 hover:text-gold transition cursor-pointer"
                     onClick={() => {
                       setEditCat(c);
                       setOpenEdit(true);
                     }}
                   >
-                    Edit
+                    Sửa
                   </button>
 
                   <button
-                    className="px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-200 hover:bg-red-500/20"
+                    className="px-2.5 py-1 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium hover:bg-destructive/20 transition cursor-pointer"
                     onClick={() => {
                       setDeleteCat(c);
                       setMoveToCategoryId("");
-                      setRequireMove(false); // reset mode
+                      setRequireMove(false);
                       setConfirmOpen(true);
                     }}
                   >
-                    Delete
+                    Xoá
                   </button>
                 </div>
               </div>
@@ -364,38 +342,35 @@ export default function CategoryManagerPanel({ onReloadMenuItems, onReloadCatego
         }}
       />
 
-      {/* ✅ Delete modal updated */}
       <ConfirmModal
         open={confirmOpen}
         danger
-        title="Xoá category"
-        confirmText={requireMove ? "Chuyển & xoá" : "Xoá"}
+        title="Xoá danh mục"
+        confirmText={requireMove ? "Chuyển món & xoá" : "Xoá danh mục"}
         cancelText="Huỷ"
         loading={deleting}
         description={
-          <div className="space-y-3">
-            <div className="text-gray-200">
-              Bạn có chắc muốn xoá "<b>{deleteCat?.name}</b>" không?
+          <div className="space-y-3 mt-2">
+            <div className="text-foreground text-sm">
+              Bạn có chắc muốn xoá danh mục "<b>{deleteCat?.name}</b>" không?
             </div>
 
             {!requireMove ? (
-              <div className="text-xs text-gray-400">
-                Hệ thống sẽ tự kiểm tra: nếu category còn món, bạn sẽ được yêu cầu chọn category thay thế.
+              <div className="text-xs text-muted-foreground">
+                Hệ thống sẽ tự kiểm tra: nếu danh mục còn món, bạn sẽ được yêu cầu chọn danh mục thay thế.
               </div>
             ) : (
               <>
-                <div className="text-xs text-gray-400">
-                  Category này còn menu items. Hãy chọn category thay thế để chuyển món sang trước khi xoá.
+                <div className="text-xs text-destructive font-medium">
+                  Danh mục này còn món ăn. Hãy chọn danh mục thay thế để chuyển món sang trước khi xoá.
                 </div>
 
                 <select
                   value={moveToCategoryId}
                   onChange={(e) => setMoveToCategoryId(e.target.value)}
-                  className="w-full bg-neutral-950 text-white border border-white/10 rounded-xl px-3 py-2.5 text-sm
-                         focus:outline-none focus:border-orange-500/40
-                         [&>option]:bg-neutral-900 [&>option]:text-white"
+                  className="w-full bg-background text-foreground border border-border rounded-xl px-3.5 py-2 text-xs focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                 >
-                  <option value="">-- Chọn category thay thế --</option>
+                  <option value="">-- Chọn danh mục thay thế --</option>
                   {categories
                     .filter((x) => x.id !== deleteCat?.id)
                     .map((x) => (

@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Check } from "lucide-react";
 
 export default function MultiSelectCombobox({
-  options = [],            // [{ value, label, subLabel? }]
-  value = [],              // array of value
+  options = [],
+  value = [],
   onChange,
-  placeholder = "Chọn...",
+  placeholder = "Chọn lựa chọn...",
   disabled = false,
   maxHeight = 260,
 }) {
@@ -59,7 +59,7 @@ export default function MultiSelectCombobox({
         type="button"
         disabled={disabled}
         onClick={() => setOpen((s) => !s)}
-        className="w-full flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-neutral-950/60 px-3 py-2.5 text-sm text-white hover:bg-white dark:bg-neutral-950/5 transition disabled:opacity-60"
+        className="w-full flex items-center justify-between gap-2 rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground hover:border-gold/40 transition disabled:opacity-50 min-h-11 cursor-pointer"
       >
         <div className="flex-1 text-left">
           {selectedLabels.length ? (
@@ -67,51 +67,51 @@ export default function MultiSelectCombobox({
               {selectedLabels.slice(0, 3).map((t) => (
                 <span
                   key={t}
-                  className="inline-flex items-center rounded-lg border border-white/10 bg-white dark:bg-neutral-950/5 px-2 py-1 text-xs text-gray-200"
+                  className="inline-flex items-center rounded-lg border border-border bg-card px-2 py-0.5 text-[11px] text-foreground font-medium"
                 >
                   {t}
                 </span>
               ))}
               {selectedLabels.length > 3 ? (
-                <span className="text-xs text-gray-400">
+                <span className="text-[11px] text-muted-foreground self-center">
                   +{selectedLabels.length - 3} nữa
                 </span>
               ) : null}
             </div>
           ) : (
-            <span className="text-gray-500">{placeholder}</span>
+            <span className="text-muted-foreground">{placeholder}</span>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
           {selectedLabels.length ? (
             <span
               onClick={clearAll}
-              className="p-1 rounded-lg hover:bg-white dark:bg-neutral-950/10 transition"
-              aria-label="Clear"
+              className="p-1 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition cursor-pointer"
+              aria-label="Xóa chọn"
               role="button"
             >
-              <X size={14} className="text-gray-300" />
+              <X size={13} />
             </span>
           ) : null}
-          <ChevronDown size={18} className="text-gray-300" />
+          <ChevronDown size={15} className="text-muted-foreground" />
         </div>
       </button>
 
       {/* Dropdown */}
       {open ? (
-        <div className="absolute z-50 mt-2 w-full rounded-2xl border border-white/10 bg-neutral-950 shadow-2xl overflow-hidden">
-          <div className="p-2 border-b border-white/10">
+        <div className="absolute z-50 mt-2 w-full rounded-2xl border border-border bg-card shadow-2xl overflow-hidden animate-scale-in">
+          <div className="p-3 border-b border-border bg-secondary/20">
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Tìm modifier group..."
-              className="w-full rounded-xl border border-white/10 bg-white dark:bg-neutral-950/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40"
+              placeholder="Tìm kiếm..."
+              className="w-full rounded-xl border border-border bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50"
             />
           </div>
 
           <div
-            className="overflow-auto"
+            className="overflow-auto divide-y divide-border/30"
             style={{ maxHeight }}
           >
             {filtered.length ? (
@@ -122,20 +122,23 @@ export default function MultiSelectCombobox({
                     key={o.value}
                     type="button"
                     onClick={() => toggle(o.value)}
-                    className="w-full text-left px-3 py-2.5 hover:bg-white dark:bg-neutral-950/5 transition flex items-start gap-3"
+                    className="w-full text-left px-3.5 py-2.5 hover:bg-accent/40 transition flex items-start gap-3 cursor-pointer"
                   >
                     <div
-                      className={`mt-1 h-4 w-4 rounded border ${checked
-                          ? "bg-orange-500/30 border-orange-500/40"
-                          : "bg-transparent border-white/20"
-                        }`}
-                    />
+                      className={`mt-0.5 h-4 w-4 rounded-sm border flex items-center justify-center shrink-0 transition ${
+                        checked
+                          ? "bg-gold border-gold text-ink"
+                          : "bg-transparent border-border"
+                      }`}
+                    >
+                      {checked && <Check size={11} strokeWidth={3} />}
+                    </div>
                     <div className="flex-1">
-                      <div className="text-sm text-white font-semibold">
+                      <div className="text-xs text-foreground font-medium">
                         {o.label}
                       </div>
                       {o.subLabel ? (
-                        <div className="text-xs text-gray-400 mt-0.5">
+                        <div className="text-[11px] text-muted-foreground mt-0.5">
                           {o.subLabel}
                         </div>
                       ) : null}
@@ -144,22 +147,22 @@ export default function MultiSelectCombobox({
                 );
               })
             ) : (
-              <div className="px-3 py-3 text-sm text-gray-500">
-                Không có kết quả
+              <div className="px-3.5 py-4 text-xs text-muted-foreground text-center">
+                Không tìm thấy kết quả phù hợp
               </div>
             )}
           </div>
 
-          <div className="p-2 border-t border-white/10 flex items-center justify-between">
-            <div className="text-xs text-gray-500">
-              Đã chọn: {(value || []).length}
+          <div className="p-3 border-t border-border flex items-center justify-between bg-card">
+            <div className="text-[11px] text-muted-foreground">
+              Đã chọn: <span className="font-bold text-foreground font-serif">{(value || []).length}</span>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-3 py-1.5 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition text-xs"
+              className="px-3 py-1 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs cursor-pointer"
             >
-              Xong
+              Hoàn tất
             </button>
           </div>
         </div>

@@ -6,9 +6,9 @@ import ToggleSwitch from "../../../Components/ToggleSwitch";
 
 function Row({ label, value }) {
   return (
-    <div className="flex items-start justify-between gap-3 py-2 border-b border-white/5">
-      <div className="text-xs text-gray-400">{label}</div>
-      <div className="text-sm text-white font-semibold text-right break-all">
+    <div className="flex items-start justify-between gap-3 py-3 border-b border-border/50">
+      <div className="text-xs text-muted-foreground font-medium">{label}</div>
+      <div className="text-xs text-foreground font-semibold text-right break-all">
         {value ?? "—"}
       </div>
     </div>
@@ -30,8 +30,8 @@ function AvatarBlock({ name, avatarUrl }) {
   }, [avatarUrl]);
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="w-26 h-26 rounded-full overflow-hidden border border-white/10 bg-white dark:bg-neutral-950/5 flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3 py-2">
+      <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gold/30 bg-background flex items-center justify-center shadow-xs">
         {avatarUrl && imgOk ? (
           <img
             src={avatarUrl}
@@ -40,32 +40,30 @@ function AvatarBlock({ name, avatarUrl }) {
             onError={() => setImgOk(false)}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-3xl font-black text-orange-200">
+          <div className="w-full h-full flex items-center justify-center text-2xl font-serif font-bold text-gold">
             {initial}
           </div>
         )}
       </div>
 
       <div className="text-center">
-        <div className="text-white font-black text-lg">{name || "—"}</div>
-        <div className="text-gray-400 text-sm">{avatarUrl ? "Avatar" : "No avatar"}</div>
+        <div className="font-serif font-bold text-foreground text-xl">{name || "—"}</div>
+        <div className="text-muted-foreground text-xs">{avatarUrl ? "Ảnh đại diện tùy chỉnh" : "Ảnh mặc định"}</div>
       </div>
     </div>
   );
 }
 
 const ROLE_OPTIONS = [
-  { value: "admin", label: "admin" },
-  { value: "waiter", label: "waiter" },
-  { value: "kitchen", label: "kitchen" },
-  // customer: không cho edit
+  { value: "admin", label: "Quản trị viên (admin)" },
+  { value: "waiter", label: "Phục vụ (waiter)" },
+  { value: "kitchen", label: "Bếp (kitchen)" },
 ];
 
 export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
   const [loadingActive, setLoadingActive] = useState(false);
   const [activeLocal, setActiveLocal] = useState(true);
 
-  // ====== EDIT STATE ======
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -77,7 +75,6 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
 
   useEffect(() => {
     if (!item) return;
-    // ✅ DB field: is_actived
     setActiveLocal(Boolean(item.is_actived));
     setDraft({
       name: item.name ?? "",
@@ -87,10 +84,8 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
     setSaving(false);
   }, [item]);
 
-  // lock scroll (an toàn hơn: lock cả html)
   useEffect(() => {
     if (!open) return;
-
     const html = document.documentElement;
     const prevHtml = html.style.overflow;
     const prevBody = document.body.style.overflow;
@@ -108,25 +103,17 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
 
   const setActive = async (next) => {
     if (!item?.id) return;
-
     const prev = activeLocal;
-
-    // optimistic
     setActiveLocal(next);
     setLoadingActive(true);
 
     try {
-      // ✅ payload đúng DB field
-      // Nếu service của bạn là setActived(id, nextBool) thì đổi lại cho đúng
       const res = await adminAccountApi.setActived(item.id, next);
-
-      // tuỳ backend trả về {item} hay trả thẳng user
       const updated = res?.item || res || { ...item, is_actived: next };
       const finalValue = Boolean(updated?.is_actived);
 
       setActiveLocal(finalValue);
       toast.success(finalValue ? "Đã kích hoạt tài khoản" : "Đã vô hiệu hoá tài khoản");
-
       onUpdated?.(updated);
     } catch (e) {
       setActiveLocal(prev);
@@ -168,9 +155,8 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
     setSaving(true);
     try {
       const res = await adminAccountApi.updateAccount(item.id, payload);
-      toast.success("Đã cập nhật tài khoản");
+      toast.success("Đã cập nhật tài khoản thành công");
       setEditing(false);
-
       onUpdated?.(res?.item || { ...item, ...payload });
     } catch (e) {
       toast.error(e?.response?.data?.message || "Cập nhật thất bại");
@@ -181,36 +167,34 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
 
   return (
     <div className="fixed inset-0 z-50">
-      {/* overlay */}
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+      <div className="absolute inset-0 bg-ink/70 backdrop-blur-xs" onClick={onClose} />
 
-      {/* modal */}
       <div className="absolute inset-0 flex items-center justify-center px-4">
         <div
-          className="w-full max-w-xl rounded-2xl bg-neutral-950 border border-white/10 shadow-xl overflow-hidden"
-          onClick={(e) => e.stopPropagation()} // ✅ để click trong modal không bị overlay nuốt
+          className="w-full max-w-xl rounded-3xl bg-card border border-border shadow-2xl overflow-hidden animate-scale-in"
+          onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-white font-bold">
-              <div className="w-9 h-9 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-                <User className="text-orange-500" size={18} />
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold">
+                <User size={18} />
               </div>
-              Account detail
+              <div className="font-serif font-bold text-foreground text-lg">Chi tiết tài khoản</div>
             </div>
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl hover:bg-white dark:bg-neutral-950/5 transition"
+              className="min-h-11 min-w-11 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition flex items-center justify-center cursor-pointer"
               type="button"
               aria-label="Close"
             >
-              <X className="text-gray-300" size={18} />
+              <X size={18} />
             </button>
           </div>
 
           {/* Body */}
-          <div className="p-4 space-y-4">
+          <div className="p-6 space-y-5">
             <AvatarBlock name={item.name} avatarUrl={item.avatar_url} />
 
             {/* Edit actions */}
@@ -220,10 +204,10 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
                   <button
                     type="button"
                     onClick={startEdit}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+                    className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-background border border-border text-xs font-semibold text-foreground hover:border-gold/40 hover:text-gold transition cursor-pointer"
                   >
-                    <Pencil size={16} />
-                    Edit
+                    <Pencil size={14} />
+                    Chỉnh sửa
                   </button>
                 ) : (
                   <>
@@ -231,36 +215,34 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
                       type="button"
                       onClick={cancelEdit}
                       disabled={saving}
-                      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition disabled:opacity-60"
+                      className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-background border border-border text-xs font-semibold text-muted-foreground hover:text-foreground transition cursor-pointer disabled:opacity-50"
                     >
-                      <Ban size={16} />
-                      Cancel
+                      <Ban size={14} />
+                      Huỷ
                     </button>
                     <button
                       type="button"
                       onClick={saveEdit}
                       disabled={saving}
-                      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30 transition disabled:opacity-60"
+                      className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs cursor-pointer disabled:opacity-50"
                     >
-                      <Save size={16} />
-                      {saving ? "Saving..." : "Save"}
+                      <Save size={14} />
+                      {saving ? "Đang lưu..." : "Lưu"}
                     </button>
                   </>
                 ))}
             </div>
 
-            <div className="rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3">
-              {/* Name (editable) */}
+            <div className="rounded-2xl bg-background border border-border p-4">
               <Row
-                label="Name"
+                label="Họ và tên"
                 value={
                   editing ? (
                     <input
                       value={draft.name}
                       onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
-                      className="w-64 max-w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2 text-sm text-white
-                        focus:outline-none focus:border-orange-500/40"
-                      placeholder="Tên..."
+                      className="w-64 max-w-full bg-card border border-border rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-hidden focus:border-gold/50"
+                      placeholder="Tên tài khoản..."
                       disabled={saving}
                     />
                   ) : (
@@ -269,19 +251,17 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
                 }
               />
 
-              <Row label="Email" value={item.email} />
+              <Row label="Địa chỉ Email" value={item.email} />
 
-              {/* Role */}
               <Row
-                label="Role"
+                label="Vai trò"
                 value={
                   editing ? (
                     <select
                       value={String(draft.role || "").toLowerCase()}
                       onChange={(e) => setDraft((d) => ({ ...d, role: e.target.value }))}
                       disabled={saving}
-                      className="rounded-xl px-3 py-2 text-sm bg-neutral-950 text-white border border-white/10
-                        focus:outline-none focus:border-orange-500/40 [&>option]:bg-neutral-950 [&>option]:text-white"
+                      className="rounded-xl px-3 py-1.5 text-xs bg-card text-foreground border border-border focus:outline-hidden focus:border-gold/50 cursor-pointer"
                     >
                       {ROLE_OPTIONS.map((r) => (
                         <option key={r.value} value={r.value}>
@@ -290,8 +270,8 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
                       ))}
                     </select>
                   ) : (
-                    <span className="inline-flex items-center gap-2">
-                      <Shield size={14} className="text-orange-300" />
+                    <span className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wider text-[11px] text-gold">
+                      <Shield size={13} />
                       {item.role || "—"}
                     </span>
                   )
@@ -299,32 +279,31 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
               />
 
               <Row
-                label="Verified"
+                label="Trạng thái xác thực"
                 value={
                   item.is_verified ? (
-                    <span className="inline-flex items-center gap-2 text-green-200">
-                      <BadgeCheck size={14} /> true
+                    <span className="inline-flex items-center gap-1.5 text-emerald-500 font-semibold text-xs">
+                      <BadgeCheck size={14} /> Đã xác thực
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-2 text-yellow-200">
-                      <BadgeX size={14} /> false
+                    <span className="inline-flex items-center gap-1.5 text-amber-500 font-semibold text-xs">
+                      <BadgeX size={14} /> Chưa xác thực
                     </span>
                   )
                 }
               />
 
               <Row
-                label="Created at"
+                label="Ngày tạo tài khoản"
                 value={item.created_at ? new Date(item.created_at).toLocaleString("vi-VN") : "—"}
               />
-              <Row label="Preferences" value={item.preferences || "—"} />
             </div>
 
-            {/* ✅ Active toggle (giống ngoài page) */}
-            <div className="flex items-center justify-between rounded-2xl bg-white dark:bg-neutral-950/5 border border-white/10 p-3">
+            {/* Active toggle */}
+            <div className="flex items-center justify-between rounded-2xl bg-background border border-border p-4">
               <div>
-                <div className="text-white font-bold text-sm">Active</div>
-                <div className="text-xs text-gray-400">Bật/tắt tài khoản</div>
+                <div className="text-foreground font-semibold text-xs">Kích hoạt tài khoản</div>
+                <div className="text-[11px] text-muted-foreground mt-0.5">Cho phép người dùng đăng nhập vào hệ thống</div>
               </div>
 
               <div className="flex items-center gap-3">
@@ -332,30 +311,30 @@ export default function AccountDetailModal({ open, item, onClose, onUpdated }) {
                   checked={!!activeLocal}
                   disabled={loadingActive}
                   onChange={(next) => setActive(next)}
-                  label="Active"
+                  label="Trạng thái hoạt động"
                 />
 
                 <span
-                  className={`hidden sm:inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold
+                  className={`hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider
                     ${activeLocal
-                      ? "bg-green-500/10 text-green-200 border-green-500/20"
-                      : "bg-red-500/10 text-red-200 border-red-500/20"
+                      ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20"
+                      : "bg-destructive/10 text-destructive border-destructive/20"
                     }`}
                 >
-                  {loadingActive ? "..." : activeLocal ? "Active" : "Inactive"}
+                  {loadingActive ? "..." : activeLocal ? "Hoạt động" : "Khoá"}
                 </span>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="px-4 py-3 border-t border-white/10 flex items-center justify-end">
+          <div className="px-6 py-4 border-t border-border flex items-center justify-end bg-card">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+              className="min-h-11 px-6 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs cursor-pointer"
             >
-              Close
+              Đóng
             </button>
           </div>
         </div>

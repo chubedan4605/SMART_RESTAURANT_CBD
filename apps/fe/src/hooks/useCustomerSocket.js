@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+// apps/fe/src/hooks/useCustomerSocket.js
+import { useEffect, useState } from "react";
 import { useSocket } from "../context/SocketContext";
 import { toast } from "react-toastify";
+import { audioNotificationService } from "../services/audioNotificationService";
+import { SOCKET_EVENTS } from "../constants/socketEvents";
 
-// Giữ nguyên file âm thanh của bạn
 const NOTIFICATION_SOUND = "/sounds/notification.mp3";
 
 /**
@@ -14,17 +16,9 @@ const useCustomerSocket = (notify = true) => {
   const [isConnected, setIsConnected] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(null);
 
-  // Dùng useRef để giữ instance của Audio
-  const audioRef = useRef(new Audio(NOTIFICATION_SOUND));
-
-  // Hàm phát âm thanh (đã xử lý lỗi chặn autoplay)
+  // Phát âm thanh qua AudioNotificationService (đã chống rung/vọng âm)
   const playSound = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch((err) => {
-        console.warn("Trình duyệt chặn tự động phát âm thanh (cần tương tác trước):", err);
-      });
-    }
+    audioNotificationService.play(NOTIFICATION_SOUND, { volume: 0.7, throttleMs: 300 });
   };
 
   useEffect(() => {
@@ -43,8 +37,6 @@ const useCustomerSocket = (notify = true) => {
       setIsConnected(false);
     };
 
-    // --- CÁC EVENT HANDLER ---
-
     // 1. Cập nhật trạng thái Đơn hàng (Order Status)
     const handleOrderStatusUpdate = (data) => {
       console.log("📢 [Customer] Order Status Update:", data);
@@ -55,7 +47,6 @@ const useCustomerSocket = (notify = true) => {
           `🍽️ ${data.message || "Đơn hàng của bạn đã được cập nhật!"}`,
           { position: "top-right", autoClose: 4000 }
         );
-        // Thêm âm thanh khi trạng thái đơn hàng thay đổi
         playSound();
       }
     };
@@ -81,8 +72,6 @@ const useCustomerSocket = (notify = true) => {
           toast.success(message, { position: "top-right", autoClose: 3000 });
         }
 
-        // LOGIC SỬA ĐỔI: Chỉ phát âm thanh khi món Sẵn sàng, Phục vụ hoặc Bị từ chối.
-        // Không phát khi "preparing" để tránh ồn ào.
         if (["ready", "served", "rejected"].includes(data.status)) {
           playSound();
         }
@@ -99,7 +88,6 @@ const useCustomerSocket = (notify = true) => {
           position: "top-right",
           autoClose: 3000,
         });
-        // Thêm âm thanh khi thanh toán xong
         playSound();
       }
     };
@@ -118,7 +106,6 @@ const useCustomerSocket = (notify = true) => {
           "✅ Yêu cầu thanh toán đã được xác nhận! Nhân viên sẽ đến ngay.",
           { position: "top-right", autoClose: 5000 }
         );
-        // Thêm âm thanh xác nhận
         playSound();
       }
     };
@@ -137,32 +124,31 @@ const useCustomerSocket = (notify = true) => {
           position: "top-right",
           autoClose: 4000,
         });
-        // Thêm âm thanh cho thông báo
         playSound();
       }
     };
 
-    // --- Đăng ký listeners ---
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", handleDisconnect);
-    socket.on("order_status_update", handleOrderStatusUpdate);
-    socket.on("order_item_status_update", handleOrderItemStatusUpdate);
-    socket.on("bill_update", handleBillUpdate);
-    socket.on("bill_request_confirmed", handleBillRequestConfirmed);
-    socket.on("table_notification", handleTableNotification);
+    // --- Đăng ký listeners chuẩn hóa ---
+    socket.on(SOCKET_EVENTS.CONNECT, handleConnect);
+    socket.on(SOCKET_EVENTS.DISCONNECT, handleDisconnect);
+    socket.on(SOCKET_EVENTS.ORDER_STATUS_UPDATE, handleOrderStatusUpdate);
+    socket.on(SOCKET_EVENTS.ORDER_ITEM_STATUS_UPDATE, handleOrderItemStatusUpdate);
+    socket.on(SOCKET_EVENTS.BILL_UPDATE, handleBillUpdate);
+    socket.on(SOCKET_EVENTS.BILL_REQUEST_CONFIRMED, handleBillRequestConfirmed);
+    socket.on(SOCKET_EVENTS.TABLE_NOTIFICATION, handleTableNotification);
 
     if (socket.connected) {
       setIsConnected(true);
     }
 
     return () => {
-      socket.off("connect", handleConnect);
-      socket.off("disconnect", handleDisconnect);
-      socket.off("order_status_update", handleOrderStatusUpdate);
-      socket.off("order_item_status_update", handleOrderItemStatusUpdate);
-      socket.off("bill_update", handleBillUpdate);
-      socket.off("bill_request_confirmed", handleBillRequestConfirmed);
-      socket.off("table_notification", handleTableNotification);
+      socket.off(SOCKET_EVENTS.CONNECT, handleConnect);
+      socket.off(SOCKET_EVENTS.DISCONNECT, handleDisconnect);
+      socket.off(SOCKET_EVENTS.ORDER_STATUS_UPDATE, handleOrderStatusUpdate);
+      socket.off(SOCKET_EVENTS.ORDER_ITEM_STATUS_UPDATE, handleOrderItemStatusUpdate);
+      socket.off(SOCKET_EVENTS.BILL_UPDATE, handleBillUpdate);
+      socket.off(SOCKET_EVENTS.BILL_REQUEST_CONFIRMED, handleBillRequestConfirmed);
+      socket.off(SOCKET_EVENTS.TABLE_NOTIFICATION, handleTableNotification);
     };
   }, [socket, notify]);
 

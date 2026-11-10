@@ -1,6 +1,5 @@
 import React, { useMemo, useEffect, useRef, useState } from "react";
-
-import { X, Upload, Trash2 } from "lucide-react";
+import { X, Upload, Trash2, UtensilsCrossed } from "lucide-react";
 import { adminMenuApi } from "../../../services/adminMenuApi";
 import MultiSelectCombobox from "../../../Components/MultiSelectCombobox";
 import ScrollArea from "../../../Components/ScrollArea";
@@ -23,16 +22,13 @@ export default function EditMenuItemModal({
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const [modifierGroups, setModifierGroups] = useState([]);
   const [selectedGroupIds, setSelectedGroupIds] = useState([]);
   const [loadingGroups, setLoadingGroups] = useState(false);
 
-  // Photos
   const fileRef = useRef(null);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [photos, setPhotos] = useState([]); // [{id,url,isPrimary,createdAt}]
+  const [photos, setPhotos] = useState([]);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
   const [inventory, setInventory] = useState({
     track_inventory: false,
@@ -44,11 +40,10 @@ export default function EditMenuItemModal({
     return (modifierGroups || []).map((g) => ({
       value: g.id,
       label: g.name,
-      subLabel: `${g.selectionType} • ${g.isRequired ? "required" : "optional"} • min ${g.minSelections} / max ${g.maxSelections}`,
+      subLabel: `${g.selectionType} • ${g.isRequired ? "bắt buộc" : "tuỳ chọn"} • min ${g.minSelections} / max ${g.maxSelections}`,
     }));
   }, [modifierGroups]);
 
-  // lock body scroll when modal open
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -58,7 +53,6 @@ export default function EditMenuItemModal({
     };
   }, [open]);
 
-  // Load item detail + photos + modifier groups
   useEffect(() => {
     if (!open || !item?.id) return;
 
@@ -67,7 +61,6 @@ export default function EditMenuItemModal({
     (async () => {
       try {
         setLoading(true);
-        setError("");
         setLoadingGroups(true);
         setLoadingPhotos(true);
 
@@ -111,7 +104,7 @@ export default function EditMenuItemModal({
         }
       } catch (e) {
         if (!cancelled) {
-          setError(e?.response?.data?.message || "Không tải được chi tiết món");
+          toast.error(e?.response?.data?.message || "Không tải được chi tiết món");
         }
       } finally {
         if (!cancelled) {
@@ -139,7 +132,6 @@ export default function EditMenuItemModal({
     e.target.value = "";
     if (!files.length) return;
 
-    // validate types + size (each)
     const okTypes = ["image/jpeg", "image/png", "image/webp"];
     for (const f of files) {
       if (!okTypes.includes(f.type)) {
@@ -154,8 +146,6 @@ export default function EditMenuItemModal({
 
     try {
       setUploadingImage(true);
-      setError("");
-
       const res = await adminMenuApi.uploadMenuItemPhotos(item.id, files);
       setPhotos(res?.photos || []);
       toast.success("Đăng tải ảnh thành công");
@@ -170,7 +160,7 @@ export default function EditMenuItemModal({
     try {
       const res = await adminMenuApi.setPrimaryMenuItemPhoto(item.id, photoId);
       setPhotos(res?.photos || []);
-      toast.success("Đã đổi ảnh hiển thị");
+      toast.success("Đã đổi ảnh hiển thị chính");
     } catch (e) {
       toast.error(e?.response?.data?.message || "Không thể đổi ảnh hiển thị");
     }
@@ -182,7 +172,7 @@ export default function EditMenuItemModal({
     try {
       const res = await adminMenuApi.deleteMenuItemPhoto(item.id, photoId);
       setPhotos(res?.photos || []);
-      toast.success("Đã xoá ảnh");
+      toast.success("Đã xoá ảnh thành công");
     } catch (e) {
       toast.error(e?.response?.data?.message || "Không thể xoá ảnh");
     }
@@ -191,7 +181,6 @@ export default function EditMenuItemModal({
   const submit = async () => {
     try {
       setLoading(true);
-      setError("");
 
       const payload = {
         name: form.name,
@@ -200,7 +189,6 @@ export default function EditMenuItemModal({
         prepTimeMinutes: Number(form.prepTimeMinutes || 0),
         status: form.status,
         description: form.description,
-        // ❌ không gửi imageUrl nữa vì ảnh nằm ở menu_item_photos
       };
 
       await adminMenuApi.updateMenuItem(item.id, payload);
@@ -220,9 +208,8 @@ export default function EditMenuItemModal({
       });
 
       onClose?.();
-      toast.success("Chỉnh sửa thành công");
+      toast.success("Chỉnh sửa món ăn thành công");
     } catch (e) {
-      setError(e?.response?.data?.message || e?.message || "Update thất bại");
       toast.error(e?.response?.data?.message || e?.message || "Chỉnh sửa thất bại");
     } finally {
       setLoading(false);
@@ -232,44 +219,51 @@ export default function EditMenuItemModal({
   return (
     <div className="fixed inset-0 z-50">
       <div
-        className="absolute inset-0 bg-black/70"
+        className="absolute inset-0 bg-ink/70 backdrop-blur-xs"
         onClick={() => !disabledAll && onClose?.()}
       />
 
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="w-full max-w-xl rounded-3xl border border-white/10 bg-neutral-950 overflow-hidden">
-          {/* header */}
-          <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
-            <div className="text-white font-black">Edit menu item</div>
+        <div className="w-full max-w-xl max-h-[90vh] rounded-3xl border border-border bg-card shadow-2xl overflow-hidden flex flex-col animate-scale-in">
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-card">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold">
+                <UtensilsCrossed size={18} />
+              </div>
+              <div>
+                <div className="font-serif font-bold text-foreground text-lg leading-tight">Chỉnh sửa món ăn</div>
+                <div className="text-xs text-muted-foreground mt-0.5">Cập nhật định giá, hình ảnh và phân nhóm</div>
+              </div>
+            </div>
+
             <button
               type="button"
               onClick={() => !disabledAll && onClose?.()}
-              className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200"
+              className="min-h-11 min-w-11 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition flex items-center justify-center cursor-pointer"
             >
               <X size={18} />
             </button>
           </div>
 
-          {/* body */}
+          {/* Body */}
           <ScrollArea>
-            <div className="max-h-[80vh] overflow-auto p-5 space-y-3">
-
+            <div className="max-h-[75vh] overflow-auto p-6 space-y-4">
               <div>
-                <label className="text-xs text-gray-400">Tên món</label>
+                <label className="text-xs text-muted-foreground mb-1 block font-medium">Tên món *</label>
                 <input
-                  className="mt-1 w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
                   value={form.name}
                   onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
                   disabled={disabledAll}
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="text-xs text-gray-400">Category</label>
+                  <label className="text-xs text-muted-foreground mb-1 block font-medium">Danh mục</label>
                   <select
-                    className="mt-1 bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2 text-white
-                      [&>option]:bg-neutral-900 [&>option]:text-white"
+                    className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                     value={form.categoryId ?? ""}
                     onChange={(e) =>
                       setForm((s) => ({ ...s, categoryId: e.target.value }))
@@ -277,7 +271,7 @@ export default function EditMenuItemModal({
                     disabled={disabledAll}
                   >
                     <option value="">
-                      {item?.categoryName ? `${item.categoryName}` : "-- chọn --"}
+                      {item?.categoryName ? `${item.categoryName}` : "-- Chọn danh mục --"}
                     </option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -288,37 +282,36 @@ export default function EditMenuItemModal({
                 </div>
 
                 <div>
-                  <label className="text-xs text-gray-400">Status</label>
+                  <label className="text-xs text-muted-foreground mb-1 block font-medium">Trạng thái</label>
                   <select
-                    className="mt-1 bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2 text-white
-                      [&>option]:bg-neutral-900 [&>option]:text-white"
+                    className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                     value={form.status}
                     onChange={(e) => setForm((s) => ({ ...s, status: e.target.value }))}
                     disabled={disabledAll}
                   >
-                    <option value="available">available</option>
-                    <option value="unavailable">unavailable</option>
-                    <option value="sold_out">sold_out</option>
+                    <option value="available">Có sẵn (Available)</option>
+                    <option value="unavailable">Tạm ngưng (Unavailable)</option>
+                    <option value="sold_out">Hết hàng (Sold out)</option>
                   </select>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3.5">
                 <div>
-                  <label className="text-xs text-gray-400">Giá</label>
+                  <label className="text-xs text-muted-foreground mb-1 block font-medium">Đơn giá (VND)</label>
                   <input
                     type="number"
-                    className="mt-1 w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
                     value={form.price}
                     onChange={(e) => setForm((s) => ({ ...s, price: e.target.value }))}
                     disabled={disabledAll}
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-400">Prep (phút)</label>
+                  <label className="text-xs text-muted-foreground mb-1 block font-medium">Prep (phút)</label>
                   <input
                     type="number"
-                    className="mt-1 w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
                     value={form.prepTimeMinutes}
                     onChange={(e) =>
                       setForm((s) => ({ ...s, prepTimeMinutes: e.target.value }))
@@ -329,12 +322,12 @@ export default function EditMenuItemModal({
               </div>
 
               {/* Photos */}
-              <div className="rounded-2xl border border-white/10 bg-white dark:bg-neutral-950/5 p-4">
+              <div className="rounded-2xl border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-white font-bold">Ảnh món</div>
-                    <div className="text-xs text-gray-400 mt-0.5">
-                      Upload nhiều ảnh • chọn 1 ảnh làm ảnh hiển thị
+                    <div className="font-serif font-bold text-foreground text-sm">Bộ sưu tập ảnh</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">
+                      Đăng tải nhiều ảnh • chọn 1 ảnh làm ảnh đại diện chính
                     </div>
                   </div>
 
@@ -351,59 +344,58 @@ export default function EditMenuItemModal({
                     type="button"
                     onClick={onPickFile}
                     disabled={disabledAll}
-                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl
-                      bg-orange-500/20 border border-orange-500/30 text-orange-200 disabled:opacity-60"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-semibold cursor-pointer min-h-10 disabled:opacity-50"
                   >
-                    <Upload size={16} />
-                    {uploadingImage ? "Đang upload..." : "Upload"}
+                    <Upload size={14} />
+                    {uploadingImage ? "Đang tải..." : "Thêm ảnh"}
                   </button>
                 </div>
 
                 {loadingPhotos ? (
-                  <div className="mt-4 text-sm text-gray-400">Đang tải ảnh...</div>
+                  <div className="mt-3 text-xs text-muted-foreground py-3 text-center">Đang tải ảnh...</div>
                 ) : (
-                  <div className="grid grid-cols-4 gap-3 mt-4">
+                  <div className="grid grid-cols-4 gap-3 mt-3">
                     {photos.map((p) => (
                       <div
                         key={p.id}
-                        className={`relative group rounded-xl overflow-hidden border
-                        ${p.isPrimary ? "border-orange-500" : "border-white/10"}`}
+                        className={`relative group rounded-xl overflow-hidden border shadow-xs
+                        ${p.isPrimary ? "border-gold ring-1 ring-gold/40" : "border-border"}`}
                       >
-                        <img src={p.url} alt="" className="w-full h-24 object-cover" />
+                        <img src={p.url} alt="" className="w-full h-20 object-cover" />
 
                         {p.isPrimary && (
-                          <div className="absolute top-1 left-1 text-[10px] bg-orange-500 text-black px-2 py-0.5 rounded">
-                            PRIMARY
+                          <div className="absolute top-1 left-1 text-[9px] font-bold tracking-wider uppercase bg-gold text-ink px-1.5 py-0.5 rounded-sm">
+                            CHÍNH
                           </div>
                         )}
 
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-2 transition">
+                        <div className="absolute inset-0 bg-ink/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1.5 transition">
                           {!p.isPrimary && (
                             <button
                               type="button"
                               onClick={() => setPrimary(p.id)}
-                              className="px-2 py-1 text-xs text-black bg-white dark:bg-neutral-950 rounded"
+                              className="px-2 py-0.5 text-[10px] font-semibold text-ink bg-gold rounded-sm hover:bg-gold-light cursor-pointer"
                               disabled={disabledAll}
                             >
-                              Làm ảnh chính
+                              Đặt chính
                             </button>
                           )}
                           <button
                             type="button"
                             onClick={() => deletePhoto(p.id)}
-                            className="p-1 bg-red-500 rounded"
+                            className="p-1 bg-destructive text-destructive-foreground rounded-sm hover:opacity-90 cursor-pointer"
                             disabled={disabledAll}
                             title="Xoá ảnh"
                           >
-                            <Trash2 size={14} className="text-white" />
+                            <Trash2 size={13} />
                           </button>
                         </div>
                       </div>
                     ))}
 
                     {!photos.length && (
-                      <div className="col-span-4 text-sm text-gray-400">
-                        Chưa có ảnh. Bấm Upload để thêm ảnh.
+                      <div className="col-span-4 text-xs text-muted-foreground py-4 text-center">
+                        Chưa có ảnh. Bấm Thêm ảnh để tải lên.
                       </div>
                     )}
                   </div>
@@ -411,16 +403,16 @@ export default function EditMenuItemModal({
               </div>
 
               {/* Modifiers */}
-              <div className="rounded-2xl border border-white/10 bg-white dark:bg-neutral-950/5 p-4">
+              <div className="rounded-2xl border border-border bg-background p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-white font-bold">Modifiers cho món</div>
-                    <div className="text-xs text-gray-400 mt-0.5">
-                      Chọn các nhóm tuỳ chọn (Size, Topping, Spicy…)
+                    <div className="font-serif font-bold text-foreground text-sm">Nhóm Modifiers</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">
+                      Chọn các nhóm tuỳ chọn áp dụng cho món ăn này
                     </div>
                   </div>
                   {loadingGroups ? (
-                    <div className="text-xs text-gray-500">Đang tải...</div>
+                    <div className="text-xs text-muted-foreground">Đang tải...</div>
                   ) : null}
                 </div>
 
@@ -513,9 +505,9 @@ export default function EditMenuItemModal({
               </div>
 
               <div>
-                <label className="text-xs text-gray-400">Description</label>
+                <label className="text-xs text-muted-foreground mb-1 block font-medium">Mô tả chi tiết</label>
                 <textarea
-                  className="mt-1 w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground focus:outline-hidden focus:border-gold/50"
                   rows={3}
                   value={form.description}
                   onChange={(e) =>
@@ -527,12 +519,12 @@ export default function EditMenuItemModal({
             </div>
           </ScrollArea>
 
-          {/* footer */}
-          <div className="px-5 py-4 border-t border-white/10 flex justify-end gap-2">
+          {/* Footer */}
+          <div className="px-6 py-4 border-t border-border flex justify-end gap-3 bg-card">
             <button
               type="button"
               onClick={() => !disabledAll && onClose?.()}
-              className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 disabled:opacity-60"
+              className="min-h-11 px-5 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-semibold cursor-pointer disabled:opacity-50"
               disabled={disabledAll}
             >
               Huỷ
@@ -540,10 +532,10 @@ export default function EditMenuItemModal({
             <button
               type="button"
               onClick={submit}
-              className="px-4 py-2 rounded-xl bg-orange-500/15 border border-orange-500/25 text-orange-200 disabled:opacity-60"
+              className="min-h-11 px-6 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs cursor-pointer disabled:opacity-50"
               disabled={disabledAll}
             >
-              {loading ? "Đang lưu..." : "Lưu"}
+              {loading ? "Đang lưu..." : "Lưu thay đổi"}
             </button>
           </div>
         </div>

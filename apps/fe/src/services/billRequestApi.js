@@ -1,4 +1,4 @@
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 export const billRequestApi = {
   // Khách gửi yêu cầu thanh toán

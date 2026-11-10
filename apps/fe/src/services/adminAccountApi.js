@@ -1,4 +1,4 @@
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 export const adminAccountApi = {
   // GET /admin/accounts?scope=STAFF&q=...&role=...&verified=...&sort=...&page=...&limit=...

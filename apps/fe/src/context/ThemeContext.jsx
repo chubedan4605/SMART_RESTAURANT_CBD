@@ -19,6 +19,14 @@ export const ThemeProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    // Enable smooth theme transition after first paint to prevent initial color flash
+    const timer = window.setTimeout(() => {
+      window.document.documentElement.classList.add("theme-ready");
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     // Add or remove 'dark' class from html tag
     const root = window.document.documentElement;
     if (theme === "dark") {

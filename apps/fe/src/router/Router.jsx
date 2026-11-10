@@ -1,5 +1,5 @@
-import ProtectedRoute from "../Components/ProtectedRoute";
-import PublicRoute from "../Components/PublicRoute";
+import ProtectedRoute from "./guards/ProtectedRoute";
+import PublicRoute from "./guards/PublicRoute";
 
 // Auth
 import SignIn from "../features/Auth/SignIn/SignIn";
@@ -7,8 +7,8 @@ import SignUp from "../features/Auth/SignUp/SignUp";
 
 // Layouts
 import AdminLayout from "../layouts/AdminLayout";
-import WaiterLayout from "../layouts/WaiterLayout";
-import KitchenLayout from "../layouts/KitchenLayout";
+import CustomerLayout from "../layouts/CustomerLayout";
+import StaffLayout from "../layouts/StaffLayout";
 
 // Public - Common & Error Pages (NEW)
 import LandingPage from "../features/Public/LandingPage"; // Trang giới thiệu khi vào domain chính
@@ -42,14 +42,12 @@ import WaiterOrders from "../features/Waiter/Orders";
 
 // Kitchen
 import KitchenOrders from "../features/Kitchen/Orders";
-import CustomerLayout from "../layouts/CustomerLayout";
 import Booking from "../features/Customer/Booking";
 import VerifyEmail from "../features/Auth/VerifyEmail/VerifyEmail";
 import Forgot from "../features/Auth/Forgot/Forgot";
 import ResetPassword from "../features/Auth/ResetPassword/ResetPassword";
 import OrderDetail from "../features/Customer/OrderDetail";
 import OrderTrackingPage from "../features/Customer/OrderTrackingPage";
-import MainLayout from "../layouts/MainLayout";
 const routers = [
   // ===== PUBLIC ROUTES (Login/Register/Scan) =====
   {
@@ -93,7 +91,7 @@ const routers = [
     element: <ProtectedRoute />,
     children: [
       {
-        element: <MainLayout />,
+        element: <CustomerLayout />,
         children: [
           {
             path: "history",
@@ -114,7 +112,7 @@ const routers = [
     element: <ProtectedRoute roles={["admin"]} />,
     children: [
       {
-        element: <MainLayout />,
+        element: <AdminLayout />,
         children: [
           {
             index: true,
@@ -155,7 +153,7 @@ const routers = [
     element: <ProtectedRoute roles={["waiter"]} />,
     children: [
       {
-        element: <MainLayout />,
+        element: <StaffLayout role="waiter" />,
         children: [
           {
             index: true, // Mặc định vào danh sách bàn hoặc order
@@ -176,7 +174,7 @@ const routers = [
     element: <ProtectedRoute roles={["kitchen"]} />,
     children: [
       {
-        element: <MainLayout />,
+        element: <StaffLayout role="kitchen" />,
         children: [
           {
             index: true,

@@ -38,7 +38,6 @@ const DEFAULT_OPTIONS = {
 const useFuzzySearch = (items, searchTerm, options = {}) => {
   const fuseOptions = useMemo(
     () => ({ ...DEFAULT_OPTIONS, ...options }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [options]
   );
 

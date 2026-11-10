@@ -1,7 +1,6 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import {
-  Receipt,
   Search,
   RefreshCw,
   Filter,
@@ -14,8 +13,8 @@ import {
 import axiosClient from "../../store/axiosClient";
 import { useSocket } from "../../context/SocketContext";
 import { useNotificationSound } from "../../hooks/useNotificationSound";
+import { SOCKET_EVENTS } from "../../constants/socketEvents";
 
-// Import Components
 import OrderCard from "../../Components/OrderCard";
 import OrderDetailModal from "../../Components/OrderDetailModal";
 import BillModal from "../../Components/BillModal";
@@ -27,39 +26,41 @@ export default function WaiterOrdersPage() {
   );
 
   const [activeTab, setActiveTab] = useState("orders");
-  const [soundEnabled, setSoundEnabled] = useState(true); // Toggle âm thanh
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
-  // State dữ liệu
   const [myTables, setMyTables] = useState([]);
   const [orders, setOrders] = useState([]);
 
-  // Loading
-  const [loading, setLoading] = useState(true);
+  const ordersRef = useRef(orders);
+  useEffect(() => {
+    ordersRef.current = orders;
+  }, [orders]);
 
-  // Filters
+  const soundEnabledRef = useRef(soundEnabled);
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
+
+  const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("received");
   const [search, setSearch] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
-
-  // Bill Modal
   const [selectedTableForBill, setSelectedTableForBill] = useState(null);
 
-  // 1. Tải TẤT CẢ dữ liệu cần thiết 1 lần khi vào trang (Parallel Fetching)
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      // Chạy song song cả 2 API để tiết kiệm thời gian
       const [ordersRes, tablesRes] = await Promise.all([
         axiosClient.get("/orders"),
         axiosClient.get("/tables/my-tables"),
       ]);
 
-      // lọc chỉ lấy những items ở trạng thái received cho từng đơn
-      ordersRes.forEach((order) => {
-        order.items = order.items.filter((item) => item.status === "received");
+      const list = Array.isArray(ordersRes) ? ordersRes : [];
+      list.forEach((order) => {
+        order.items = (order.items || []).filter((item) => item.status === "received");
       });
 
-      setOrders(Array.isArray(ordersRes) ? ordersRes : []);
+      setOrders(list);
       setMyTables(Array.isArray(tablesRes) ? tablesRes : []);
     } catch (error) {
       console.error(error);
@@ -70,273 +71,135 @@ export default function WaiterOrdersPage() {
   };
 
   const handlePaymentSuccess = () => {
-    // Refresh lại cả danh sách đơn và danh sách bàn
-    // fetchOrders();
     fetchAllData();
-    setSelectedTableForBill(null); // Đóng modal
+    setSelectedTableForBill(null);
   };
 
   useEffect(() => {
     fetchAllData();
   }, []);
 
-  // 2. Socket Real-time
   useEffect(() => {
     if (!socket) return;
 
     const handleNewOrder = (newOrder) => {
-      console.log("Received new_order via Socket.IO:", newOrder);
-
-      newOrder.items = newOrder.items.filter(
-        (item) => item.status === "received",
-      );
-      // lọc lấy những items có trạng thái là received
-      setOrders((prev) => {
-        // Kiểm tra xem đơn hàng này đã có trong danh sách chưa
-        const exists = prev.find((o) => o.id === newOrder.id);
-
-        if (exists) {
-          // TRƯỜNG HỢP 1: Đơn đã tồn tại (khách gọi thêm món) -> Cập nhật lại đơn đó
-          return prev.map((o) => (o.id === newOrder.id ? newOrder : o));
-        } else {
-          // TRƯỜNG HỢP 2: Đơn hoàn toàn mới -> Thêm vào đầu danh sách
-          return [newOrder, ...prev];
-        }
-      });
-
-      // 🔔 Phát âm thanh thông báo
-      if (soundEnabled) {
+      setOrders((prev) => [newOrder, ...prev]);
+      if (soundEnabledRef.current) {
         playNotificationSound();
       }
-
-      const isUpdate = orders.some((o) => o.id === newOrder.id);
-      toast.info(
-        isUpdate
-          ? `🔔 Bàn ${newOrder.table_number} vừa cập nhật/gọi thêm món!`
-          : `🔔 Đơn mới: Bàn ${newOrder.table_number || "Mang về"}`,
-      );
-    };
-
-    // 🆕 Handler cho event khi khách gọi thêm món vào đơn đang preparing
-    const handleOrderItemsAdded = (orderData) => {
-      console.log("Received order_items_added via Socket.IO:", orderData);
-
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderData.id ? orderData : o)),
-      );
-
-      // 🔔 Phát âm thanh thông báo đặc biệt
-      if (soundEnabled) {
-        playNotificationSound();
-      }
-
-      toast.warning(
-        `⚠️ Bàn ${orderData.table_number} gọi thêm món! Cần duyệt món mới.`,
-        { autoClose: 5000 },
-      );
+      toast.info(`🔔 Đơn mới từ bàn ${newOrder.table_number || "Mang về"}`);
     };
 
     const handleUpdateOrder = (updatedOrder) => {
       setOrders((prev) =>
         prev.map((o) => (o.id === updatedOrder.id ? updatedOrder : o)),
       );
-      if (updatedOrder.status === "ready") {
-        // 🔔 Phát âm thanh khi món xong
-        if (soundEnabled) {
-          playNotificationSound();
-        }
-        toast.success(`✅ Món bàn ${updatedOrder.table_number} đã xong!`);
-      }
     };
 
-    // 💰 Handler cho thanh toán thành công
     const handlePaymentCompleted = (data) => {
-      console.log("Received payment_completed via Socket.IO:", data);
-
-      const { table_id, table_number, total_amount, message } = data;
-
-      // 🔔 Phát âm thanh thông báo thanh toán
-      if (soundEnabled) {
-        playNotificationSound();
-      }
-
-      // Hiển thị thông báo thanh toán thành công
-      toast.success(
-        message || `💰 Bàn ${table_number} đã thanh toán thành công!`,
-        {
-          autoClose: 7000,
-          position: "top-center",
-        },
-      );
-
-      // Cập nhật trực tiếp orders của bàn vừa thanh toán thành "completed"
-      setOrders((prev) =>
-        prev.map((order) => {
-          if (
-            order.table_id === table_id ||
-            order.table_id === String(table_id)
-          ) {
-            if (order.status !== "completed" && order.status !== "rejected") {
-              return { ...order, status: "completed" };
-            }
-          }
-          return order;
-        }),
-      );
-
-      // Cũng refresh lại danh sách bàn
       fetchAllData();
+      toast.success(`💰 Bàn ${data.table_number || ""} đã thanh toán xong`);
     };
 
-    // 🏷️ Handler cho cập nhật phân công bàn từ admin
-    const handleTableAssignmentUpdate = (data) => {
-      console.log("Received table_assignment_update via Socket.IO:", data);
-
-      // Lấy userId từ localStorage để kiểm tra có phải waiter này không
-      const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-      const currentUserId = currentUser?.id;
-
-      // Nếu là waiter này được cập nhật
-      if (String(data.waiterId) === String(currentUserId)) {
-        // 🔔 Phát âm thanh thông báo
-        if (soundEnabled) {
-          playNotificationSound();
-        }
-
-        // Cập nhật trực tiếp danh sách bàn nếu có data
-        if (data.tables && Array.isArray(data.tables)) {
-          setMyTables(data.tables);
-          toast.info(
-            `📋 Admin đã cập nhật danh sách bàn của bạn! (${data.tables.length} bàn)`,
-            { autoClose: 5000 },
-          );
-        } else {
-          // Nếu không có tables chi tiết, fetch lại
-          fetchAllData();
-          toast.info(`📋 Danh sách bàn phụ trách đã được cập nhật!`, {
-            autoClose: 5000,
-          });
-        }
-      }
-    };
-
-    socket.on("new_order", handleNewOrder);
-    socket.on("order_items_added", handleOrderItemsAdded);
-    socket.on("update_order", handleUpdateOrder);
-    socket.on("payment_completed", handlePaymentCompleted);
-    socket.on("table_assignment_update", handleTableAssignmentUpdate);
+    socket.on(SOCKET_EVENTS.NEW_ORDER, handleNewOrder);
+    socket.on(SOCKET_EVENTS.UPDATE_ORDER, handleUpdateOrder);
+    socket.on(SOCKET_EVENTS.PAYMENT_COMPLETED, handlePaymentCompleted);
 
     return () => {
-      socket.off("new_order", handleNewOrder);
-      socket.off("order_items_added", handleOrderItemsAdded);
-      socket.off("update_order", handleUpdateOrder);
-      socket.off("payment_completed", handlePaymentCompleted);
-      socket.off("table_assignment_update", handleTableAssignmentUpdate);
+      socket.off(SOCKET_EVENTS.NEW_ORDER, handleNewOrder);
+      socket.off(SOCKET_EVENTS.UPDATE_ORDER, handleUpdateOrder);
+      socket.off(SOCKET_EVENTS.PAYMENT_COMPLETED, handlePaymentCompleted);
     };
-  }, [socket, soundEnabled, playNotificationSound, orders]);
+  }, [socket, playNotificationSound]);
 
-  // 3. Logic Filter (Giữ nguyên)
   const filteredOrders = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return orders.filter((o) => {
-      const matchStatus =
-        statusFilter === "all" ? true : o.status === statusFilter;
-      const matchSearch =
-        !q ||
-        o.id.toLowerCase().includes(q) ||
-        (o.table_number || "").toLowerCase().includes(q) ||
-        (o.items || []).some((it) => it.name.toLowerCase().includes(q));
-      return matchStatus && matchSearch;
-    });
-  }, [orders, search, statusFilter]);
+    let result = orders;
 
-  // Actions
+    if (statusFilter !== "all") {
+      result = result.filter((o) => o.status === statusFilter);
+    }
+
+    const q = search.trim().toLowerCase();
+    if (q) {
+      result = result.filter(
+        (o) =>
+          o.id.toLowerCase().includes(q) ||
+          (o.table_number || "").toLowerCase().includes(q) ||
+          (o.items || []).some((it) => it.name?.toLowerCase().includes(q)),
+      );
+    }
+
+    return result;
+  }, [orders, statusFilter, search]);
+
   const handleUpdateStatus = async (orderId, status) => {
     try {
-      if (status === "rejected") {
-        // kiểm tra xem có item nào đã được chuẩn bị không
-        const order = orders.find((o) => o.id === orderId);
-        const hasPreparingItems = order.items.some(
-          (item) => item.status === "preparing" || item.status === "completed",
-        );
-        if (hasPreparingItems) {
-          toast.error("Không thể hủy đơn đã có món được chuẩn bị.");
-          return;
-        }
-      }
       await axiosClient.patch(`/orders/${orderId}`, { status });
-      toast.success(
-        status === "preparing" ? "Đã nhận đơn & Chuyển bếp" : "Đã cập nhật",
-      );
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status } : o)),
-      );
-    } catch (e) {
-      toast.error("Lỗi cập nhật");
+      toast.success("Cập nhật đơn hàng thành công!");
+      fetchAllData();
+    } catch {
+      toast.error("Lỗi cập nhật trạng thái đơn");
     }
   };
 
   return (
-    <div
-      className="min-h-screen bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-white font-sans transition-colors"
-      style={{ scrollbarGutter: "stable" }}
-    >
-      {/* Header */}
-      <div className="top-0 z-30 border-b border-gray-200 dark:border-white/10 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-md transition-colors">
-        <div className="container mx-auto max-w-6xl px-4 py-5">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-gold/30 selection:text-gold" style={{ scrollbarGutter: "stable" }}>
+      {/* Top Header */}
+      <div className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md shadow-xs">
+        <div className="container mx-auto max-w-6xl px-4 py-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <div className="inline-flex pt-5 items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20">
-                <Receipt className="w-4 h-4 text-orange-500" />
-                <span className="text-orange-500 font-bold text-sm uppercase tracking-wider">
-                  Waiter Console
-                </span>
+              <div className="text-[10px] font-sans uppercase tracking-luxe text-gold font-semibold mb-1">
+                Waiter Service Dashboard
               </div>
-              <h1 className="text-2xl md:text-3xl font-black mt-3 text-gray-900 dark:text-white">
-                Quản lý Đơn Hàng
+              <h1 className="text-2xl md:text-3xl font-serif font-medium text-foreground">
+                Quản Lý Đơn Phục Vụ
               </h1>
             </div>
 
-            <div className="flex items-center gap-2">
-              {/* 🔔 Nút Toggle Âm Thanh */}
+            <div className="flex items-center gap-2.5">
               <button
+                type="button"
                 onClick={() => setSoundEnabled(!soundEnabled)}
-                className={`p-2 rounded-xl border transition-all ${
+                className={`w-11 h-11 flex items-center justify-center border transition-all cursor-pointer ${
                   soundEnabled
-                    ? "bg-orange-500/10 border-orange-500/30 text-orange-500"
-                    : "bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400"
+                    ? "bg-gold/15 border-gold/40 text-gold"
+                    : "bg-muted border-border text-muted-foreground"
                 }`}
                 title={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
+                aria-label="Toggle sound"
               >
                 {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
               </button>
 
               <button
+                type="button"
                 onClick={fetchAllData}
-                className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 transition-all inline-flex items-center gap-2 font-medium"
+                className="min-h-11 px-4 rounded-none bg-card hover:bg-muted border border-border text-foreground text-xs uppercase tracking-luxe font-medium transition-all inline-flex items-center gap-2 cursor-pointer"
               >
-                <RefreshCw size={18} /> Làm mới
+                <RefreshCw size={15} className="text-gold" /> Làm mới
               </button>
             </div>
           </div>
 
           {/* Controls Bar */}
-          <div className="mt-5 flex flex-col md:flex-row md:items-center gap-3">
+          <div className="mt-4 flex flex-col md:flex-row md:items-center gap-3">
             <div className="flex-1 relative">
               <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                 size={18}
               />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Tìm theo mã đơn, số bàn, tên món..."
-                className="w-full bg-white dark:bg-neutral-900 border border-gray-300 dark:border-neutral-800 rounded-full pl-11 pr-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-orange-500/50 shadow-xs dark:shadow-none"
+                className="w-full bg-background border border-border rounded-none pl-11 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-gold min-h-11 font-sans placeholder:text-muted-foreground"
               />
               {search && (
                 <button
+                  type="button"
                   onClick={() => setSearch("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground cursor-pointer"
                   title="Xóa tìm kiếm"
                 >
                   <X size={16} />
@@ -344,50 +207,49 @@ export default function WaiterOrdersPage() {
               )}
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">
-              <Filter size={16} className="text-gray-500 dark:text-gray-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-2 bg-background border border-border min-h-11">
+              <Filter size={15} className="text-gold" />
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-transparent text-sm text-gray-700 dark:text-gray-200 outline-none cursor-pointer [&>option]:bg-white dark:[&>option]:bg-neutral-900 [&>option]:text-gray-900 dark:[&>option]:text-white"
+                className="bg-transparent text-xs text-foreground outline-none cursor-pointer font-sans uppercase tracking-wider"
               >
-                <option value="received">
-                  ⏳ Chờ xử lý (
-                  {orders.filter((o) => o.status === "received").length})
+                <option value="received" className="bg-card text-foreground">
+                  Chờ xử lý ({orders.filter((o) => o.status === "received").length})
                 </option>
-                <option value="preparing">
-                  🔥 Đang nấu (
-                  {orders.filter((o) => o.status === "preparing").length})
+                <option value="preparing" className="bg-card text-foreground">
+                  Đang nấu ({orders.filter((o) => o.status === "preparing").length})
                 </option>
-                <option value="ready">
-                  ✅ Sẵn sàng (
-                  {orders.filter((o) => o.status === "ready").length})
+                <option value="ready" className="bg-card text-foreground">
+                  Sẵn sàng ({orders.filter((o) => o.status === "ready").length})
                 </option>
-                <option value="completed">💰 Đã xong</option>
-                <option value="rejected">❌ Đã hủy</option>
-                <option value="all">Tất cả</option>
+                <option value="completed" className="bg-card text-foreground">Đã xong</option>
+                <option value="rejected" className="bg-card text-foreground">Đã hủy</option>
+                <option value="all" className="bg-card text-foreground">Tất cả</option>
               </select>
             </div>
           </div>
 
           {/* TABS NAVIGATION */}
-          <div className="flex gap-6 mt-6 border-b border-gray-200 dark:border-white/10">
+          <div className="flex gap-8 mt-5 border-b border-border">
             <button
+              type="button"
               onClick={() => setActiveTab("orders")}
-              className={`pb-3 text-sm font-bold border-b-2 transition-all ${
+              className={`pb-3 text-xs uppercase tracking-luxe font-medium border-b-2 transition-all cursor-pointer ${
                 activeTab === "orders"
-                  ? "border-orange-500 text-orange-500"
-                  : "border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                  ? "border-gold text-gold font-semibold"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              Đơn Hàng
+              Đơn Hàng ({orders.length})
             </button>
             <button
+              type="button"
               onClick={() => setActiveTab("my-tables")}
-              className={`pb-3 text-sm font-bold border-b-2 transition-all ${
+              className={`pb-3 text-xs uppercase tracking-luxe font-medium border-b-2 transition-all cursor-pointer ${
                 activeTab === "my-tables"
-                  ? "border-orange-500 text-orange-500"
-                  : "border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                  ? "border-gold text-gold font-semibold"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               Bàn Của Tôi ({myTables.length})
@@ -399,30 +261,18 @@ export default function WaiterOrdersPage() {
       {/* Main Content List */}
       <div className="container mx-auto max-w-6xl px-4 py-6 pb-24">
         {loading ? (
-          <div className="flex items-center justify-center min-h-75">
-            <div className="text-gray-500 animate-pulse flex flex-col items-center">
-              <span>Đang tải dữ liệu...</span>
+          <div className="flex items-center justify-center min-h-72">
+            <div className="text-muted-foreground text-sm font-sans animate-pulse">
+              Đang tải danh sách phục vụ...
             </div>
           </div>
         ) : (
           <>
-            {/* KEY CHANGE: Thay vì dùng {activeTab === '...' && ...}
-               Ta dùng class 'hidden' vs 'block'. 
-               Cả 2 tabs đều được render sẵn trong DOM, chỉ ẩn hiện bằng CSS.
-               Chuyển tab sẽ mượt tức thì vì không có Unmount/Remount.
-            */}
-
-            {/* --- VIEW: ORDERS --- */}
-            <div
-              className={
-                activeTab === "orders"
-                  ? "block animate-in fade-in duration-300"
-                  : "hidden"
-              }
-            >
+            {/* VIEW: ORDERS */}
+            <div className={activeTab === "orders" ? "block" : "hidden"}>
               {filteredOrders.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5 text-gray-500 dark:text-gray-400 shadow-xs">
-                  <p>
+                <div className="text-center py-16 bg-card rounded-none border border-border">
+                  <p className="text-muted-foreground text-sm font-sans">
                     Không tìm thấy đơn hàng nào ở trạng thái này.
                   </p>
                 </div>
@@ -441,65 +291,65 @@ export default function WaiterOrdersPage() {
               )}
             </div>
 
-            {/* --- VIEW: MY TABLES --- */}
-            <div
-              className={
-                activeTab === "my-tables"
-                  ? "block animate-in fade-in duration-300"
-                  : "hidden"
-              }
-            >
+            {/* VIEW: MY TABLES */}
+            <div className={activeTab === "my-tables" ? "block" : "hidden"}>
               {myTables.length === 0 ? (
-                <div className="text-center py-20 text-gray-500 dark:text-gray-400 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-xs">
-                  Bạn chưa được phân công bàn nào.
+                <div className="text-center py-16 text-muted-foreground bg-card rounded-none border border-border text-sm font-sans">
+                  Bạn chưa được phân công phụ trách bàn nào.
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {myTables.map((table) => (
                     <div
                       key={table.id}
-                      className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 p-5 rounded-xl shadow-xs dark:shadow-lg relative hover:border-orange-500/30 transition-all"
+                      className="bg-card text-card-foreground border border-border p-5 rounded-none shadow-xs hover:border-gold/50 transition-all flex flex-col justify-between"
                     >
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-2xl font-black text-gray-900 dark:text-white">
-                          {table.table_number}
-                        </span>
-                        <span
-                          className={`text-[10px] px-2 py-1 rounded uppercase font-bold ${
-                            table.status === "active"
-                              ? "bg-green-500/20 text-green-500 dark:text-green-400"
-                              : "bg-red-500/20 text-red-500 dark:text-red-400"
-                          }`}
+                      <div>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-2xl font-serif font-medium text-foreground">
+                            Bàn {table.table_number}
+                          </span>
+                          <span
+                            className={`text-[9px] px-2 py-0.5 rounded-none font-sans uppercase tracking-luxe font-semibold border ${
+                              table.status === "active"
+                                ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                                : "bg-destructive/15 border-destructive/30 text-destructive"
+                            }`}
+                          >
+                            {table.status}
+                          </span>
+                        </div>
+
+                        <div className="text-xs text-muted-foreground flex items-center gap-1.5 mb-1 font-sans">
+                          <MapPin size={13} className="text-gold" />
+                          <span>{table.location}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1.5 font-sans">
+                          <User size={13} className="text-gold" />
+                          <span>{table.capacity} Khách</span>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 space-y-2 mt-4 border-t border-border/50">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSearch(table.table_number);
+                            setActiveTab("orders");
+                          }}
+                          className="w-full min-h-11 py-2 bg-muted hover:bg-muted/80 border border-border text-foreground text-xs uppercase tracking-luxe font-medium transition-all cursor-pointer rounded-none"
                         >
-                          {table.status}
-                        </span>
-                      </div>
+                          Xem Đơn Bàn Này
+                        </button>
 
-                      <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2 mb-1">
-                        <MapPin size={14} className="text-orange-500" />{" "}
-                        {table.location}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedTableForBill(table)}
+                          className="w-full min-h-11 py-2 bg-gold hover:bg-gold-soft text-ink text-xs uppercase tracking-luxe font-semibold transition-all cursor-pointer rounded-none shadow-sm"
+                        >
+                          💰 Thanh Toán Bill
+                        </button>
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                        <User size={14} className="text-orange-500" />{" "}
-                        {table.capacity} Khách
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          setSearch(table.table_number);
-                          setActiveTab("orders");
-                        }}
-                        className="w-full mt-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all active:scale-95"
-                      >
-                        Xem đơn bàn này
-                      </button>
-
-                      <button
-                        onClick={() => setSelectedTableForBill(table)} // Mở BillModal
-                        className="w-full mt-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all active:scale-95 shadow-xs"
-                      >
-                        💰 Tính tiền
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -509,7 +359,7 @@ export default function WaiterOrdersPage() {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Modal Order Detail */}
       {selectedOrder && (
         <OrderDetailModal
           order={selectedOrder}
@@ -525,7 +375,7 @@ export default function WaiterOrdersPage() {
         />
       )}
 
-      {/* 5. RENDER MODAL Ở CUỐI CÙNG (Trước thẻ đóng </div> chính) */}
+      {/* Bill Modal */}
       {selectedTableForBill && (
         <BillModal
           tableId={selectedTableForBill.id}

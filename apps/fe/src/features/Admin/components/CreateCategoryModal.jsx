@@ -10,14 +10,11 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
   const [status, setStatus] = useState("active");
 
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!open) return;
-
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
     return () => {
       document.body.style.overflow = prev || "";
     };
@@ -30,7 +27,6 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
     setDescription("");
     setDisplayOrder(0);
     setStatus("active");
-    setError("");
   };
 
   const handleClose = () => {
@@ -43,13 +39,12 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
   const handleSubmit = async () => {
     const trimmed = name.trim();
     if (!trimmed) {
-      toast.error("Vui lòng nhập tên category.");
+      toast.error("Vui lòng nhập tên danh mục.");
       return;
     }
 
     try {
       setLoading(true);
-      setError("");
       await adminMenuApi.createCategory({
         name: trimmed,
         description,
@@ -57,11 +52,10 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
         status,
       });
       onSuccess?.();
-      toast.success("Thêm category thành công");
+      toast.success("Thêm danh mục thành công");
       reset();
     } catch (e) {
-      setError(e?.response?.data?.message || "Tạo category thất bại.");
-      toast.error(e?.response?.data?.message || "Tạo category thất bại.")
+      toast.error(e?.response?.data?.message || "Tạo danh mục thất bại.");
     } finally {
       setLoading(false);
     }
@@ -69,25 +63,25 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={handleClose} />
+      <div className="absolute inset-0 bg-ink/70 backdrop-blur-xs" onClick={handleClose} />
 
       <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="w-full max-w-xl rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl overflow-hidden">
-          {/* header */}
-          <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+        <div className="w-full max-w-xl rounded-3xl border border-border bg-card shadow-2xl overflow-hidden animate-scale-in">
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-                <Layers className="text-orange-500" size={18} />
+              <div className="w-10 h-10 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold">
+                <Layers size={18} />
               </div>
               <div>
-                <div className="text-white font-black leading-tight">Tạo Category</div>
-                <div className="text-xs text-gray-400 mt-0.5">Thêm nhóm món mới cho menu</div>
+                <div className="font-serif font-bold text-foreground text-lg leading-tight">Tạo danh mục mới</div>
+                <div className="text-xs text-muted-foreground mt-0.5">Thêm phân nhóm món ăn mới cho thực đơn</div>
               </div>
             </div>
 
             <button
               onClick={handleClose}
-              className="p-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+              className="min-h-11 min-w-11 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition flex items-center justify-center cursor-pointer"
               type="button"
               aria-label="Close"
               disabled={isLoading}
@@ -96,60 +90,59 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
             </button>
           </div>
 
-          {/* body */}
-          <div className="p-5 space-y-4">
+          {/* Body */}
+          <div className="p-6 space-y-4">
             <div>
-              <label className="text-xs text-gray-400 mb-1 block">Tên category *</label>
+              <label className="text-xs text-muted-foreground mb-1 block font-medium">Tên danh mục *</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="VD: Appetizers / Drinks..."
-                className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition"
+                placeholder="VD: Khai vị, Món chính, Đồ uống cao cấp..."
+                className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
               />
             </div>
 
             <div>
-              <label className="text-xs text-gray-400 mb-1 block">Mô tả</label>
+              <label className="text-xs text-muted-foreground mb-1 block font-medium">Mô tả danh mục</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Mô tả ngắn..."
+                placeholder="Mô tả phong cách ẩm thực của danh mục..."
                 rows={3}
-                className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition"
+                className="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-gold/50"
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">Display order</label>
+                <label className="text-xs text-muted-foreground mb-1 block font-medium">Thứ tự hiển thị</label>
                 <input
                   type="number"
                   value={displayOrder}
                   onChange={(e) => setDisplayOrder(e.target.value)}
-                  className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500/40 transition"
+                  className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">Status</label>
+                <label className="text-xs text-muted-foreground mb-1 block font-medium">Trạng thái</label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full bg-neutral-950/60 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500/40 transition
-                  [&>option]:bg-neutral-900 [&>option]:text-white"
+                  className="w-full bg-background border border-border rounded-xl px-3.5 py-2 text-xs text-foreground focus:outline-hidden focus:border-gold/50 min-h-11 cursor-pointer"
                 >
-                  <option value="active">active</option>
-                  <option value="inactive">inactive</option>
+                  <option value="active">Hoạt động (Active)</option>
+                  <option value="inactive">Tạm ngưng (Inactive)</option>
                 </select>
               </div>
             </div>
           </div>
 
-          {/* footer */}
-          <div className="px-5 py-4 border-t border-white/10 flex items-center justify-end gap-2">
+          {/* Footer */}
+          <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-3 bg-card">
             <button
               onClick={handleClose}
-              className="px-4 py-2 rounded-xl bg-white dark:bg-neutral-950/5 border border-white/10 text-gray-200 hover:bg-white dark:bg-neutral-950/10 transition"
+              className="min-h-11 px-5 rounded-xl bg-background border border-border text-foreground hover:border-gold/40 hover:text-gold transition text-xs font-semibold cursor-pointer"
               type="button"
               disabled={isLoading}
             >
@@ -158,11 +151,11 @@ export default function CreateCategoryModal({ open, onClose, onSuccess }) {
 
             <button
               onClick={handleSubmit}
-              className="px-4 py-2 rounded-xl bg-orange-500/20 border border-orange-500/30 text-orange-200 hover:bg-orange-500/30 transition disabled:opacity-60"
+              className="min-h-11 px-6 rounded-xl bg-gold text-ink font-semibold hover:bg-gold-light transition text-xs cursor-pointer disabled:opacity-50"
               type="button"
               disabled={isLoading}
             >
-              {isLoading ? "Đang tạo..." : "Tạo category"}
+              {isLoading ? "Đang tạo..." : "Tạo danh mục"}
             </button>
           </div>
         </div>

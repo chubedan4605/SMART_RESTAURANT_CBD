@@ -1,5 +1,5 @@
 // src/services/adminProfileApi.js
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 export const adminProfileApi = {
   // GET /api/admin/profile

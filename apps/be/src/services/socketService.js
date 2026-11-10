@@ -1,4 +1,6 @@
-// src/services/socketService.js
+// apps/be/src/services/socketService.js
+const SOCKET_EVENTS = require("../constants/socketEvents");
+const socketDestination = require("../config/socketDestination");
 
 class SocketService {
   constructor() {
@@ -13,31 +15,69 @@ class SocketService {
     this.io.on("connection", (socket) => {
       console.log(`🔌 Client connected: ${socket.id}`);
 
-      // Admin join phòng admin để nhận thông báo
+      // 1. Admin join phòng admin (Bảo mật RBAC)
       socket.on("join_admin", () => {
-        socket.join("admin_room");
-        console.log(`🛡️ Socket ${socket.id} joined admin_room`);
+        const role = (socket.user?.role || "").toLowerCase();
+        if (role === "admin" || role === "superadmin") {
+          socket.join(socketDestination.ADMIN);
+          console.log(`🛡️ Socket ${socket.id} verified & joined ${socketDestination.ADMIN}`);
+        } else {
+          console.warn(`[SECURITY ALERT] Unauthorized join_admin from socket ${socket.id}`);
+          socket.emit(SOCKET_EVENTS.ERROR, { message: "Unauthorized: Admin role required" });
+        }
       });
 
-      // Waiter join phòng staff
+      // 2. Waiter join phòng waiter (Bảo mật RBAC)
       socket.on("join_waiter", () => {
-        socket.join("waiter_room");
-        console.log(`👩‍🍳 Socket ${socket.id} joined waiter_room`);
+        const role = (socket.user?.role || "").toLowerCase();
+        if (role === "waiter" || role === "admin" || role === "superadmin") {
+          socket.join(socketDestination.WAITER);
+          console.log(`👩‍🍳 Socket ${socket.id} verified & joined ${socketDestination.WAITER}`);
+        } else {
+          console.warn(`[SECURITY ALERT] Unauthorized join_waiter from socket ${socket.id}`);
+          socket.emit(SOCKET_EVENTS.ERROR, { message: "Unauthorized: Waiter role required" });
+        }
       });
 
-      // kitchen join phòng
+      // 3. Kitchen join phòng bếp (Bảo mật RBAC)
       socket.on("join_kitchen", () => {
-        socket.join("kitchen_room");
-        // console.log(`Socket ${socket.id} joined kitchen_room`);
+        const role = (socket.user?.role || "").toLowerCase();
+        if (role === "kitchen" || role === "admin" || role === "superadmin") {
+          socket.join(socketDestination.KITCHEN);
+          console.log(`🍳 Socket ${socket.id} verified & joined ${socketDestination.KITCHEN}`);
+        } else {
+          console.warn(`[SECURITY ALERT] Unauthorized join_kitchen from socket ${socket.id}`);
+          socket.emit(SOCKET_EVENTS.ERROR, { message: "Unauthorized: Kitchen role required" });
+        }
       });
 
-      // Khách hàng join phòng bàn ăn (từ query tableToken)
+      // 4. Khách hàng join phòng bàn ăn (Bảo mật QR Session)
       socket.on("join_table", (data) => {
-        // console.log("🔑 join_table data:", data);
-        const tableCode = data.tableCode || socket.handshake.query.tableCode;
+        const tableCode =
+          data?.tableCode ||
+          socket.handshake.query?.tableCode ||
+          socket.table?.table_number ||
+          socket.table?.table_id;
+        const role = (socket.user?.role || "").toLowerCase();
+        const isStaff = role === "admin" || role === "superadmin" || role === "waiter";
+
         if (tableCode) {
-          socket.join(`table_${tableCode}`);
-          console.log(`✅ Socket ${socket.id} joined table_${tableCode}`);
+          const isTableOwner =
+            socket.table &&
+            (String(socket.table.table_id) === String(tableCode) ||
+              String(socket.table.table_number) === String(tableCode));
+
+          if (isStaff || isTableOwner || socket.user) {
+            socket.join(socketDestination.TABLE(tableCode));
+            console.log(`🪑 Socket ${socket.id} authorized & joined table_${tableCode}`);
+          } else {
+            console.warn(
+              `[SECURITY ALERT] Unauthorized join_table attempt to table_${tableCode} from socket ${socket.id}`
+            );
+            socket.emit(SOCKET_EVENTS.ERROR, {
+              message: "Unauthorized: QR token required to join table",
+            });
+          }
         }
       });
     });
@@ -51,17 +91,17 @@ class SocketService {
       console.warn("⚠️ SocketIO chưa được khởi tạo!");
       return;
     }
-    // Gửi cho kitchen
-    this.io.to("waiter_room").emit("new_order", order);
+    // Gửi cho waiter
+    this.io.to(socketDestination.WAITER).emit(SOCKET_EVENTS.NEW_ORDER, order);
 
     // Gửi thêm cho admin room để admin nhận thông báo
-    this.io.to("admin_room").emit("admin_new_order", {
+    this.io.to(socketDestination.ADMIN).emit(SOCKET_EVENTS.ADMIN_NEW_ORDER, {
       type: "new_order",
       order: order,
       message: `Đơn hàng mới từ Bàn ${order.table_number || order.table_id}`,
       timestamp: new Date().toISOString(),
     });
-    console.log("📡 Đã thông báo đơn mới cho admin & kitchen:", order.id);
+    console.log("📡 Đã thông báo đơn mới cho admin & waiter:", order.id);
   }
 
   // Thông báo món ăn đã hết hàng cho toàn bộ khách, bếp, admin
@@ -88,30 +128,32 @@ class SocketService {
   }
 
   // 2. Thông báo cập nhật đơn hàng (Status thay đổi)
-
   notifyToKitchen(order) {
     if (!this.io) return;
-    this.io.to("kitchen_room").emit("update_order", order);
+    this.io.to(socketDestination.KITCHEN).emit(SOCKET_EVENTS.UPDATE_ORDER, order);
   }
 
   notifyOrderUpdate(order, destination = "ALL") {
     if (!this.io) return;
 
     if (destination === "KITCHEN") {
-      this.io.to("kitchen_room").emit("update_order", order);
+      this.io.to(socketDestination.KITCHEN).emit(SOCKET_EVENTS.UPDATE_ORDER, order);
       console.log("📡 Bắn socket cập nhật đơn cho kitchen:", order.id);
       return;
     }
 
-    // khi cập nhật order luôn gửi cho admin và khách
-    this.io.to("admin_room").emit("admin_order_update", {
+    // khi cập nhật order luôn gửi cho admin, waiter và khách
+    this.io.to(socketDestination.ADMIN).emit(SOCKET_EVENTS.ADMIN_ORDER_UPDATE, {
       type: "order_update",
       order: order,
       message: `Đơn #${order.id} - ${this._getStatusMessage(order.status)}`,
       timestamp: new Date().toISOString(),
     });
 
-    this.io.to(`table_${order.table_id}`).emit("order_status_update", {
+    // Bắn cho waiter_room để nhân viên theo dõi tiến độ
+    this.io.to(socketDestination.WAITER).emit(SOCKET_EVENTS.UPDATE_ORDER, order);
+
+    this.io.to(socketDestination.TABLE(order.table_id)).emit(SOCKET_EVENTS.ORDER_STATUS_UPDATE, {
       orderId: order.id,
       status: order.status,
       message: this._getStatusMessage(order.status),
@@ -137,7 +179,7 @@ class SocketService {
     );
 
     // bắn cho admin
-    this.io.to("admin_room").emit("admin_order_item_update", {
+    this.io.to(socketDestination.ADMIN).emit(SOCKET_EVENTS.ADMIN_ORDER_ITEM_UPDATE, {
       orderId,
       itemId,
       itemStatus,
@@ -145,7 +187,7 @@ class SocketService {
     });
 
     // bắn cho waiter
-    this.io.to("waiter_room").emit("order_item_status_update", {
+    this.io.to(socketDestination.WAITER).emit(SOCKET_EVENTS.ORDER_ITEM_STATUS_UPDATE, {
       orderId,
       itemId,
       itemStatus,
@@ -154,7 +196,7 @@ class SocketService {
 
     // Bắn cho khách ở bàn đó
     if (tableId) {
-      this.io.to(`table_${tableId}`).emit("order_item_status_update", {
+      this.io.to(socketDestination.TABLE(tableId)).emit(SOCKET_EVENTS.ORDER_ITEM_STATUS_UPDATE, {
         orderId,
         itemId,
         itemStatus,
@@ -167,9 +209,8 @@ class SocketService {
   notifyBillRequest(data) {
     if (this.io) {
       // Gửi cho tất cả staff (waiter, cashier, admin)
-      this.io.to("waiter_room").emit("bill_request", data);
-      // Gửi cho admin room để admin nhận thông báo
-      this.io.to("admin_room").emit("bill_request", data);
+      this.io.to(socketDestination.WAITER).emit(SOCKET_EVENTS.BILL_REQUEST, data);
+      this.io.to(socketDestination.ADMIN).emit(SOCKET_EVENTS.BILL_REQUEST, data);
       console.log(
         "📢 Bill request notification sent:",
         data.request?.table_number,
@@ -177,13 +218,15 @@ class SocketService {
     }
   }
 
-  // Thông báo cập nhật trạng thái yêu cầu
+  // Thông báo cập nhật trạng thái yêu cầu thanh toán
   notifyBillRequestUpdate(data) {
     if (this.io) {
-      // Gửi cho staff
-      this.io.to("staff").emit("bill_request_update", data);
+      // Gửi cho staff (waiter + admin) - Đã sửa lỗi phòng ma 'staff'
+      this.io.to(socketDestination.WAITER).to(socketDestination.ADMIN).emit(SOCKET_EVENTS.BILL_REQUEST_UPDATE, data);
       // Gửi cho bàn cụ thể (nếu khách đang xem)
-      this.io.to(`table_${data.tableId}`).emit("bill_request_update", data);
+      if (data.tableId) {
+        this.io.to(socketDestination.TABLE(data.tableId)).emit(SOCKET_EVENTS.BILL_REQUEST_UPDATE, data);
+      }
     }
   }
 
@@ -199,22 +242,17 @@ class SocketService {
     return messages[status] || "📦 Cập nhật đơn hàng";
   }
 
-  // --- BỔ SUNG HÀM NÀY ĐỂ SỬA LỖI ---
   // Chấp nhận cả 2 cách gọi: notifyTableUpdate(tableData) hoặc notifyTableUpdate(io, tableData)
   notifyTableUpdate(arg1, arg2) {
     if (!this.io) return;
 
-    // Xác định tableData - hỗ trợ cả 2 cách gọi cũ và mới
     let tableData;
     if (arg2 !== undefined) {
-      // Gọi theo kiểu cũ: notifyTableUpdate(io, { type, table })
       tableData = arg2;
     } else {
-      // Gọi theo kiểu mới: notifyTableUpdate({ type, table }) hoặc notifyTableUpdate(table)
       tableData = arg1;
     }
 
-    // Nếu tableData có dạng { type, table }, lấy table ra
     const table = tableData.table || tableData;
     const type = tableData.type || "update";
 
@@ -225,21 +263,21 @@ class SocketService {
       type,
     );
 
-    // Gửi cho Admin/Waiter (đang ở trong admin_room hoặc kitchen_room)
+    // Gửi bill_update cho bàn nếu có id
     if (table.id) {
-      this.io.to(`table_${table.id}`).emit("bill_update", {
+      this.io.to(socketDestination.TABLE(table.id)).emit(SOCKET_EVENTS.BILL_UPDATE, {
         message: this._getStatusMessage("completed"),
         timestamp: new Date().toISOString(),
       });
     }
 
     this.io
-      .to("admin_room")
-      .to("kitchen_room")
-      .emit("table_update", { type, table });
+      .to(socketDestination.ADMIN)
+      .to(socketDestination.KITCHEN)
+      .emit(SOCKET_EVENTS.TABLE_UPDATE, { type, table });
 
     // Gửi thông báo riêng cho admin về cập nhật bàn
-    this.io.to("admin_room").emit("admin_table_update", {
+    this.io.to(socketDestination.ADMIN).emit(SOCKET_EVENTS.ADMIN_TABLE_UPDATE, {
       type: "table_update",
       table: table,
       message: `Bàn ${table.table_number || table.id} đã được cập nhật`,
@@ -260,22 +298,28 @@ class SocketService {
       type,
     );
 
-    // Gửi cho admin room để cập nhật TableManagement
-    this.io.to("admin_room").to("kitchen_room").emit("table_session_update", {
-      type: type, // 'session_started' hoặc 'session_ended'
-      table: table,
-      session: session,
-      timestamp: new Date().toISOString(),
-    });
+    // Gửi cho admin và kitchen
+    this.io
+      .to(socketDestination.ADMIN)
+      .to(socketDestination.KITCHEN)
+      .emit(SOCKET_EVENTS.TABLE_SESSION_UPDATE, {
+        type: type, // 'session_started' hoặc 'session_ended'
+        table: table,
+        session: session,
+        timestamp: new Date().toISOString(),
+      });
 
     // Cũng emit table_update để cập nhật trạng thái bàn
-    this.io.to("admin_room").to("kitchen_room").emit("table_update", {
-      type: "update",
-      table: table,
-    });
+    this.io
+      .to(socketDestination.ADMIN)
+      .to(socketDestination.KITCHEN)
+      .emit(SOCKET_EVENTS.TABLE_UPDATE, {
+        type: "update",
+        table: table,
+      });
 
     // Gửi thông báo cho admin
-    this.io.to("admin_room").emit("admin_table_update", {
+    this.io.to(socketDestination.ADMIN).emit(SOCKET_EVENTS.ADMIN_TABLE_UPDATE, {
       type: "table_session",
       table: table,
       message:
@@ -286,7 +330,7 @@ class SocketService {
     });
   }
 
-  // Thông báo thanh toán thành công cho admin
+  // Thông báo thanh toán thành công cho admin, waiter và kitchen
   notifyPaymentCompleted(data) {
     if (!this.io) return;
 
@@ -300,7 +344,7 @@ class SocketService {
     );
 
     // Gửi cho admin room
-    this.io.to("admin_room").emit("admin_payment_completed", {
+    this.io.to(socketDestination.ADMIN).emit(SOCKET_EVENTS.ADMIN_PAYMENT_COMPLETED, {
       type: "payment_completed",
       table_id: table_id,
       table_number: table_number,
@@ -312,7 +356,7 @@ class SocketService {
     });
 
     // Gửi cho waiter room để waiter biết
-    this.io.to("waiter_room").emit("payment_completed", {
+    this.io.to(socketDestination.WAITER).emit(SOCKET_EVENTS.PAYMENT_COMPLETED, {
       table_id: table_id,
       table_number: table_number,
       bill: bill,
@@ -322,7 +366,7 @@ class SocketService {
     });
 
     // Cũng gửi cho kitchen room
-    this.io.to("kitchen_room").emit("payment_completed", {
+    this.io.to(socketDestination.KITCHEN).emit(SOCKET_EVENTS.PAYMENT_COMPLETED, {
       table_id: table_id,
       table_number: table_number,
       total_amount: total_amount,
@@ -344,7 +388,7 @@ class SocketService {
     );
 
     // Emit cho tất cả waiter room để waiter tự kiểm tra
-    this.io.to("waiter_room").emit("table_assignment_update", {
+    this.io.to(socketDestination.WAITER).emit(SOCKET_EVENTS.TABLE_ASSIGNMENT_UPDATE, {
       waiterId: waiterId,
       waiterName: waiterName,
       tableIds: tableIds,
@@ -354,7 +398,7 @@ class SocketService {
     });
 
     // Cũng gửi cho admin room để admin biết
-    this.io.to("admin_room").emit("admin_table_assignment_update", {
+    this.io.to(socketDestination.ADMIN).emit(SOCKET_EVENTS.ADMIN_TABLE_ASSIGNMENT_UPDATE, {
       type: "table_assignment",
       waiterId: waiterId,
       waiterName: waiterName,

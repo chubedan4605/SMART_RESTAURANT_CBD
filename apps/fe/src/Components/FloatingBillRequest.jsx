@@ -54,10 +54,7 @@ const FloatingBillRequest = ({ tableId, sessionId }) => {
     if (status !== "idle") return;
 
     const user = localStorage.getItem("user");
-
     const userId = user ? JSON.parse(user).id : null;
-
-    // console.log("Requesting bill with:", { tableId, sessionId, userId });
 
     const response = await orderApi.getUnpaidOrderByUserId(
       userId,
@@ -94,7 +91,7 @@ const FloatingBillRequest = ({ tableId, sessionId }) => {
   if (status === "acknowledged") {
     return (
       <div className="fixed bottom-20 right-4 z-40">
-        <div className="px-4 py-3 rounded-2xl bg-green-500/20 border border-green-500/30 text-green-400 font-bold flex items-center gap-2 shadow-lg animate-pulse">
+        <div className="px-4 py-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-medium flex items-center gap-2 shadow-lg backdrop-blur-md animate-pulse">
           <CheckCircle size={20} />
           <span className="text-sm">{t("bill.staffOnTheWay")}</span>
         </div>
@@ -106,7 +103,7 @@ const FloatingBillRequest = ({ tableId, sessionId }) => {
   if (status === "pending") {
     return (
       <div className="fixed bottom-20 right-4 z-40">
-        <div className="px-4 py-3 rounded-2xl bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 font-bold flex items-center gap-2 shadow-lg">
+        <div className="px-4 py-3 rounded-2xl bg-gold/15 border border-gold/30 text-gold font-medium flex items-center gap-2 shadow-lg backdrop-blur-md">
           <Bell size={20} className="animate-bounce" />
           <span className="text-sm">{t("bill.waitingForStaff")}</span>
         </div>
@@ -119,55 +116,57 @@ const FloatingBillRequest = ({ tableId, sessionId }) => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full bg-linear-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/30 flex items-center justify-center hover:scale-110 transition-transform active:scale-95"
+        aria-label="Request Bill"
+        className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full bg-gold text-ink font-semibold shadow-lg shadow-gold/20 flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer border border-gold/40"
       >
         <Receipt size={24} />
       </button>
 
       {/* Modal xác nhận */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-neutral-900 rounded-2xl border border-white/10 w-full max-w-sm overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/75 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-card text-card-foreground rounded-2xl border border-border w-full max-w-sm overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="p-5 border-b border-white/10 flex items-center justify-between">
+            <div className="p-5 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                  <Receipt size={20} className="text-orange-500" />
+                <div className="w-10 h-10 rounded-xl bg-gold/15 border border-gold/30 flex items-center justify-center text-gold">
+                  <Receipt size={20} />
                 </div>
                 <div>
-                  <h3 className="text-white font-bold">
+                  <h3 className="font-serif text-lg font-bold text-foreground">
                     {t("bill.requestBill")}
                   </h3>
-                  <p className="text-gray-400 text-xs">
+                  <p className="text-muted-foreground text-xs">
                     {t("bill.staffWillCome")}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-500 hover:text-white transition-colors"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                aria-label="Close"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
             {/* Content */}
             <div className="p-5">
-              <p className="text-gray-300 text-sm text-center mb-6">
+              <p className="text-muted-foreground text-sm text-center mb-6 leading-relaxed">
                 {t("bill.confirmRequestMessage")}
               </p>
 
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-neutral-950/5 hover:bg-white dark:bg-neutral-950/10 border border-white/10 text-gray-300 font-medium transition-all"
+                  className="flex-1 min-h-11 px-4 py-2.5 rounded-xl bg-muted/50 hover:bg-muted border border-border text-foreground text-sm font-medium transition-all cursor-pointer"
                 >
                   {t("bill.later")}
                 </button>
                 <button
                   onClick={handleRequest}
                   disabled={loading}
-                  className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                  className="flex-1 min-h-11 px-4 py-2.5 rounded-xl bg-gold hover:bg-gold-soft text-ink text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer shadow-sm shadow-gold/20"
                 >
                   {loading ? (
                     <Loader2 size={18} className="animate-spin" />

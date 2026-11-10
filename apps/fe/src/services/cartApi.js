@@ -1,4 +1,4 @@
-import axiosClient from "../store/axiosClient";
+import axiosClient from "./axiosClient";
 
 export const cartApi = {
   // DB-cart APIs (nếu bạn vẫn muốn dùng ở nơi khác)

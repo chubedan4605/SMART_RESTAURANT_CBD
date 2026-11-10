@@ -4,12 +4,7 @@ const menuRepo = require("../repositories/menuRepository"); // Cần viết thê
 const modifierRepo = require("../repositories/modifierRepository"); // Cần repo này để lấy giá option
 const tableRepo = require("../repositories/tableRepository"); // Cần repo này để check bàn
 const socketService = require("./socketService"); // Import
-const socketDestination = require("../config/socketDestionation"); // Import destination map
-const {
-  acquireMultipleItemLocks,
-  releaseMultipleItemLocks,
-} = require("../utils/itemLock");
-const redisStockService = require("./redisStockService");
+const socketDestination = require("../config/socketDestination"); // Import destination map
 
 const mapItemUiStatus = (status) => {
   switch (status) {

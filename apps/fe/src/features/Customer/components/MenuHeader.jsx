@@ -30,13 +30,13 @@ export default function MenuHeader({
   const { t } = useTranslation();
 
   return (
-    <div className="sticky top-0 z-30 border-b border-bistro-wine/10 bg-bistro-cream dark:bg-neutral-900/95 backdrop-blur-2xl shadow-sm py-2 md:py-4 transition-all duration-300">
+    <div className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md shadow-xs py-2 md:py-4 transition-all duration-300">
       <div className="px-3 md:px-4 container mx-auto max-w-5xl">
         {/* --- DÒNG 1: SEARCH --- */}
         <div className="flex gap-2 items-center max-w-lg mx-auto mb-2 md:mb-3 transition-all">
           <div className="relative flex-1 group">
             <Search
-              className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-bistro-charcoal dark:text-gray-100/50 transition-all"
+              className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-muted-foreground transition-all"
               size={18}
             />
             <input
@@ -47,17 +47,17 @@ export default function MenuHeader({
               onKeyDown={(e) => {
                 if (e.key === "Enter") applySearch();
               }}
-              className="w-full bg-white dark:bg-neutral-950 border border-bistro-charcoal/20 dark:border-white/20 rounded-sm 
-                         pl-10 md:pl-12 pr-4 py-2 md:py-2.5 
-                         text-sm text-bistro-charcoal dark:text-gray-100 placeholder-bistro-charcoal/40 
-                         focus:outline-none focus:border-bistro-wine 
-                         transition-all duration-300 shadow-sm font-sans"
+              className="w-full bg-card border border-border rounded-none 
+                         pl-10 md:pl-12 pr-4 py-2.5 
+                         text-sm text-foreground placeholder:text-muted-foreground 
+                         focus:outline-none focus:border-gold 
+                         transition-all duration-300 shadow-xs font-sans min-h-11"
             />
             {/* Fuzzy search indicator */}
             {isFuzzySearchActive && searchInput.trim().length >= 2 && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                <Sparkles size={14} className="text-bistro-wine" />
-                <span className="text-xs text-bistro-wine font-medium font-sans">
+                <Sparkles size={14} className="text-gold" />
+                <span className="text-xs text-gold font-medium font-sans">
                   {fuzzyResultCount}/{totalItemsCount}
                 </span>
               </div>
@@ -66,10 +66,10 @@ export default function MenuHeader({
           <button
             onClick={applySearch}
             disabled={disabledSearch}
-            className={`hidden sm:block px-6 py-2.5 rounded-sm text-xs tracking-widest uppercase font-sans transition-all duration-300 whitespace-nowrap shadow-sm ${
+            className={`hidden sm:inline-flex items-center justify-center min-h-11 px-6 py-2.5 rounded-none text-xs tracking-luxe uppercase font-sans font-semibold transition-all duration-300 whitespace-nowrap shadow-xs cursor-pointer ${
               disabledSearch
-                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-bistro-charcoal text-white hover:bg-black"
+                ? "bg-muted text-muted-foreground cursor-not-allowed border border-border"
+                : "bg-gold text-ink hover:bg-gold-soft border border-gold"
             }`}
           >
             {t("menu.searchButton")}
@@ -77,18 +77,17 @@ export default function MenuHeader({
         </div>
 
         {/* --- DÒNG 2: SORT & FILTER --- */}
-        <div className="flex items-center justify-between gap-3 mt-4 max-w-5xl mx-auto mb-2 md:mb-3">
+        <div className="flex items-center justify-between gap-3 mt-3 max-w-5xl mx-auto mb-2 md:mb-3">
           {/* Sort Dropdown */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-bistro-charcoal dark:text-gray-100/60 hidden xs:inline font-sans uppercase tracking-widest">
+            <span className="text-[11px] text-muted-foreground hidden xs:inline font-sans uppercase tracking-luxe font-medium">
               {t("menu.sort")}:
-            </span>{" "}
-            {/* Ẩn chữ 'Sort:' nếu màn hình quá bé */}
+            </span>
             <div className="relative">
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="appearance-none bg-white dark:bg-neutral-950 border border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100 text-xs rounded-sm px-3 py-1.5 md:py-2 outline-none focus:border-bistro-wine cursor-pointer font-sans"
+                className="appearance-none bg-card border border-border text-foreground text-xs rounded-none px-3 py-2 outline-none focus:border-gold cursor-pointer font-sans min-h-11 pr-8"
               >
                 <option value="newest">{t("menu.sortNewest")}</option>
                 <option value="popularity">{t("menu.sortPopularity")}</option>
@@ -98,81 +97,78 @@ export default function MenuHeader({
 
           {/* Chef Pick Button */}
           <button
+            type="button"
             onClick={() => setOnlyChef((v) => !v)}
-            className={`inline-flex items-center gap-1.5 md:gap-2 text-xs font-sans uppercase tracking-widest rounded-sm px-4 py-1.5 md:py-2 border transition-all duration-300 select-none ${
+            className={`inline-flex items-center gap-2 text-xs font-sans uppercase tracking-luxe rounded-none px-4 py-2 border transition-all duration-300 select-none min-h-11 cursor-pointer ${
               onlyChef
-                ? "bg-bistro-wine border-bistro-wine text-white shadow-md"
-                : "bg-white dark:bg-neutral-950 border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100/70 hover:border-bistro-wine hover:text-bistro-wine"
+                ? "bg-gold border-gold text-ink font-semibold shadow-xs"
+                : "bg-card border-border text-foreground hover:border-gold/50"
             }`}
           >
             <Flame
               size={14}
               className={`transition-colors duration-300 ${
-                onlyChef
-                  ? "text-white fill-white"
-                  : "text-bistro-wine fill-bistro-wine"
+                onlyChef ? "text-ink fill-ink" : "text-gold fill-gold"
               }`}
             />
-            <span className="hidden xs:inline">Chef’s picks</span>{" "}
-            {/* Ẩn chữ trên màn hình cực nhỏ */}
-            <span className="inline xs:hidden">{t("menu.chef")}</span>{" "}
-            {/* Hiện chữ ngắn gọn */}
+            <span className="hidden xs:inline">Chef’s Picks</span>
+            <span className="inline xs:hidden">{t("menu.chef")}</span>
           </button>
         </div>
 
         {/* --- DÒNG 3: CATEGORIES & CART --- */}
-        <div className="relative group/cat mt-4">
+        <div className="relative group/cat mt-3">
           <div
-            className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 pt-1 select-none scroll-smooth pr-14 md:pr-16 touch-pan-x"
+            className="flex gap-2.5 overflow-x-auto scroll-elegant pb-2 pt-1 select-none pr-16 touch-pan-x"
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             {categories.length > 0
               ? categories.map((c) => (
                   <button
+                    type="button"
                     key={c.id}
                     onClick={() => setActiveCategoryId(c.id)}
-                    className={`whitespace-nowrap font-sans text-xs uppercase tracking-widest transition-all duration-300 border shrink-0 px-4 md:px-5 py-2 rounded-sm ${
+                    className={`whitespace-nowrap font-sans text-xs uppercase tracking-luxe transition-all duration-300 border shrink-0 px-4 md:px-5 py-2.5 rounded-none min-h-11 cursor-pointer ${
                       activeCategoryId === c.id
-                        ? "bg-bistro-charcoal border-bistro-charcoal text-white shadow-md"
-                        : "bg-white dark:bg-neutral-950 border-bistro-charcoal/20 dark:border-white/20 text-bistro-charcoal dark:text-gray-100 hover:border-bistro-charcoal/50"
+                        ? "bg-gold border-gold text-ink font-semibold shadow-xs"
+                        : "bg-card border-border text-foreground hover:border-gold/50 hover:text-gold"
                     }`}
                   >
                     {c.name}
                   </button>
                 ))
-              : // Loading skeleton
-                [1, 2, 3, 4].map((i) => (
+              : [1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="h-8 w-24 bg-gray-200 rounded-sm animate-pulse border border-gray-300 shrink-0"
+                    className="h-11 w-24 bg-muted rounded-none animate-pulse border border-border shrink-0"
                   />
                 ))}
           </div>
 
-          {/* Gradient mờ bên phải để tạo cảm giác scroll */}
-          <div className="absolute right-0 top-0 bottom-2 w-16 md:w-24 bg-gradient-to-l from-bistro-cream via-bistro-cream/90 to-transparent pointer-events-none z-10" />
+          {/* Right gradient fade */}
+          <div className="absolute right-0 top-0 bottom-2 w-16 md:w-24 bg-gradient-to-l from-background via-background/90 to-transparent pointer-events-none z-10" />
 
-          {/* Nút Cart */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none z-20 pb-0.5 md:pb-1">
+          {/* Cart Action Button */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none z-20 pb-1">
             <Link
               to={tableCode ? `/cart/${tableCode}` : "/cart"}
               onClick={(e) => e.stopPropagation()}
+              aria-label="View Cart"
               className="pointer-events-auto
-                  h-10 w-10 md:h-12 md:w-12 rounded-sm border border-bistro-charcoal/10 dark:border-white/10
-                  bg-white dark:bg-neutral-950/95 backdrop-blur-md shadow-sm
+                  h-11 w-11 md:h-12 md:w-12 rounded-none border border-border
+                  bg-card shadow-xs
                   flex items-center justify-center
-                  text-bistro-charcoal dark:text-gray-100 hover:text-bistro-wine
-                  hover:border-bistro-wine/40 hover:shadow-md
-                  transition-all duration-300 active:scale-95 relative"
+                  text-foreground hover:text-gold
+                  hover:border-gold/60 hover:shadow-md
+                  transition-all duration-300 active:scale-95 relative cursor-pointer"
             >
-              <ShoppingBag size={18} className="md:w-5 md:h-5" />{" "}
-              {/* Icon nhỏ hơn xíu trên mobile */}
+              <ShoppingBag size={18} className="md:w-5 md:h-5" />
               {cartCount > 0 && (
                 <span
                   className="absolute -top-1.5 -right-1.5 min-w-[20px] h-[20px] px-1
-            bg-bistro-wine text-white text-[10px] font-sans font-bold
+            bg-gold text-ink text-[10px] font-sans font-bold
             rounded-full flex items-center justify-center
-            shadow-md"
+            shadow-sm"
                 >
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>

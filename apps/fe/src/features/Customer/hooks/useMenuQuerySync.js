@@ -21,7 +21,6 @@ export function useMenuQuerySync() {
       onlyChef: chef,
       page,
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const syncUrl = useCallback(

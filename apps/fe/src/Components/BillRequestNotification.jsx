@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { billRequestApi } from "../services/billRequestApi";
 import { useSocket } from "../context/SocketContext";
 import { formatVNTimeOnly } from "../utils/timezone";
+import { audioNotificationService } from "../services/audioNotificationService";
+import { SOCKET_EVENTS } from "../constants/socketEvents";
 
 const BillRequestNotification = () => {
   const [requests, setRequests] = useState([]);
@@ -33,10 +35,9 @@ const BillRequestNotification = () => {
     const handleNewRequest = (data) => {
       if (data.type === "new") {
         setRequests((prev) => [...prev, data.request]);
-        // Play sound notification  
-        const audio = new Audio("/notification.mp3");
-        audio.play().catch(() => {});
-        toast.info(`Bàn ${data.request.table_number} yêu cầu thanh toán!`, {
+        // Play sound notification
+        audioNotificationService.play("/sounds/notification.mp3");
+        toast.info(`Bàn ${data.request?.table_number} yêu cầu thanh toán!`, {
           icon: "🧾",
         });
       }
@@ -52,12 +53,12 @@ const BillRequestNotification = () => {
       }
     };
 
-    socket.on("bill_request", handleNewRequest);
-    socket.on("bill_request_update", handleUpdate);
+    socket.on(SOCKET_EVENTS.BILL_REQUEST, handleNewRequest);
+    socket.on(SOCKET_EVENTS.BILL_REQUEST_UPDATE, handleUpdate);
 
     return () => {
-      socket.off("bill_request", handleNewRequest);
-      socket.off("bill_request_update", handleUpdate);
+      socket.off(SOCKET_EVENTS.BILL_REQUEST, handleNewRequest);
+      socket.off(SOCKET_EVENTS.BILL_REQUEST_UPDATE, handleUpdate);
     };
   }, [socket]);
 
