@@ -11,6 +11,23 @@ export const aiApi = {
     });
   },
 
+  async getHistory(tableCode) {
+    return axiosClient.get("/ai/history", {
+      params: { tableCode },
+      skipLoading: true,
+    });
+  },
+
+  async resetSession(tableCode) {
+    return axiosClient.post(
+      "/ai/reset",
+      { tableCode },
+      {
+        skipLoading: true,
+      },
+    );
+  },
+
   async chat(payload) {
     return axiosClient.post("/ai/chat", payload, {
       skipLoading: true,

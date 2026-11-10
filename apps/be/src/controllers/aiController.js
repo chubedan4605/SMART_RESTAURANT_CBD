@@ -2,6 +2,7 @@ const {
   chatWithDiningAssistant,
   getSmartSuggestions,
 } = require("../services/aiAssistantService");
+const aiChatSessionRepository = require("../repositories/aiChatSessionRepository");
 
 function writeSseEvent(res, eventName, payload) {
   if (res.writableEnded || res.destroyed) return;
@@ -25,6 +26,39 @@ exports.getSuggestions = async (req, res) => {
   }
 };
 
+exports.getHistory = async (req, res) => {
+  try {
+    const { tableCode } = req.query;
+    if (!tableCode) {
+      return res.status(200).json({ messages: [], interactionId: null });
+    }
+    const session = await aiChatSessionRepository.findByTableCode(tableCode);
+    return res.status(200).json({
+      messages: session?.messages || [],
+      interactionId: session?.interaction_id || null,
+    });
+  } catch (err) {
+    console.error("[aiController.getHistory] error:", err);
+    return res.status(500).json({ message: "Không thể tải lịch sử chat AI" });
+  }
+};
+
+exports.resetSession = async (req, res) => {
+  try {
+    const { tableCode } = req.body || {};
+    if (tableCode) {
+      await aiChatSessionRepository.clearSession(tableCode);
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Đã làm mới phiên hội thoại AI thành công",
+    });
+  } catch (err) {
+    console.error("[aiController.resetSession] error:", err);
+    return res.status(500).json({ message: "Không thể làm mới phiên chat" });
+  }
+};
+
 exports.chat = async (req, res) => {
   try {
     const {
@@ -35,13 +69,49 @@ exports.chat = async (req, res) => {
       language = "vi",
     } = req.body || {};
 
+    let effectiveInteractionId = previousInteractionId;
+    if (!effectiveInteractionId && tableCode) {
+      const existingSession = await aiChatSessionRepository.findByTableCode(tableCode);
+      if (existingSession?.interaction_id) {
+        effectiveInteractionId = existingSession.interaction_id;
+      }
+    }
+
     const result = await chatWithDiningAssistant({
       message,
-      previousInteractionId,
+      previousInteractionId: effectiveInteractionId,
       tableCode,
       cartItems,
       language,
     });
+
+    if (tableCode) {
+      try {
+        await aiChatSessionRepository.appendMessages({
+          tableCode,
+          interactionId: result.interactionId || null,
+          newMessages: [
+            {
+              id: `user-${Date.now()}`,
+              role: "user",
+              text: message,
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: `asst-${Date.now()}`,
+              role: "assistant",
+              text: result.reply,
+              recommendedDishes: result.recommendedDishes || [],
+              cartActions: result.cartActions || [],
+              comboSummary: result.comboSummary || null,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        });
+      } catch (saveErr) {
+        console.warn("[aiController.chat] Failed to save chat session:", saveErr.message);
+      }
+    }
 
     return res.status(200).json(result);
   } catch (err) {
@@ -84,9 +154,17 @@ exports.chatStream = async (req, res) => {
   });
 
   try {
+    let effectiveInteractionId = previousInteractionId;
+    if (!effectiveInteractionId && tableCode) {
+      const existingSession = await aiChatSessionRepository.findByTableCode(tableCode);
+      if (existingSession?.interaction_id) {
+        effectiveInteractionId = existingSession.interaction_id;
+      }
+    }
+
     const result = await chatWithDiningAssistant({
       message,
-      previousInteractionId,
+      previousInteractionId: effectiveInteractionId,
       tableCode,
       cartItems,
       language,
@@ -96,6 +174,34 @@ exports.chatStream = async (req, res) => {
         }
       },
     });
+
+    if (tableCode) {
+      try {
+        await aiChatSessionRepository.appendMessages({
+          tableCode,
+          interactionId: result.interactionId || null,
+          newMessages: [
+            {
+              id: `user-${Date.now()}`,
+              role: "user",
+              text: message,
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: `asst-${Date.now()}`,
+              role: "assistant",
+              text: result.reply,
+              recommendedDishes: result.recommendedDishes || [],
+              cartActions: result.cartActions || [],
+              comboSummary: result.comboSummary || null,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        });
+      } catch (saveErr) {
+        console.warn("[aiController.chatStream] Failed to save chat session:", saveErr.message);
+      }
+    }
 
     if (clientClosed || res.writableEnded) {
       return res.end();
@@ -138,4 +244,3 @@ exports.chatStream = async (req, res) => {
     return res.end();
   }
 };
-

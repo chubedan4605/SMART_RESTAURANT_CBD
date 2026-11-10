@@ -6,7 +6,7 @@ const {
   normalizeVietnamese,
 } = require("./aiMenuIndexer");
 
-const AGENT_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+const AGENT_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 
 let genAiClient = null;
 function getGenAiClient() {
@@ -184,11 +184,12 @@ function buildSystemInstruction(diningContext) {
     "You are the AI Sommelier & Smart Dining Assistant at Lumière Bistro.",
     `Current Dining Context: Table=${diningContext.tableCode} | Current Cart (${diningContext.cartCount} items, ${diningContext.cartTotalVnd.toLocaleString("vi-VN")} VND): ${diningContext.cartSummaryText}.`,
     "CRITICAL RULES:",
-    "1. When the customer simply greets you (e.g. 'hi', 'hello', 'chào bạn', 'alo'), respond warmly as the AI Sommelier, introduce how you can help (recommend signature dishes, filter dietary restrictions, build budget combos, or order directly into cart), WITHOUT calling menu tools or forcing dish lists unless they explicitly ask.",
-    "2. NEVER invent or hallucinate dishes or prices. Always use `search_menu_semantic` or `build_combo_recommendation` to retrieve real dishes from the live menu.",
-    "3. Respect all dietary restrictions and allergens strictly (Fail-Closed Safety). If a customer mentions an allergy or 'no spicy', pass `exclude_allergens` or `exclude_spicy: true` to the tools.",
-    "4. When the customer asks for a group meal or budget combo (e.g. 'combo 2 người dưới 300k'), ALWAYS call `build_combo_recommendation` so the total price is mathematically guaranteed to be within budget.",
-    "5. When the customer explicitly asks to order or add items to their cart (e.g. 'Thêm cho mình 2 phần...', 'Lấy cho anh...'), call `mutate_customer_cart` to add the dishes directly to their cart.",
+    "1. When the customer asks 'món nào...', 'những món nào...', 'gợi ý món...', or inquires about dishes with or without certain ingredients (e.g. 'không chứa tỏi', 'không có tỏi', 'không cay'), you MUST IMMEDIATELY call `search_menu_semantic` with `exclude_allergens: ['tỏi']` (or matching parameters) on the very first turn. NEVER answer with a generic question without calling the tool to recommend dishes first.",
+    "2. When the customer simply greets you without asking for food (e.g. only 'hi', 'hello', 'chào bạn'), respond warmly as the AI Sommelier and introduce what you can help with.",
+    "3. NEVER invent or hallucinate dishes or prices. Always use `search_menu_semantic` or `build_combo_recommendation` to retrieve real dishes from the live menu.",
+    "4. Respect all dietary restrictions and allergens strictly (Fail-Closed Safety). If a customer mentions an allergy, dislikes an ingredient, or requests dishes without a specific ingredient (e.g. 'không có tỏi', 'không chứa tỏi', 'không hành', 'no garlic', 'no spicy'), you MUST pass `exclude_allergens: ['tỏi']` (or the respective ingredient in Vietnamese/English) to `search_menu_semantic`.",
+    "5. When the customer asks for a group meal or budget combo (e.g. 'combo 2 người dưới 300k'), ALWAYS call `build_combo_recommendation` so the total price is mathematically guaranteed to be within budget.",
+    "6. When the customer explicitly asks to order or add items to their cart (e.g. 'Thêm cho mình 2 phần...', 'Lấy cho anh...'), call `mutate_customer_cart` to add the dishes directly to their cart.",
     isEn
       ? "6. Respond warmly, concisely, and professionally in English. Highlight dish names, prices in VND, and why they match the guest's request."
       : "6. Trả lời thân thiện, tinh tế, ngắn gọn bằng Tiếng Việt như một chuyên gia ẩm thực thực thụ. Nêu rõ tên món, mức giá (VNĐ) và lý do phù hợp với khẩu vị của khách.",
@@ -316,6 +317,14 @@ function parseUserIntentAndConstraints(message = "") {
     );
 
   const excludeAllergens = [];
+
+  // Bắt các mẫu câu phủ định tổng quát: "không có tỏi", "không chứa tỏi", "không ăn tỏi", "dị ứng tỏi", "kiêng tỏi", "bỏ tỏi"
+  if (/\b(khong co|khong chua|khong an|ko co|ko an|di ung|kieng|bo|no|without)\b.*\b(toi|garlic)\b/.test(norm)) {
+    excludeAllergens.push("toi");
+  }
+  if (/\b(khong co|khong chua|khong an|ko co|ko an|di ung|kieng|bo|no|without)\b.*\b(hanh|onion)\b/.test(norm)) {
+    excludeAllergens.push("hanh");
+  }
   if (/\b(di ung hai san|di ung tom|khong an hai san|khong hai san|no seafood|no shrimp)\b/.test(norm)) {
     excludeAllergens.push("hai san", "tom");
   }
@@ -345,12 +354,13 @@ function parseUserIntentAndConstraints(message = "") {
     !partySize &&
     !isOrderIntent;
 
-  // Làm sạch từ khóa tìm kiếm (bỏ các stop-words hội thoại)
-  const cleanQuery = norm
+  // Làm sạch từ khóa tìm kiếm (bỏ các stop-words hội thoại và cụm phủ định)
+  let cleanQuery = norm
     .replace(
-      /\b(goi y|tu van|cho minh|giup minh|mon nao|co mon gi|duoi|khoang|tam|vnd|dong|\d+k|\d+nghin|khong cay|ko cay|an chay|best seller|bep truong|them vao gio|lay cho|nhom|nguoi|combo|hi|hello|xin chao|chao ban)\b/g,
+      /\b(goi y|tu van|cho toi|cho minh|giup toi|giup minh|mon nao|nhung mon nao|co mon gi|duoi|khoang|tam|vnd|dong|\d+k|\d+nghin|khong cay|ko cay|an chay|best seller|bep truong|them vao gio|lay cho|nhom|nguoi|combo|hi|hello|xin chao|chao ban|v ban|ban oi|nhe|di|trong|thanh phan|cho)\b/g,
       " ",
     )
+    .replace(/\b(khong co|khong chua|khong an|ko co|ko an|di ung|kieng|bo|khong lay|no|without)\s+([a-z0-9\s]+)/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
@@ -622,14 +632,19 @@ async function chatWithDiningAssistant({
       onStatus("AI Sommelier đang phân tích yêu cầu của bạn...");
     }
 
+    const callWithTimeout = (promise, ms = 12000) =>
+      Promise.race([
+        promise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`Gemini API timeout after ${ms}ms`)), ms),
+        ),
+      ]);
+
     const createParams = {
       model: AGENT_MODEL,
       input: cleanMessage,
       system_instruction: systemInstruction,
       tools: DINING_AGENT_TOOLS,
-      generation_config: {
-        thinking_level: "low",
-      },
     };
 
     if (
@@ -641,18 +656,16 @@ async function chatWithDiningAssistant({
 
     let interaction = null;
     try {
-      interaction = await client.interactions.create(createParams);
+      interaction = await callWithTimeout(client.interactions.create(createParams));
     } catch (initialErr) {
-      if (
-        initialErr?.message?.includes("503") ||
-        initialErr?.message?.includes("429")
-      ) {
-        // Tự động thử lại 1 lần sau 800ms đối với lỗi gián đoạn tạm thời của server Gemini
-        await new Promise((r) => setTimeout(r, 800));
-        interaction = await client.interactions.create(createParams);
-      } else {
-        throw initialErr;
-      }
+      console.warn(
+        `[aiAssistantService] Gemini API error (${initialErr.message}), using deterministic hybrid fallback`,
+      );
+      return runDeterministicAssistant({
+        message: cleanMessage,
+        diningContext,
+        customItems,
+      });
     }
 
     // Vòng lặp xử lý Function Calling theo chuẩn Interactions API (tối đa 3 bước gọi tool)
@@ -729,20 +742,20 @@ async function chatWithDiningAssistant({
           type: "function_result",
           name: fcStep.name,
           call_id: fcStep.id,
-          result: [{ type: "text", text: JSON.stringify(toolOutput) }],
+          result: JSON.stringify(toolOutput),
         });
       }
 
-      interaction = await client.interactions.create({
-        model: AGENT_MODEL,
-        input: functionResultsInput,
-        system_instruction: systemInstruction,
-        tools: DINING_AGENT_TOOLS,
-        previous_interaction_id: interaction.id,
-        generation_config: {
-          thinking_level: "low",
-        },
-      });
+      interaction = await callWithTimeout(
+        client.interactions.create({
+          model: AGENT_MODEL,
+          input: functionResultsInput,
+          system_instruction: systemInstruction,
+          tools: DINING_AGENT_TOOLS,
+          previous_interaction_id: interaction.id,
+        }),
+        12000
+      );
     }
 
     let replyText = interaction?.output_text || "";

@@ -30,6 +30,20 @@ function formatVnd(amount) {
   return `${(Number(amount) || 0).toLocaleString("vi-VN")}đ`;
 }
 
+function getWelcomeMessage(lang = "vi") {
+  return {
+    id: "welcome",
+    role: "assistant",
+    text:
+      lang === "en"
+        ? "Hello! I'm your **AI Sommelier & Dining Assistant**. Tell me your taste, budget, or dietary needs (e.g., *combo for 2 under 300k, non-spicy*), or ask me to add dishes directly to your cart!"
+        : "Xin chào! Mình là **AI Sommelier — Trợ lý Ẩm thực** của nhà hàng. Bạn có thể hỏi mình tư vấn món theo khẩu vị, ngân sách (*VD: Combo 2 người dưới 300k, không cay, dị ứng hải sản*) hoặc nhắn mình đặt món thẳng vào giỏ hàng nhé!",
+    recommendedDishes: [],
+    cartActions: [],
+    comboSummary: null,
+  };
+}
+
 function renderFormattedText(text = "") {
   const lines = String(text || "").split("\n");
   return lines.map((line, lineIdx) => {
@@ -64,7 +78,17 @@ export default function AiDiningAssistant() {
   const totalCartPrice = useSelector(selectTotalPrice);
 
   const tableCode =
-    routeTableCode || localStorage.getItem("tableCode") || "Khách tại bàn";
+    routeTableCode ||
+    localStorage.getItem("tableCode") ||
+    localStorage.getItem("qrToken") ||
+    (() => {
+      let guestId = localStorage.getItem("ai_guest_session_id");
+      if (!guestId) {
+        guestId = "guest_" + Math.random().toString(36).substring(2, 9);
+        localStorage.setItem("ai_guest_session_id", guestId);
+      }
+      return guestId;
+    })();
   const currentLang = i18n?.language?.startsWith("en") ? "en" : "vi";
 
   const [isOpen, setIsOpen] = useState(false);
@@ -75,22 +99,39 @@ export default function AiDiningAssistant() {
   const [suggestions, setSuggestions] = useState([]);
   const [justAddedIds, setJustAddedIds] = useState({});
 
-  const [messages, setMessages] = useState([
-    {
-      id: "welcome",
-      role: "assistant",
-      text:
-        currentLang === "en"
-          ? "Hello! I'm your **AI Sommelier & Dining Assistant**. Tell me your taste, budget, or dietary needs (e.g., *combo for 2 under 300k, non-spicy*), or ask me to add dishes directly to your cart!"
-          : "Xin chào! Mình là **AI Sommelier — Trợ lý Ẩm thực** của nhà hàng. Bạn có thể hỏi mình tư vấn món theo khẩu vị, ngân sách (*VD: Combo 2 người dưới 300k, không cay, dị ứng hải sản*) hoặc nhắn mình đặt món thẳng vào giỏ hàng nhé!",
-      recommendedDishes: [],
-      cartActions: [],
-      comboSummary: null,
-    },
-  ]);
+  const [messages, setMessages] = useState(() => [getWelcomeMessage(currentLang)]);
 
   const messagesEndRef = useRef(null);
   const abortControllerRef = useRef(null);
+
+  useEffect(() => {
+    let mounted = true;
+    if (!tableCode) return;
+
+    aiApi
+      .getHistory(tableCode)
+      .then((res) => {
+        if (!mounted) return;
+        if (Array.isArray(res?.messages) && res.messages.length > 0) {
+          const hasWelcome = res.messages.some((m) => m.id === "welcome");
+          setMessages(
+            hasWelcome
+              ? res.messages
+              : [getWelcomeMessage(currentLang), ...res.messages],
+          );
+        }
+        if (res?.interactionId) {
+          setInteractionId(res.interactionId);
+        }
+      })
+      .catch((err) => {
+        console.warn("[AiDiningAssistant] Failed to load chat history:", err);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [tableCode]);
 
   useEffect(() => {
     let mounted = true;
@@ -316,20 +357,32 @@ export default function AiDiningAssistant() {
     }
   };
 
-  const handleResetChat = () => {
+  const handleResetChat = async () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
     setInteractionId(null);
     setIsStreaming(false);
     setAgentStatus("");
-    setMessages((prev) => [prev[0]]);
+    setMessages([getWelcomeMessage(currentLang)]);
+    try {
+      if (tableCode) {
+        await aiApi.resetSession(tableCode);
+      }
+    } catch (err) {
+      console.warn("[AiDiningAssistant] Failed to reset chat session on server:", err);
+    }
+  };
+
+  const handleClose = () => {
+    // Chỉ ẩn khung chat, lưu giữ nguyên vẹn lịch sử hội thoại
+    setIsOpen(false);
   };
 
   return (
     <>
       {/* Nút Floating AI Sommelier */}
-      <div className="fixed bottom-24 right-5 z-40 flex flex-col items-end gap-2">
+      <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2">
         {!isOpen && (
           <button
             type="button"
@@ -366,9 +419,9 @@ export default function AiDiningAssistant() {
                   <h3 className="text-sm font-bold text-white">
                     AI Sommelier & Dining Assistant
                   </h3>
-                  <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300 border border-emerald-500/30">
+                  {/* <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300 border border-emerald-500/30">
                     Gemini 3.8
-                  </span>
+                  </span> */}
                 </div>
                 <p className="text-[11px] text-gray-400">
                   Giỏ hiện tại: {totalCartItems} món ({formatVnd(totalCartPrice)})
@@ -387,7 +440,7 @@ export default function AiDiningAssistant() {
               </button>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 aria-label="Đóng Trợ lý AI"
                 className="rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
               >

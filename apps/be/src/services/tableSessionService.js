@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const tableRepository = require("../repositories/tableRepository");
 const tableSessionRepository = require("../repositories/tableSessionRepository");
+const aiChatSessionRepository = require("../repositories/aiChatSessionRepository");
 const socketService = require("./socketService");
 const { getRedisClient, isRedisReady } = require("../config/redis");
 const {
@@ -454,6 +455,15 @@ class TableSessionService {
     const endedSession = await tableSessionRepository.endSession(sessionId);
     if (redisSession) {
       await deleteSession(redisSession);
+    }
+
+    // Xóa phiên chat AI Sommelier cũ của bàn khi kết thúc bữa ăn
+    try {
+      if (tableCode) await aiChatSessionRepository.clearSession(tableCode);
+      if (session.qrToken) await aiChatSessionRepository.clearSession(session.qrToken);
+      if (session.tableNumber) await aiChatSessionRepository.clearSession(session.tableNumber);
+    } catch (aiErr) {
+      console.warn("[tableSessionService] Không thể xóa phiên chat AI của bàn:", aiErr.message);
     }
 
     // 3. Cập nhật trạng thái bàn về 'active' (available)
